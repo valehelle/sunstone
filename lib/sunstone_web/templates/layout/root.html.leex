@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag assigns[:page_title] || "Ofis", suffix: " · Phoenix Framework" %>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+
+  </head>
+  <body>
+    <header  style="position:fixed; z-index:2; padding: 1rem">
+      <section class="container">
+        <nav role="navigation">
+        <style>
+          #header-list > li {
+            float: left;
+          }
+          #logo{
+            color: #606c76;
+            font-weight: bold;
+            font-size: 3rem;
+          }
+          #logo:hover{
+            color: #cdd1d4;
+          }
+        </style>
+        <script>
+          function loginRedirect() {
+            location.href = "/login";
+          }
+          function loginRedirect() {
+            location.href = "/contact";
+          }
+        </script>
+          <ul id="header-list" >
+          
+            <li>
+              <button type="button" class= "button button-clear" onclick= "contactRedirect()" >Contact Me</button> 
+            </li>
+             <li>
+            <%= if Guardian.Plug.current_resource(@conn) do %>
+             <%= button("Logout", to: Routes.user_path(@conn, :logout), class: "button button-clear")%> 
+            <% else %>
+              <button type="button" class= "button button-clear" onclick= "loginRedirect()" >Login</button> 
+            <% end %>
+            </li>
+          </ul>
+        </nav>
+        <a href="/" id="logo">
+          Ofis
+        </a>
+      </section>
+    </header>
+    <div style="padding-top: 15rem;">
+    <%= @inner_content %>
+    </div>
+  </body>
+</html>
