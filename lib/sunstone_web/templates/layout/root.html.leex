@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <%= csrf_meta_tag() %>
-    <%= live_title_tag assigns[:page_title] || "Ofis", suffix: " · Phoenix Framework" %>
+    <%= live_title_tag assigns[:page_title] || "Inoffice", suffix: " · Your Virtual Office" %>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
@@ -13,7 +13,7 @@
 
   </head>
   <body>
-    <header  style="position:fixed; z-index:2; padding: 1rem">
+    <header  style="padding: 1rem">
       <section class="container">
         <nav role="navigation">
         <style>
@@ -33,7 +33,7 @@
           function loginRedirect() {
             location.href = "/login";
           }
-          function loginRedirect() {
+          function contactRedirect() {
             location.href = "/contact";
           }
         </script>
@@ -52,7 +52,7 @@
           </ul>
         </nav>
         <a href="/" id="logo">
-          Ofis
+          Inoffice
         </a>
       </section>
     </header>

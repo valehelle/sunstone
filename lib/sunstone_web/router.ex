@@ -26,17 +26,19 @@ defmodule SunstoneWeb.Router do
 
   scope "/", SunstoneWeb do
     pipe_through :browser
+    get "/", PageController, :landing
     get "/register", UserController, :register
     get "/login", UserController, :login
     post "/login", UserController, :create_login
     post "/new", UserController, :create
     post "/logout", UserController, :logout
+    get "/contact", PageController, :contact
   end
 
 
   scope "/", SunstoneWeb do
     pipe_through [:browser, :auth, :ensure_auth]
-    live "/live", PageLive, :index
+    live "/office/hacker", PageLive, :index
 
   end
 

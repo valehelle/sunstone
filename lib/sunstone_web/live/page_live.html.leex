@@ -1,7 +1,7 @@
 <ol phx-hook="ChatList" style="position: absolute; visibility: hidden">
 <%= for user <- @chat_list do %>
-    <%= if user.email != @user.email do %>
-            <li class="peer-ids" peer-id=<%= user.peer_id %>><%= user.email %></li>
+    <%= if user.id != @user.id do %>
+            <li class="peer-ids" peer-id=<%= user.peer_id %>><%= user.name %></li>
     <% end %>
 
 <% end %>
@@ -9,53 +9,62 @@
 
 
 <div phx-hook="Main"></div>
-<h2 style="font-weight: bold">Tables</h2>
+<h2 style="font-weight: bold; color: #606c76;">Tables</h2>
 <%= if @user.is_active do %>
-        <div style="
-        display: grid;
-        grid-template-columns: 33.33% 33.33% 33.33%;
-        grid-gap: 10px;
-        ">
+        <div>
             <%= for table <- @tables do %>
                 <%= if !(length(table.users) == 1 && List.first(table.users).id == @user.id) do %>
-                <div class="container" style="padding:10px; border: 1px solid lightgrey">
-                <div class="row">
-                    <div class="column" style="align-self: center">
-                        <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
-                            <button style="margin-bottom:0" phx-click="leave">Leave</button>
-                        <% end %>
-                        <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
-                                <button style="margin-bottom:0" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
-                        <% end %>
+                <div class="container" style="margin-top: 10px; margin-bottom: 10px;">
+                    <div class="row">
+                        <div class="column" style="align-self: center">
+                            <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
+                                <button style="margin-bottom:0" phx-click="leave">Leave</button>
+                            <% end %>
+                            <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
+                                    <button style="margin-bottom:0" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
+                            <% end %>
+                        </div>
+                        <div class="column column-90">
+                            <ul style="list-style: none; margin:0; height:100%;">
+                            <%= for user <- table.users do %>
+                            <li style="border-radius:5px;  float:left; height:100%; margin:0;border: 1px solid lightgrey; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
+                                <span ><%= user.name %></span>
+                            </li>
+                            <% end %>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="column" style="align-self: center">
-                        <%= for user <- table.users do %>
-                                <tr>
-                                    <td style="color: lightgrey"><%= user.email %></td>
-                                </tr>
-                        <% end %>
-                    </div>
-                </div>
                 </div>
                 <% else %>
-                <div class="container" style="padding:10px; border: 1px solid lightgrey; display:flex">
-                    <%= for user <- table.users do %>
-                        <span style="text-align:center; align-self: center; width:100%"><%= user.email %></span>
-                    <% end %>
+                <div class="container" style="margin-top: 10px; margin-bottom: 10px;">
+                    <div class="row">
+                            <div class="column">
+                                <ul style="list-style: none; margin:0; height:100%;">
+                                    <%= for user <- table.users do %>
+                                    <li style="border-radius:5px; float:left; height:100%; margin:0;border: 1px solid lightgrey; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
+                                        <span style="color:#606c76;"><%= user.name %></span>
+                                    </li>
+                                    <% end %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 
                 <% end %>
             <% end %>
             <div id ="song" phx-hook="AudioList" phx-update="ignore">
             </div>
+            <%= if length(@tables) == 1 && List.first(List.first(@tables).users).id === @user.id do %>
+                <h4 style="color:#606c76;">No one has entered the office :(</h4>
+            <% end %>
         </div>
-    <%= if length(@tables) > 1 || (length(@tables) == 1 && List.first(List.first(@tables).users).id != @user.id)  do %>
 
-    <% else %>
-        <br>
-        <h4>Nobody has entered the office just yet :(</h4>
-    <% end %>
 <% else %>
+    <div style="color: #606c76;">
     <h4>Please enable the microphone to enter.</h4>
     <h4> Don't worry, people still need to connect to you to hear your voice.</h4>
+    </div>
 <% end %>
+

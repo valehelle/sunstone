@@ -1,0 +1,19 @@
+<div style="color:#606c76;">
+    <h1 style="font-weight:bold; font-size: 80px; margin-bottom:0;">Inoffice</h1>
+    <h3 style="">Creating social office remotely.</h1>
+    <%= link("Join Early Alpha Now", to: Routes.user_path(@conn, :register), class: "button")%> 
+</div>
+<div style="color:#606c76; margin-top: 150px;">
+    <h2>Why Inoffice?</h2>
+    <h3>With the recent pandemic, companies are beginning to offer their staff the opportunities to work remotely.</h3>
+    <h3>There are a lot of things that you gain by working remotely but unfortunately there are also some things that you loss.</h3>
+    <h3>One of it is the ability to have small talk or chat with your colleagues.</h3>
+    <h3>This is what Inoffice is trying to solve and why it exists.</h3>
+</div>
+<div style="color:#606c76; margin-top: 50px; margin-bottom: 200px;">
+    <h2>How is Inoffice different?</h2>
+    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> Existing solution only cater to official meetings.</h3>
+    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> There is no "call" concept. If you see someone, you can click and chat instantly.</h3>
+    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> Voice only. You don't have to worry about your looks and it is less intrusive.</h3>
+    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> Your voice is muted when you are not looking at the page. ie: switching to another tab.</h3>
+</div>

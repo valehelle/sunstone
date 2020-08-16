@@ -18,7 +18,8 @@ defmodule SunstoneWeb.UserController do
       {:ok, user} -> 
       conn = Guardian.Plug.sign_in(conn, user)
       redirect(conn, to: Routes.page_path(conn, :index))
-      {:error, changeset} -> render conn, "new.html", changeset: changeset
+      {:error, changeset} -> 
+      render conn, "new.html", changeset: changeset
     end
   end
   
@@ -32,7 +33,8 @@ defmodule SunstoneWeb.UserController do
       {:ok, user} -> 
         conn = Guardian.Plug.sign_in(conn, user)
         redirect(conn, to: Routes.page_path(conn, :index))
-      {:error, changeset} -> render conn, "login.html", changeset: changeset
+      {:error, changeset} -> 
+      render conn, "login.html", changeset: changeset
     end
   end
 

@@ -6,6 +6,7 @@ defmodule Sunstone.Accounts.User do
 schema "users" do
     field :email, :string
     field :password, :string
+    field :name, :string
     field :peer_id, :string
     field :is_active, :boolean, default: false
     field :retype_password, :string, virtual: true
@@ -16,9 +17,9 @@ schema "users" do
   @doc false
   def changeset(user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:email, :password, :retype_password, :table_id])
+    |> cast(attrs, [:email, :password, :retype_password, :table_id, :name])
     |> check_password()
-    |> validate_required([:email, :password, :retype_password, :table_id])
+    |> validate_required([:email, :password, :retype_password, :table_id, :name])
     |> validate_format(:email, ~r/@/)
     |> unsafe_validate_unique([:email], Sunstone.Repo, message: "Email is already in use")
     |> unique_constraint(:email, [name: :users_email_index])

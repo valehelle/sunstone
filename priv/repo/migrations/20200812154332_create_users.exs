@@ -5,6 +5,7 @@ defmodule Sunstone.Repo.Migrations.CreateUsers do
     create table(:users) do
       add :email, :string
       add :password, :string
+      add :name, :string
       add :peer_id, :string
       add :is_active, :boolean
       add :table_id, references(:tables, on_delete: :nothing)

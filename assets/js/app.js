@@ -48,6 +48,7 @@ Hooks.Main = {
             console.log('Answering incoming call from ' + call.peer);
 
             call.answer(localStream)
+            callList.push(call)
 
             call.on('stream', function (remoteStream) {
 
@@ -124,6 +125,10 @@ Hooks.AudioList = {
         console.log(document.getElementById("song").getElementsByClassName("peer-songs"))
     }
 }
+document.addEventListener("visibilitychange", function () {
+    if (localStream)
+        localStream.getAudioTracks()[0].enabled = !document.hidden;
+})
 
 
 let liveSocket = new LiveSocket("/live", Socket, { hooks: Hooks, params: { _csrf_token: csrfToken } })
