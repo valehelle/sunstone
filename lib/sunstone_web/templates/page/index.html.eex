@@ -1,9 +1,11 @@
 <div style="color:#606c76;">
     <h1 style="font-weight:bold; font-size: 80px; margin-bottom:0;">Inoffice</h1>
-    <h3 style="">Creating social office remotely.</h1>
+    <h3 style="">Recreating water cooler talks for remote teams.</h1>
     <%= link("Join Early Alpha Now", to: Routes.user_path(@conn, :register), class: "button")%> 
+    <br>
+     <img src="<%= Routes.static_path(@conn, "/images/inoffice.gif") %>" alt="Inoffice" width="50%%" height="50%" style="border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;">
 </div>
-<div style="color:#606c76; margin-top: 150px;">
+<div style="color:#606c76; margin-top: 50px;">
     <h2>Why Inoffice?</h2>
     <h3>With the recent pandemic, companies are beginning to offer their staff the opportunities to work remotely.</h3>
     <h3>There are a lot of things that you gain by working remotely but unfortunately there are also some things that you loss.</h3>
