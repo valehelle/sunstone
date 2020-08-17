@@ -1,6 +1,9 @@
 <div style="color:#606c76;">
-  <h4 style="margin-bottom:0">Inoffice is still in early alpha version.</h4>
-  <h4>There is only 1 office space. If you are still keen to try it out, register below.</h4>
+  <h4 style="margin-bottom:0">Before you try, please know that <span style="font-weight:bold">Inoffice</span> is still in early alpha version.</h4>
+  <h5 style="margin:0">> The design is only for desktop. You can try on mobile but the experience won't be smooth. :(</h5>
+  <h5 style="margin:0">> There is only 1 office space.</h5>
+  <h5 >> Minimal UI interface.</h5>
+  <h4> If you are still keen to try it out, register below.<h4>
 </div>
 <%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>
 <div style="color:#606c76;">

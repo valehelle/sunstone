@@ -56,15 +56,16 @@
             <% end %>
             <div id ="song" phx-hook="AudioList" phx-update="ignore">
             </div>
-            <%= if length(@tables) == 1 && List.first(List.first(@tables).users).id === @user.id do %>
+            <%= if length(@tables) == 1 && length(List.first(@tables).users) == 1 && List.first(List.first(@tables).users).id === @user.id do %>
                 <h4 style="color:#606c76;">No one has entered the office :(</h4>
+                
             <% end %>
         </div>
-
 <% else %>
     <div style="color: #606c76;">
     <h4>Please enable the microphone to enter.</h4>
-    <h4> Don't worry, people still need to connect to you to hear your voice.</h4>
+    <h4>If there is no pop up to enable the microphone, try refresh the page.</h4>
+    <h4> Don't worry about people hearing you, they still need to connect to you to hear your voice.</h4>
     </div>
 <% end %>
 
