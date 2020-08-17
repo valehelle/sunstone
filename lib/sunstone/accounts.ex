@@ -148,19 +148,28 @@ defmodule Sunstone.Accounts do
       Repo.one(query)
       |> check_password(changeset, password)
 
-      false -> {:error, changeset}
+      false -> 
+      {_, changeset} = Ecto.Changeset.apply_action(changeset, :update)
+      {:error, changeset}
     end
 
   end
 
   defp check_password(nil, changeset, _) do
-    {:error, Ecto.Changeset.add_error(changeset, :generic, "Invalid Email")}
+    {_, changeset} = 
+    Ecto.Changeset.add_error(changeset, :generic, "Invalid email or password") 
+    |> Ecto.Changeset.apply_action(:update)
+    {:error, changeset}
   end
 
   defp check_password(user, changeset, plain_text_password) do
     case Bcrypt.checkpw(plain_text_password, user.password) do
       true -> {:ok, user}
-      false -> {:error, Ecto.Changeset.add_error(changeset, :generic, "Invalid Email")}
+      false -> 
+        {_, changeset} = 
+        Ecto.Changeset.add_error(changeset, :generic, "Invalid email or password") 
+        |> Ecto.Changeset.apply_action(:update)
+      {:error, changeset}
     end
   end
 

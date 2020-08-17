@@ -2,14 +2,16 @@
 <%= form_for @changeset, Routes.user_path(@conn, :create_login), fn f -> %>
   <label>
     Email: <%= text_input f, :email %>
-    <%= error_tag f, :email %>
-    <%= error_tag f, :generic %>
   </label>
+      <%= error_tag f, :email %>
+
 
   <label>
     Password: <%= text_input f, :password, type: "password"%>
-    <%= error_tag f, :password %>
   </label>
+      <%= error_tag f, :password %>
+
+  <%= error_tag f, :generic %>
 
   <%= submit "Submit" %>
 <% end %>

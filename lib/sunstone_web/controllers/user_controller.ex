@@ -34,6 +34,7 @@ defmodule SunstoneWeb.UserController do
         conn = Guardian.Plug.sign_in(conn, user)
         redirect(conn, to: Routes.page_path(conn, :index))
       {:error, changeset} -> 
+      IO.inspect changeset
       render conn, "login.html", changeset: changeset
     end
   end
