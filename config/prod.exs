@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :sunstone, SunstoneWeb.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [scheme: "https", host: "pacific-spire-56334.herokuapp.com", port: 443],
+  url: [scheme: "https", host: "ionffice.chat", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
