@@ -10,6 +10,7 @@ schema "users" do
     field :peer_id, :string
     field :is_active, :boolean, default: false
     field :retype_password, :string, virtual: true
+    field :remember_me, :string, virtual: true
     belongs_to :table, Table
     timestamps()
   end

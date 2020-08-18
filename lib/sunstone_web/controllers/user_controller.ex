@@ -31,17 +31,25 @@ defmodule SunstoneWeb.UserController do
   def create_login(conn, %{"user" => user_params}) do
     case Accounts.authenticate_user(user_params) do
       {:ok, user} -> 
-        conn = Guardian.Plug.sign_in(conn, user)
-        redirect(conn, to: Routes.page_path(conn, :index))
+        conn = Guardian.Plug.sign_in(conn, user)        
+        %{"remember_me" => remember_me}  = user_params
+        redirect_to_office(conn, user, remember_me)       
       {:error, changeset} -> 
-      IO.inspect changeset
       render conn, "login.html", changeset: changeset
     end
+  end
+  def redirect_to_office(conn, user, "true") do
+    conn = Guardian.Plug.remember_me(conn, user)
+    redirect(conn, to: Routes.page_path(conn, :index))
+  end
+  def redirect_to_office(conn, user, "false") do
+    redirect(conn, to: Routes.page_path(conn, :index))
   end
 
   def logout(conn, _) do
     conn
     |> Guardian.Plug.sign_out()
+    |> Guardian.Plug.clear_remember_me()
     |> redirect(to: Routes.user_path(conn, :login))
   end
 

@@ -12,7 +12,10 @@
       <%= error_tag f, :password %>
 
   <%= error_tag f, :generic %>
-
+    <label>
+    
+    <%= checkbox f, :remember_me, checked: true %> Remember me 
+  </label>
   <%= submit "Submit" %>
 <% end %>
   <%= link("Click here to Register.", to: Routes.user_path(@conn, :register))%> 
