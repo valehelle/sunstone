@@ -25,7 +25,7 @@ defmodule SunstoneWeb.Router do
 
 
   scope "/", SunstoneWeb do
-    pipe_through :browser
+    pipe_through [:browser, :auth]
     get "/", PageController, :landing
     get "/register", UserController, :register
     get "/login", UserController, :login

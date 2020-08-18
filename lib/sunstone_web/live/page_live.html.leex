@@ -9,8 +9,9 @@
 
 
 <div phx-hook="Main"></div>
-<h4 style="color: #606c76; margin:0;"><%= @user.name %></h4>
-<h2 style="font-weight: bold; color: #606c76;">Tables</h2>
+<h4 style="color: #606c76;margin:0;"><%= @user.name %></h4>
+<h1 style="color: #606c76;font-weight: bold; ">Hacker Office</h1>
+<h2 style=" color: #606c76;margin:0;">Tables</h2>
 <%= if @user.is_active do %>
         <div>
             <%= for table <- @tables do %>
@@ -22,13 +23,13 @@
                                 <button style="margin-bottom:0" phx-click="leave">Leave</button>
                             <% end %>
                             <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
-                                    <button style="margin-bottom:0" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
+                                    <button style="margin-bottom:0; min-width: 102.743px" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
                             <% end %>
                         </div>
                         <div class="column column-90">
-                            <ul style="list-style: none; margin:0; height:100%;">
+                            <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
                             <%= for user <- table.users do %>
-                            <li style="border-radius:5px;  float:left; height:100%; margin:0;border: 1px solid lightgrey; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
+                            <li style="display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0;border: 1px solid lightgrey; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
                                 <span ><%= user.name %></span>
                             </li>
                             <% end %>
@@ -55,5 +56,7 @@
     <h4>If there is no pop up to enable the microphone, try refresh the page.</h4>
     <h4> Don't worry about people hearing you, they still need to connect to you to hear your voice.</h4>
     </div>
+
+
 <% end %>
 
