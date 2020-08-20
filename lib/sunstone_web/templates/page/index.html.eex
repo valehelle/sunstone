@@ -1,7 +1,7 @@
 <div style="color:#606c76;">
     <h1 style="font-weight:bold; font-size: 80px; margin-bottom:0;">Inoffice</h1>
     <h3 style="">Water cooler talks for remote teams.</h1>
-    <%= link("Join Early Alpha Now", to: Routes.user_path(@conn, :register), class: "button")%> 
+    <%= link("Try Early Alpha Now", to: Routes.user_path(@conn, :register), class: "button")%> 
     <br>
      <img src="<%= Routes.static_path(@conn, "/images/inoffice-long.gif") %>" alt="Inoffice" width="70%" height="70%" style="padding:10px;border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;">
 </div>
