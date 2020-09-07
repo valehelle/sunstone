@@ -166,6 +166,13 @@ defmodule Sunstone.Chats do
     |> Repo.insert()
   end
 
+  def user_is_listed_in_office(office, user) do
+    case Enum.find(office.users, fn o_user -> o_user.id == user.id end) do
+      nil -> false
+      _ -> true
+    end
+  end
+
   def add_user_to_office(office, user, invite) do
     office
     |> Office.add_user_changeset(user)

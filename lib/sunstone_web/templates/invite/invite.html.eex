@@ -1,1 +1,2 @@
-<h3>User with email <%= @email %> have been invited. You can ask them to login and they will see it under invites.</h3>
+<h3 color: #606c76;>User <span style="font-weight:bold"> <%= @email %> </span> have been invited.</h3>
+<h3 color: #606c76;>Please ask them to login and they will see it under invites. </h3>

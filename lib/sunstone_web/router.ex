@@ -43,6 +43,7 @@ defmodule SunstoneWeb.Router do
     get "/office/invite/:hash_id", InviteController, :new
     post "/office/invite/:hash_id", InviteController, :create
     post "/office/accept/:hash_id", InviteController, :accept
+    get "/office/uninvited/:hash_id", OfficeController, :uninvited
     live "/office/:hash_id", PageLive, :index
     get "/office", OfficeController, :index
     

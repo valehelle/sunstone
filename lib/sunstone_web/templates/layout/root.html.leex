@@ -48,20 +48,22 @@
           }
         </script>
           <ul id="header-list" >
+            
+            <%= if Guardian.Plug.current_resource(@conn) do %>
+              <li>
+                <%= link("Home", to: Routes.office_path(@conn, :index), class: "button button-clear")%> 
+              </li>
+              <li>
+                <button type="button" class= "button button-clear"><%= Guardian.Plug.current_resource(@conn).name %></button> 
+              </li>
+            <% end %>
+
              <li>
             <%= if Guardian.Plug.current_resource(@conn) do %>
              <%= button("Logout", to: Routes.user_path(@conn, :logout), class: "button button-clear")%> 
             <% else %>
               <button type="button" class= "button button-clear" onclick= "loginRedirect()" >Login</button> 
             <% end %>
-            </li>
-            <%= if Guardian.Plug.current_resource(@conn) do %>
-              <li>
-              <%= link("Home", to: Routes.office_path(@conn, :index), class: "button button-clear")%> 
-              </li>
-            <% end %>
-            <li>
-              <button type="button" class= "button button-clear" onclick= "contactRedirect()" >Contact Me</button> 
             </li>
           </ul>
         </nav>

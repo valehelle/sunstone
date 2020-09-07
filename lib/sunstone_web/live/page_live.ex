@@ -7,13 +7,20 @@ defmodule SunstoneWeb.PageLive do
   def mount(%{"hash_id" => hash_id}, %{"guardian_default_token" => token}, socket) do
     {_, user, _} = Guardian.resource_from_token(token)
     office_id = SunstoneWeb.UserController.decode_id(hash_id)
+    tables = Chats.list_tables(office_id)
+    office = Chats.get_office!(office_id)
     if connected?(socket) do
       Accounts.subscribe(office_id)
       SunstoneWeb.Live.LiveMonitor.monitor(self(), __MODULE__, %{user: user, office_id: office_id})
     end 
-    tables = Chats.list_tables(office_id)
-    office = Chats.get_office!(office_id)
-    {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office)}
+    if Chats.user_is_listed_in_office(office, user) do
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office)}
+    else
+      {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
+    end
+
+
+
   end
 
   def handle_event("active", %{"peer-id" => peer_id}, socket) do

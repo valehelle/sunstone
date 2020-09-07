@@ -28,4 +28,10 @@ defmodule SunstoneWeb.OfficeController do
     render conn, "invite.html", changeset: changeset
   end
 
+  def uninvited(conn, %{"hash_id" => hash_id})  do
+    office_id = SunstoneWeb.UserController.decode_id(hash_id)
+    office = Chats.get_office!(office_id)
+    render conn, "uninvited.html", office: office
+  end
+
 end

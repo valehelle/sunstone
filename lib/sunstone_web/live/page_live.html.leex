@@ -9,9 +9,11 @@
 
 
 <div phx-hook="Main"></div>
-<h4 style="color: #606c76;margin:0;"><%= @user.name %></h4>
-<h1 style="color: #606c76;font-weight: bold; "><%= @office.name %> Office</h1>
-<h2 style=" color: #606c76;margin:0;">Tables</h2>
+<h1 style="color: #606c76;font-weight: bold; margin-bottom:5px;"><%= @office.name %> Office</h1>
+<%= if @user.id === @office.owner_id do %>
+    <%= link("Invite Colleague", to: Routes.invite_path(@socket, :new, SunstoneWeb.UserController.encode_id(@office.id)), class: "button") %> 
+<% end %>
+<h2 style=" color: #606c76;margin:0; margin-top: 15px;">Tables</h2>
 <%= if @user.is_active do %>
         <div>
             <%= for table <- @tables do %>
