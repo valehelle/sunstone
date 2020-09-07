@@ -59,4 +59,63 @@ defmodule Sunstone.ChatsTest do
       assert %Ecto.Changeset{} = Chats.change_table(table)
     end
   end
+
+  describe "offices" do
+    alias Sunstone.Chats.Office
+
+    @valid_attrs %{name: "some name"}
+    @update_attrs %{name: "some updated name"}
+    @invalid_attrs %{name: nil}
+
+    def office_fixture(attrs \\ %{}) do
+      {:ok, office} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Chats.create_office()
+
+      office
+    end
+
+    test "list_offices/0 returns all offices" do
+      office = office_fixture()
+      assert Chats.list_offices() == [office]
+    end
+
+    test "get_office!/1 returns the office with given id" do
+      office = office_fixture()
+      assert Chats.get_office!(office.id) == office
+    end
+
+    test "create_office/1 with valid data creates a office" do
+      assert {:ok, %Office{} = office} = Chats.create_office(@valid_attrs)
+      assert office.name == "some name"
+    end
+
+    test "create_office/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Chats.create_office(@invalid_attrs)
+    end
+
+    test "update_office/2 with valid data updates the office" do
+      office = office_fixture()
+      assert {:ok, %Office{} = office} = Chats.update_office(office, @update_attrs)
+      assert office.name == "some updated name"
+    end
+
+    test "update_office/2 with invalid data returns error changeset" do
+      office = office_fixture()
+      assert {:error, %Ecto.Changeset{}} = Chats.update_office(office, @invalid_attrs)
+      assert office == Chats.get_office!(office.id)
+    end
+
+    test "delete_office/1 deletes the office" do
+      office = office_fixture()
+      assert {:ok, %Office{}} = Chats.delete_office(office)
+      assert_raise Ecto.NoResultsError, fn -> Chats.get_office!(office.id) end
+    end
+
+    test "change_office/1 returns a office changeset" do
+      office = office_fixture()
+      assert %Ecto.Changeset{} = Chats.change_office(office)
+    end
+  end
 end

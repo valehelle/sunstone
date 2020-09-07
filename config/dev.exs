@@ -7,7 +7,8 @@ config :sunstone, Sunstone.Repo,
   database: "sunstone_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  salt: "this is a random salt"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

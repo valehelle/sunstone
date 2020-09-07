@@ -36,8 +36,9 @@ defmodule Sunstone.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
-
+  def get_user!(id) do
+   Repo.get!(User, id) |> Repo.preload([:offices, :active_office])
+  end
   @doc """
   Creates a user.
 
@@ -76,38 +77,39 @@ defmodule Sunstone.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user(%User{} = user, attrs) do
+  def update_user(%User{} = user, attrs, office_id) do
     user
     |> User.update_changeset(attrs)
     |> Repo.update()
-    |> broadcast(:user_updated)
+    |> broadcast(:user_updated, office_id)
   end
 
-  def update_user_active(%User{} = user, attrs) do
-  {_, table} = Chats.create_table()
-    new_attrs = Map.merge(attrs, %{is_active: true, table_id: table.id})
+  def update_user_active(%User{} = user, attrs, office_id) do
+    office = Chats.get_office!(office_id)
+    {_, table} = Chats.create_table(%{}, office)
+    new_attrs = Map.merge(attrs, %{is_active: true, table_id: table.id, active_office: office_id})
     user
     |> User.update_user_active_changeset(new_attrs)
     |> Repo.update()
-    |> broadcast(:user_updated)
+    |> broadcast(:user_updated, office_id)
   end
 
-  def update_user_inactive(%User{} = user) do
+  def update_user_inactive(%User{} = user, office_id) do
     user
-    |> User.update_user_active_changeset(%{is_active: false, peer_id: "slfkjsf", table_id: 1})
+    |> User.update_user_active_changeset(%{is_active: false, peer_id: "", table_id: 1})
     |> Repo.update()
-    |> broadcast(:user_inactive)
+    |> broadcast(:user_inactive, office_id)
 
   end
 
 
-  def leave_table(%User{} = user) do
+  def leave_table(%User{} = user, office_id) do
     {_, table} = Chats.create_table()
     attrs = %{table_id: table.id}
     user
     |> User.update_changeset(attrs)
     |> Repo.update()
-    |> broadcast(:user_updated)
+    |> broadcast(:user_updated, office_id)
   end
 
   @doc """
@@ -173,14 +175,17 @@ defmodule Sunstone.Accounts do
     end
   end
 
-  def subscribe do
-    Phoenix.PubSub.subscribe(Sunstone.PubSub, "users")
+  def subscribe(office_id) do
+    Phoenix.PubSub.subscribe(Sunstone.PubSub, "users:#{office_id}")
   end
 
-  defp broadcast({:ok, user}, event) do
-    Phoenix.PubSub.broadcast(Sunstone.PubSub, "users", {event})
+  defp broadcast({:ok, user}, event, office_id) do
+    IO.inspect 'broadcastinggg #{event} #{office_id}'
+    Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {event})
     {:ok, user}
   end
+
+
 
 
 end

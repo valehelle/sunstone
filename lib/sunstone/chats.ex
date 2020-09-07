@@ -17,11 +17,12 @@ defmodule Sunstone.Chats do
       [%Table{}, ...]
 
   """
-  def list_tables do
+  def list_tables(office_id) do
     query = from t in Table,
             join: u in assoc(t, :users),
             group_by: t.id,
             where: u.is_active == true,
+            where: t.office_id == ^office_id,
             preload: [:users]
     Repo.all query
   end
@@ -59,9 +60,9 @@ defmodule Sunstone.Chats do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_table(attrs \\ %{}) do
+  def create_table(attrs \\ %{}, office) do
     %Table{}
-    |> Table.changeset(attrs)
+    |> Table.changeset(attrs, office)
     |> Repo.insert()
   end
 
@@ -110,5 +111,111 @@ defmodule Sunstone.Chats do
   """
   def change_table(%Table{} = table, attrs \\ %{}) do
     Table.changeset(table, attrs)
+  end
+
+  alias Sunstone.Chats.Office
+
+  @doc """
+  Returns the list of offices.
+
+  ## Examples
+
+      iex> list_offices()
+      [%Office{}, ...]
+
+  """
+  def list_offices do
+    Repo.all(Office)
+  end
+
+  @doc """
+  Gets a single office.
+
+  Raises `Ecto.NoResultsError` if the Office does not exist.
+
+  ## Examples
+
+      iex> get_office!(123)
+      %Office{}
+
+      iex> get_office!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_office!(id) do 
+    Repo.get!(Office, id) |> Repo.preload([:users, :tables])
+    
+  end
+
+
+  @doc """
+  Creates a office.
+
+  ## Examples
+
+      iex> create_office(%{field: value})
+      {:ok, %Office{}}
+
+      iex> create_office(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_office(attrs \\ %{}, user) do
+    %Office{}
+    |> Office.changeset(attrs, user)
+    |> Repo.insert()
+  end
+
+  def add_user_to_office(office, user) do
+    office
+    |> Office.add_user_changeset(user)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates a office.
+
+  ## Examples
+
+      iex> update_office(office, %{field: new_value})
+      {:ok, %Office{}}
+
+      iex> update_office(office, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_office(%Office{} = office, attrs) do
+    office
+    |> Office.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a office.
+
+  ## Examples
+
+      iex> delete_office(office)
+      {:ok, %Office{}}
+
+      iex> delete_office(office)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_office(%Office{} = office) do
+    Repo.delete(office)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking office changes.
+
+  ## Examples
+
+      iex> change_office(office)
+      %Ecto.Changeset{data: %Office{}}
+
+  """
+  def change_office(%Office{} = office, attrs \\ %{}) do
+    Office.changeset(office, attrs)
   end
 end

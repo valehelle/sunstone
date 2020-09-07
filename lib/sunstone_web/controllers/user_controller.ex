@@ -40,7 +40,7 @@ defmodule SunstoneWeb.UserController do
   end
   def redirect_to_office(conn, user, "true") do
     conn = Guardian.Plug.remember_me(conn, user)
-    redirect(conn, to: Routes.page_path(conn, :index))
+    redirect(conn, to: Routes.office_path(conn, :index))
   end
   def redirect_to_office(conn, user, "false") do
     redirect(conn, to: Routes.page_path(conn, :index))
@@ -59,10 +59,26 @@ defmodule SunstoneWeb.UserController do
     end
   end
 
-  def dashboard(conn, _params) do
+  def home(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
     
-    render conn, "dashboard.html"
+    render conn, "home.html", user: user
+  end
+
+  def encode_id(id) do
+    s = Hashids.new([
+    salt: Application.get_env(:sunstone, Sunstone.Repo)[:salt],  # using a custom salt helps producing unique cipher text
+    min_len: 2,   # minimum length of the cipher text (1 by default)
+   ])
+    Hashids.encode(s, id)
+  end
+
+  def decode_id(hash_id) do
+    s = Hashids.new([
+    salt: Application.get_env(:sunstone, Sunstone.Repo)[:salt],  # using a custom salt helps producing unique cipher text
+    min_len: 2,   # minimum length of the cipher text (1 by default)
+   ])
+    Hashids.decode!(s, hash_id) |> List.first()
   end
 
 

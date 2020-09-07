@@ -3,6 +3,7 @@ defmodule Sunstone.Accounts.User do
   import Ecto.Changeset
   alias Comeonin.Bcrypt
   alias Sunstone.Chats.Table
+  alias Sunstone.Chats.Office
 schema "users" do
     field :email, :string
     field :password, :string
@@ -12,6 +13,14 @@ schema "users" do
     field :retype_password, :string, virtual: true
     field :remember_me, :string, virtual: true
     belongs_to :table, Table
+    belongs_to :active_office, Office, foreign_key: :active_office_id
+    has_many :own_offices, Office, foreign_key: :owner_id
+    many_to_many(
+      :offices,
+      Office,
+      join_through: "user_office",
+      on_replace: :delete
+    )
     timestamps()
   end
 

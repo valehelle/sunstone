@@ -57,7 +57,7 @@
             </li>
             <%= if Guardian.Plug.current_resource(@conn) do %>
               <li>
-              <%= link("Office", to: Routes.page_path(@conn, :index), class: "button button-clear")%> 
+              <%= link("Home", to: Routes.office_path(@conn, :index), class: "button button-clear")%> 
               </li>
             <% end %>
             <li>

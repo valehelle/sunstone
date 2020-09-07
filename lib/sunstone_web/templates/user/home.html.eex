@@ -1,0 +1,10 @@
+
+<%= link("Create Office", to: Routes.office_path(@conn, :new), class: "button")%> 
+<h1>
+  Offices
+</h1>
+  <%= for office <- @user.offices do %>
+  <%= link(office.name, to: Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id)), class: "button")%> 
+
+<% end %>
+

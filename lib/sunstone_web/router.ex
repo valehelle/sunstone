@@ -33,12 +33,17 @@ defmodule SunstoneWeb.Router do
     post "/new", UserController, :create
     post "/logout", UserController, :logout
     get "/contact", PageController, :contact
+    get "/office/invite/:hash_id", OfficeController, :invite
   end
 
 
   scope "/", SunstoneWeb do
     pipe_through [:browser, :auth, :ensure_auth]
-    live "/office/hacker", PageLive, :index
+    get "/office/new", OfficeController, :new
+    post "/office/new", OfficeController, :create
+    live "/office/:hash_id", PageLive, :index
+    get "/office", OfficeController, :index
+
 
   end
 

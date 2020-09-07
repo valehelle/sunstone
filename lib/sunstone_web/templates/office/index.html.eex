@@ -1,0 +1,3 @@
+<%= for office <- @user.offices do %>
+  <%= link(office.name, to: Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id))) %>
+<% end %>
