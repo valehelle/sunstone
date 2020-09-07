@@ -1,9 +1,10 @@
 <%= form_for @changeset, Routes.invite_path(@conn, :create, @hash_id), fn f -> %>
 <div style="color:#606c76;">
   <label>
-    User email <%= text_input f, :email, placeholder: "email" %>
+    User Email: <%= text_input f, :email, placeholder: "colleague@email.com" %>
     <%= error_tag f, :email %>
   </label>
+  
 </div>
 
   <%= submit "Invite" %>
