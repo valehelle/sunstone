@@ -189,7 +189,6 @@ defmodule Sunstone.Accounts do
   end
 
   defp broadcast({:ok, user}, event, office_id) do
-    IO.inspect 'broadcastinggg #{event} #{office_id}'
     Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {event})
     {:ok, user}
   end
