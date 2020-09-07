@@ -16,9 +16,10 @@ defmodule SunstoneWeb.InviteController do
   def create(conn, %{"invite" => %{"email" => email} = invite,"hash_id" => hash_id})  do
     office_id = SunstoneWeb.UserController.decode_id(hash_id)
     office = Chats.get_office!(office_id)
-    case Chats.get_invite_from_email!(email) do
+    case Chats.get_invite_from_email!(email, office) do
       nil ->
         Chats.create_invite(invite, office)
+        send_email(email, office)
         render conn, "invite.html", email: email, hash_id: hash_id
       email -> 
         changeset = Invite.changeset(%Invite{}, invite, office)
@@ -31,7 +32,7 @@ defmodule SunstoneWeb.InviteController do
     user = Guardian.Plug.current_resource(conn)
     office_id = SunstoneWeb.UserController.decode_id(hash_id)
     office = Chats.get_office!(office_id)
-    case Chats.get_invite_from_email!(user.email) do
+    case Chats.get_invite_from_email!(user.email, office) do
       nil ->
         redirect(conn, to: Routes.office_path(conn, :index))
       invite -> 
@@ -39,5 +40,36 @@ defmodule SunstoneWeb.InviteController do
         redirect(conn, to: Routes.office_path(conn, :index))
     end
   end
+
+
+   def send_email(email, office) do
+      headers = %{
+            "Authorization" => "Bearer #{Application.get_env(:sunstone, Sunstone.Repo)[:send_grid_token]}",
+            "Content-Type" => "application/json"
+          }
+          body = %{
+            "personalizations" => 
+              [
+                %{"to" => 
+                  [
+                    %{"email" => email},
+                  ]
+                  }
+              ],
+              "from" => 
+              %{
+                "email" => "admin@inoffice.chat",
+              },
+              "subject" => "Hello there!",
+              "content" => [
+                %{"type"=> "text/html", "value" => "<h4 style=\"color:#606c76;\">You have been invited to join <span style=\"font-weight:bold;\">#{office.name}</span> at Inoffice.</h4><a href=\"https://www.inoffice.chat/login\">Click Here to enter</a>"}
+              ]
+              
+          }
+          url = "https://api.sendgrid.com/v3/mail/send"
+        HTTPoison.post url, Poison.encode!(body), headers
+  end
+
+
 
 end

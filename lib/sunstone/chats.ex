@@ -261,7 +261,7 @@ defmodule Sunstone.Chats do
 
   """
   def get_invite!(id), do: Repo.get!(Invite, id)
-  def get_invite_from_email!(email), do: Repo.get_by(Invite, email: email)
+  def get_invite_from_email!(email, office), do: Repo.get_by(Invite,  [email: email, office_id: office.id])
 
   @doc """
   Creates a invite.

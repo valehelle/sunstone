@@ -50,7 +50,9 @@ defmodule Sunstone.MixProject do
       {:guardian, "~> 1.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 0.12"},
-      {:hashids, "~> 2.0"}
+      {:hashids, "~> 2.0"},
+      {:httpoison, "~> 1.6"},
+      {:poison, "~> 3.1"}
     ]
   end
 

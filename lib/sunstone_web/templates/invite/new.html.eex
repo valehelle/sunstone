@@ -6,5 +6,5 @@
   </label>
 </div>
 
-  <%= submit "Submit" %>
+  <%= submit "Invite" %>
 <% end %>

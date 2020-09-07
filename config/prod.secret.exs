@@ -14,7 +14,9 @@ database_url =
 config :sunstone, Sunstone.Repo,
   ssl: true,
   url: database_url,
-  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+  send_grid_token: System.get_env("send_grid_token"),
+  salt: System.get_env("salt")
   
 secret_key_base =
   System.get_env("SECRET_KEY_BASE") ||
@@ -28,7 +30,7 @@ config :sunstone, SunstoneWeb.Endpoint,
     port: String.to_integer(System.get_env("PORT") || "4000"),
     transport_options: [socket_opts: [:inet6]]
   ],
-  secret_key_base: secret_key_base
+  secret_key_base: secret_key_base,
 
 # ## Using releases (Elixir v1.9+)
 #

@@ -8,6 +8,7 @@ config :sunstone, Sunstone.Repo,
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10,
+  send_grid_token: "fake token",
   salt: "this is a random salt"
 
 # For development, we disable any cache and enable
