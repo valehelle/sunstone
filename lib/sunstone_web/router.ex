@@ -33,7 +33,6 @@ defmodule SunstoneWeb.Router do
     post "/new", UserController, :create
     post "/logout", UserController, :logout
     get "/contact", PageController, :contact
-    get "/office/invite/:hash_id", OfficeController, :invite
   end
 
 
@@ -41,9 +40,12 @@ defmodule SunstoneWeb.Router do
     pipe_through [:browser, :auth, :ensure_auth]
     get "/office/new", OfficeController, :new
     post "/office/new", OfficeController, :create
+    get "/office/invite/:hash_id", InviteController, :new
+    post "/office/invite/:hash_id", InviteController, :create
+    post "/office/accept/:hash_id", InviteController, :accept
     live "/office/:hash_id", PageLive, :index
     get "/office", OfficeController, :index
-
+    
 
   end
 

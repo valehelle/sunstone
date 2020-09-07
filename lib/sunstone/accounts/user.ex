@@ -27,9 +27,9 @@ schema "users" do
   @doc false
   def changeset(user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:email, :password, :retype_password, :table_id, :name])
+    |> cast(attrs, [:email, :password, :retype_password, :name])
     |> check_password()
-    |> validate_required([:email, :password, :retype_password, :table_id, :name])
+    |> validate_required([:email, :password, :retype_password, :name])
     |> validate_format(:email, ~r/@/)
     |> unsafe_validate_unique([:email], Sunstone.Repo, message: "Email is already in use")
     |> unique_constraint(:email, [name: :users_email_index])

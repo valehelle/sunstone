@@ -1,0 +1,1 @@
+<h3>User with email <%= @email %> have been invited. You can ask them to login and they will see it under invites.</h3>

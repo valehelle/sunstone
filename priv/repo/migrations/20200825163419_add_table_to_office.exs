@@ -8,3 +8,4 @@ defmodule Sunstone.Repo.Migrations.AddTableToOffice do
     create index(:tables, [:office_id])
   end
 end
+

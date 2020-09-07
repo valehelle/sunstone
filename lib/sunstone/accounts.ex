@@ -54,10 +54,8 @@ defmodule Sunstone.Accounts do
   alias Sunstone.Chats
 
   def create_user(attrs \\ %{}) do
-    {_, table} = Chats.create_table()
-    attrs_with_table = Map.merge(attrs, %{"table_id" => table.id})
     result = %User{}
-    |> User.changeset(attrs_with_table)
+    |> User.changeset(attrs)
     |> Repo.insert()
     case result do 
     {:ok, user} -> 
@@ -104,7 +102,8 @@ defmodule Sunstone.Accounts do
 
 
   def leave_table(%User{} = user, office_id) do
-    {_, table} = Chats.create_table()
+    office = Chats.get_office!(office_id)
+    {_, table} = Chats.create_table(%{}, office)
     attrs = %{table_id: table.id}
     user
     |> User.update_changeset(attrs)

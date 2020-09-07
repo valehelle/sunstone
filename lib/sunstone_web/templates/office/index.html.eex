@@ -1,3 +1,16 @@
+<h1>Offices</h1>
 <%= for office <- @user.offices do %>
   <%= link(office.name, to: Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id))) %>
+<% end %>
+<h1>Invites</h1>
+<%= for invite <- @invites do %>
+  <%= form_for @changeset, Routes.invite_path(@conn, :accept, SunstoneWeb.UserController.encode_id(invite.office.id)), fn f -> %>
+  <div style="color:#606c76;">
+    <h2>  <%= invite.office.name %></h2>
+  </div>
+
+    <%= submit "Accept" %>
+  <% end %>
+
+
 <% end %>

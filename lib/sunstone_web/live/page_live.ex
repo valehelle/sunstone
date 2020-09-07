@@ -12,7 +12,6 @@ defmodule SunstoneWeb.PageLive do
       SunstoneWeb.Live.LiveMonitor.monitor(self(), __MODULE__, %{user: user, office_id: office_id})
     end 
     tables = Chats.list_tables(office_id)
-    table = Chats.get_table!(user.table_id)
     office = Chats.get_office!(office_id)
     {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office)}
   end
@@ -22,7 +21,6 @@ defmodule SunstoneWeb.PageLive do
     office_id = socket.assigns.office_id
     {:ok, user} = Accounts.update_user_active(user, %{is_active: true, peer_id: peer_id}, office_id)
     tables = Chats.list_tables(office_id)
-    table = Chats.get_table!(user.table_id)
     {:noreply, assign(socket, user: user,  tables: tables, chat_list: [])}
   end
 

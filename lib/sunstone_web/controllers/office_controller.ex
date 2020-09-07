@@ -2,11 +2,13 @@ defmodule SunstoneWeb.OfficeController do
   use SunstoneWeb, :controller
   alias Sunstone.Chats
   alias Sunstone.Chats.Office
+  alias Sunstone.Chats.Invite
 
   def index(conn, _) do
     user = Guardian.Plug.current_resource(conn)
-  
-    render conn, "index.html", user: user
+    invites = Chats.list_invites_from_email(user.email)
+    changeset = Office.changeset(%Office{}, %{}, user)
+    render conn, "index.html", changeset: changeset, user: user, invites: invites
   end
   def new(conn, _params)  do
     user = Guardian.Plug.current_resource(conn)
@@ -18,6 +20,12 @@ defmodule SunstoneWeb.OfficeController do
     user = Guardian.Plug.current_resource(conn)
     Chats.create_office(office_params, user)
     redirect(conn, to: Routes.office_path(conn, :index))
+  end
+
+  def invite(conn, %{"hash_id" => hash_id})  do
+    changeset = Invite.changeset(%Invite{}, %{})
+
+    render conn, "invite.html", changeset: changeset
   end
 
 end

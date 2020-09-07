@@ -3,10 +3,12 @@ defmodule Sunstone.Chats.Office do
   import Ecto.Changeset
   alias Sunstone.Accounts.User
   alias Sunstone.Chats.Table
+  alias Sunstone.Chats.Invite
   schema "offices" do
     field :name, :string
     belongs_to :owner, User, foreign_key: :owner_id
     has_many :tables, Table
+    has_many :invites, Invite
     has_many :active_users, User, foreign_key: :active_office_id
     many_to_many(
       :users,

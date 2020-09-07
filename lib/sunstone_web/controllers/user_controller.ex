@@ -17,7 +17,7 @@ defmodule SunstoneWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} -> 
       conn = Guardian.Plug.sign_in(conn, user)
-      redirect(conn, to: Routes.page_path(conn, :index))
+      redirect_to_office(conn, user, "true") 
       {:error, changeset} -> 
       render conn, "new.html", changeset: changeset
     end
