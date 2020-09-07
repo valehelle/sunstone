@@ -8,6 +8,7 @@ defmodule Sunstone.Accounts do
 
   alias Sunstone.Accounts.User
   alias Comeonin.Bcrypt
+  alias Sunstone.Chats.Office
 
   @doc """
   Returns the list of users.
@@ -37,7 +38,16 @@ defmodule Sunstone.Accounts do
 
   """
   def get_user!(id) do
-   Repo.get!(User, id) |> Repo.preload([:offices, :active_office])
+    query = from u in User,
+            where: u.id == ^id,
+            select: u,
+            preload: [
+              :active_office,
+              offices: ^from( o in Office,
+                       order_by: [desc: o.inserted_at])
+            ]
+
+    Repo.one!(query)
   end
   @doc """
   Creates a user.

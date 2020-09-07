@@ -21,7 +21,7 @@
     <% end %>
 </div>
 
-<h2 style=" color: #606c76; margin-top: 50px;">Invitations</h2>
+<h2 style=" e">Invitations</h2>
 <div style="margin-top: 20px;">
 
   <%= for invite <- @invites do %>
