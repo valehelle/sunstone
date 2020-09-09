@@ -19,7 +19,7 @@ import { LiveSocket } from "phoenix_live_view"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
-var peer = new Peer();
+var peer = new Peer([], { debug: 3 });
 var localStream = null
 let Hooks = {}
 var callList = []
