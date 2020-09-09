@@ -19,7 +19,7 @@ import { LiveSocket } from "phoenix_live_view"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
-var peer = new Peer([], { debug: 3 });
+var peer
 var localStream = null
 let Hooks = {}
 var callList = []
@@ -30,6 +30,7 @@ Hooks.Main = {
             console.log('push')
             this.pushEvent("active", { "peer-id": id })
         }
+        peer = new Peer([], { debug: 3 });
         peer.on('open', function (id) {
             console.log('peer open')
             navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(function (stream) {
