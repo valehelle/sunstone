@@ -25,6 +25,7 @@ let Hooks = {}
 var callList = []
 Hooks.Main = {
     mounted() {
+        console.log('main mounted')
         const pushEvent = (id) => {
             this.pushEvent("active", { "peer-id": id })
         }
@@ -36,6 +37,7 @@ Hooks.Main = {
                 console.log('Failed to get local stream', err);
             });
         });
+        console.log('peer')
         peer.on('error', function (err) {
             console.log('error')
             console.log(err)
@@ -141,7 +143,7 @@ window.addEventListener("phx:page-loading-stop", info => NProgress.done())
 liveSocket.connect()
 
 // expose liveSocket on window for web console debug logs and latency simulation:
-liveSocket.enableDebug()
+// >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
