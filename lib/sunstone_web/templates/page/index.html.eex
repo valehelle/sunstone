@@ -4,7 +4,7 @@
 
     <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button")%> 
     <br>
-     <img src="<%= Routes.static_path(@conn, "/images/inoffice-long.gif") %>" alt="Inoffice" width="90%" height="90%" style="padding:10px;border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;">
+     <img src="<%= Routes.static_path(@conn, "/images/inoffice-new.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:10px;border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;">
 </div>
 <div style="color:#606c76; margin-top: 50px;">
     <h2>Why Inoffice?</h2>
