@@ -21,6 +21,7 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 
 var peer
 var localStream = null
+var mute = false
 let Hooks = {}
 var callList = []
 Hooks.Main = {
@@ -128,9 +129,32 @@ Hooks.AudioList = {
     }
 }
 document.addEventListener("visibilitychange", function () {
-    if (localStream)
-        localStream.getAudioTracks()[0].enabled = !document.hidden;
+    var muteBtn = document.getElementById("mute-btn")
+    if (document.visibilityState === 'visible' && localStream) {
+        if (mute) {
+            localStream.getAudioTracks()[0].enabled = false
+            muteBtn.innerHTML = "Unmute"
+        } else {
+            localStream.getAudioTracks()[0].enabled = true
+            muteBtn.innerHTML = "Mute"
+        }
+    } else {
+        localStream.getAudioTracks()[0].enabled = false
+        muteBtn.innerHTML = "Unmute"
+    }
 })
+window.toggleMute = function () {
+    mute = !mute
+    var muteBtn = document.getElementById("mute-btn")
+
+    if (localStream && mute) {
+        localStream.getAudioTracks()[0].enabled = false
+        muteBtn.innerHTML = "Unmute"
+    } else {
+        localStream.getAudioTracks()[0].enabled = true
+        muteBtn.innerHTML = "Mute"
+    }
+}
 
 
 let liveSocket = new LiveSocket("/live", Socket, { hooks: Hooks, params: { _csrf_token: csrfToken } })
