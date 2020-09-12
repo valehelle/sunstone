@@ -1,7 +1,6 @@
 <div style="color:#606c76;">
-    <h1 style="font-weight:bold; font-size: 60px; margin-bottom:10px;">Where small talks happens</h1>
-    <h3 style="margin-bottom:0">Socializing while working remotely can be hard.  </h3>
-    <h3 style="">That’s why we made Inoffice — a place where people have small chats with their colleague. </h3>
+    <h1 style="font-weight:bold; font-size: 60px; margin-bottom:10px;">A place for remote teams to socialize</h1>
+    <h3 style="">See who is around and instantly pop in to talk without having to call.</h3>
 
     <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button")%> 
     <br>
