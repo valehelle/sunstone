@@ -2,10 +2,10 @@
 <%= form_for @changeset, Routes.office_path(@conn, :create), fn f -> %>
 <div style="color:#606c76;">
     <label>
-    Office Name : <%= text_input f, :name, placeholder: "office" %>
+    Your office name : <%= text_input f, :name, placeholder: "Google" %>
     <%= error_tag f, :name %>
   </label>
 </div>
 
-  <%= submit "Submit" %>
+  <%= submit "Create" %>
 <% end %>

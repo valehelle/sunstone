@@ -19,6 +19,12 @@
                     </div>
                 </div>
     <% end %>
+      <%= if length(@user.offices) == 0 do %>
+        <div style = "color: #606c76">
+          <h3 style="margin: 0;">Its a bit lonely in here :(</h3>
+          <h3>Create your own office or ask your colleague to invite you into theirs :D</h3>
+        </div>
+      <% end %>
 </div>
 <%= if length(@invites) > 0 do %>
   <h2 style=" e">Invitations</h2>

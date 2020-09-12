@@ -67,7 +67,7 @@
             <div id ="song" phx-hook="AudioList" phx-update="ignore">
             </div>
             <%= if length(@tables) == 1 && length(List.first(@tables).users) == 1 && List.first(List.first(@tables).users).id === @user.id do %>
-                <h4 style="color:#606c76;">No one has entered the office :(</h4>
+                <h4 style="color:#606c76; margin-top: 20px;">No one has entered the office :(</h4>
                 
             <% end %> 
         </div>
