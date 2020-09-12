@@ -11,14 +11,7 @@
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115169227-8"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'UA-115169227-8');
-    </script>
 
 
   </head>
@@ -60,7 +53,9 @@
 
              <li>
             <%= if Guardian.Plug.current_resource(@conn) do %>
-             <%= button("Logout | #{Guardian.Plug.current_resource(@conn).name}", to: Routes.user_path(@conn, :logout), class: "button button-clear")%> 
+              <%= form_for @conn, Routes.user_path(@conn, :logout), fn f -> %>
+                <%= button("Logout | #{Guardian.Plug.current_resource(@conn).name}", to: Routes.user_path(@conn, :logout), class: "button button-clear", type: "submit")%> 
+              <%= end %>
             <% else %>
               <button type="button" class= "button button-clear" onclick= "loginRedirect()" >Login</button> 
             <% end %>

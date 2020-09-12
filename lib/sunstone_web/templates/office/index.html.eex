@@ -20,26 +20,27 @@
                 </div>
     <% end %>
 </div>
+<%= if length(@invites) > 0 do %>
+  <h2 style=" e">Invitations</h2>
+  <div style="margin-top: 20px;">
 
-<h2 style=" e">Invitations</h2>
-<div style="margin-top: 20px;">
-
-  <%= for invite <- @invites do %>
-    <%= form_for @changeset, Routes.invite_path(@conn, :accept, SunstoneWeb.UserController.encode_id(invite.office.id)), fn f -> %>
-    <div class="container" style="margin-top: 10px; margin-bottom: 10px;">
-                    <div class="row">
-                        <div class="column" style="align-self: center">
-                          <%= submit "Accept", style: "margin-bottom:0; min-width: 102.743px", class: "button"%>
-                        </div>
-                        <div class="column column-90">
-                            <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
-                              <li style="font-size:20px; display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
-                               <%=  invite.office.name  %>
-                              </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-      <% end %>
+    <%= for invite <- @invites do %>
+      <%= form_for @changeset, Routes.invite_path(@conn, :accept, SunstoneWeb.UserController.encode_id(invite.office.id)), fn f -> %>
+      <div class="container" style="margin-top: 10px; margin-bottom: 10px;">
+                      <div class="row">
+                          <div class="column" style="align-self: center">
+                            <%= submit "Accept", style: "margin-bottom:0; min-width: 102.743px", class: "button"%>
+                          </div>
+                          <div class="column column-90">
+                              <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
+                                <li style="font-size:20px; display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
+                                <%=  invite.office.name  %>
+                                </li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+        <% end %>
+    <% end %>
   <% end %>
 </div>

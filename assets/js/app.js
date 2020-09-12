@@ -25,23 +25,19 @@ let Hooks = {}
 var callList = []
 Hooks.Main = {
     mounted() {
-        console.log('main mounted')
         const pushEvent = (id) => {
-            console.log('push')
             this.pushEvent("active", { "peer-id": id })
         }
-        peer = new Peer([], { debug: 3 });
+        peer = new Peer();
         peer.on('open', function (id) {
             console.log('peer open')
             navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(function (stream) {
                 localStream = stream
-                console.log('media success')
                 pushEvent(id)
             }).catch(function (err) {
                 console.log('Failed to get local stream', err);
             });
         });
-        console.log('peer')
         peer.on('error', function (err) {
             console.log('error')
             console.log(err)

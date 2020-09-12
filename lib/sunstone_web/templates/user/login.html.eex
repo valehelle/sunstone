@@ -16,7 +16,7 @@
     
     <%= checkbox f, :remember_me, checked: true %> Remember me 
   </label>
-  <%= submit "Submit" %>
+  <%= submit "Login" %>
 <% end %>
   <%= link("Click here to Register.", to: Routes.user_path(@conn, :register))%> 
 </div>
