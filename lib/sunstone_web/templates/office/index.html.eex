@@ -1,10 +1,11 @@
 <h1 style=" color: #606c76;margin:0;">Offices</h1>
-<div style="margin-top:10px;">
+<h6 style="color: #606c76;margin:0;"><%= @user.name %> | <%= @user.email %></h6>
+<div style="margin-top:20px;">
   <%= link("Create Office", to: Routes.office_path(@conn, :new), class: "button") %> 
 </div>
 <div style="margin-top: 20px;">
   <%= for office <- @user.offices do %>
-    <div class="container" style="margin-top: 10px; margin-bottom: 10px;">
+    <div  style="margin-top: 10px; margin-bottom: 10px;">
                     <div class="row">
                         <div class="column" style="align-self: center">
                           <a href="<%= Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id)) %>" style="margin-bottom:0; min-width: 102.743px" class="button">Enter</a>
@@ -27,12 +28,10 @@
       <% end %>
 </div>
 <%= if length(@invites) > 0 do %>
-  <h2 style=" e">Invitations</h2>
-  <div style="margin-top: 20px;">
-
+  <h2 style="margin-top: 50px;">Invitations</h2>
     <%= for invite <- @invites do %>
       <%= form_for @changeset, Routes.invite_path(@conn, :accept, SunstoneWeb.UserController.encode_id(invite.office.id)), fn f -> %>
-      <div class="container" style="margin-top: 10px; margin-bottom: 10px;">
+      <div style="margin-top: 10px; margin-bottom: 10px;">
                       <div class="row">
                           <div class="column" style="align-self: center">
                             <%= submit "Accept", style: "margin-bottom:0; min-width: 102.743px", class: "button"%>
@@ -49,4 +48,3 @@
         <% end %>
     <% end %>
   <% end %>
-</div>

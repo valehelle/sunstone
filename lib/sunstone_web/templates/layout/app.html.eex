@@ -1,5 +1,8 @@
 <main role="main" class="container">
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-  <%= @inner_content %>
+  <div style="min-height:70vh;">
+    <%= @inner_content %>
+  </div>
+  <h6 style="margin-top:40px;">Found any bugs or feature request? <a style="font-weight:bold" href = "mailto:hazmi@inoffice.chat">Contact Us</a></h6>
 </main>

@@ -57,11 +57,10 @@
               <button type="button" class= "button button-clear" onclick= "homeClick()" >Home</button> 
               </li>
             <% end %>
-
              <li>
             <%= if Guardian.Plug.current_resource(@conn) do %>
               <%= form_for @conn, Routes.user_path(@conn, :logout), fn f -> %>
-                <%= button("Logout | #{Guardian.Plug.current_resource(@conn).name}", to: Routes.user_path(@conn, :logout), class: "button button-clear", type: "submit")%> 
+                <%= button("Logout", to: Routes.user_path(@conn, :logout), class: "button button-clear", type: "submit")%> 
               <%= end %>
             <% else %>
               <button type="button" class= "button button-clear" onclick= "loginRedirect()" >Login</button> 
@@ -77,5 +76,6 @@
     <div style="padding-top: 5rem;">
     <%= @inner_content %>
     </div>
+
   </body>
 </html>
