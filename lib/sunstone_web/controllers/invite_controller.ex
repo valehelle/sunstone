@@ -4,28 +4,31 @@ defmodule SunstoneWeb.InviteController do
   alias Sunstone.Chats.Office
   alias Sunstone.Chats.Invite
 
-
   def new(conn, %{"hash_id" => hash_id})  do
     office_id = SunstoneWeb.UserController.decode_id(hash_id)
     office = Chats.get_office!(office_id)
+    invites = Chats.list_invites_from_office(office)
     changeset = Invite.changeset(%Invite{}, %{}, office)
 
-    render conn, "new.html", changeset: changeset, hash_id: hash_id
+    render conn, "new.html", changeset: changeset, hash_id: hash_id, office: office, invites: invites
   end
 
   def create(conn, %{"invite" => %{"email" => email} = invite,"hash_id" => hash_id})  do
+    IO.inspect invite
     office_id = SunstoneWeb.UserController.decode_id(hash_id)
     office = Chats.get_office!(office_id)
-    case Chats.get_invite_from_email!(email, office) do
-      nil ->
-        Chats.create_invite(invite, office)
-        send_email(email, office)
-        render conn, "invite.html", email: email, hash_id: hash_id
-      email -> 
-        changeset = Invite.changeset(%Invite{}, invite, office)
-        {_, changeset} = Ecto.Changeset.add_error(changeset, :email, "User have already been invited")  |> Ecto.Changeset.apply_action(:update)
-        render conn, "new.html", changeset: changeset, hash_id: hash_id
+    emails = String.split(email,",");
+    Enum.each emails, fn(email) ->
+      case Chats.get_invite_from_email!(email, office) do
+        nil ->
+          invite = %{"email" => email}
+          Chats.create_invite(invite, office)
+          IO.inspect send_email(email, office)
+        email -> IO.inspect "Email existed"
+      end
     end
+    redirect(conn, to: Routes.invite_path(conn, :new, hash_id))
+
   end
 
   def accept(conn, %{"hash_id" => hash_id})  do
@@ -62,7 +65,7 @@ defmodule SunstoneWeb.InviteController do
               },
               "subject" => "Hello there!",
               "content" => [
-                %{"type"=> "text/html", "value" => "<h4 style=\"color:#606c76;\">You have been invited to join <span style=\"font-weight:bold;\">#{office.name}</span> at Inoffice.</h4><a href=\"https://www.inoffice.chat/login\">Click Here to enter</a>"}
+                %{"type"=> "text/html", "value" => "<h4 style=\"color:#606c76;\">You colleague expect you at <span style=\"font-weight:bold;\">#{office.name}</span> inside Inoffice.</h4><a href=\"https://www.inoffice.chat/login\">Click Here to enter</a>"}
               ]
               
           }

@@ -246,6 +246,12 @@ defmodule Sunstone.Chats do
     Repo.all(query)
   end
 
+  def list_invites_from_office(office) do
+    query = from i in Invite,
+           where: i.office_id == ^office.id
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single invite.
 

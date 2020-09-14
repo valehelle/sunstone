@@ -34,4 +34,6 @@ defmodule SunstoneWeb.OfficeController do
     render conn, "uninvited.html", office: office
   end
 
+
+
 end

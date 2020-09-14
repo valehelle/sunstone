@@ -43,7 +43,7 @@ defmodule SunstoneWeb.UserController do
     redirect(conn, to: Routes.office_path(conn, :index))
   end
   def redirect_to_office(conn, user, "false") do
-    redirect(conn, to: Routes.page_path(conn, :index))
+    redirect(conn, to: Routes.office_path(conn, :index))
   end
 
   def logout(conn, _) do

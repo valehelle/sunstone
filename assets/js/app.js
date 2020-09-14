@@ -128,21 +128,7 @@ Hooks.AudioList = {
         console.log(document.getElementById("song").getElementsByClassName("peer-songs"))
     }
 }
-document.addEventListener("visibilitychange", function () {
-    var muteBtn = document.getElementById("mute-btn")
-    if (document.visibilityState === 'visible' && localStream) {
-        if (mute) {
-            localStream.getAudioTracks()[0].enabled = false
-            muteBtn.innerHTML = "Unmute"
-        } else {
-            localStream.getAudioTracks()[0].enabled = true
-            muteBtn.innerHTML = "Mute"
-        }
-    } else {
-        localStream.getAudioTracks()[0].enabled = false
-        muteBtn.innerHTML = "Unmute"
-    }
-})
+
 window.toggleMute = function () {
     mute = !mute
     var muteBtn = document.getElementById("mute-btn")

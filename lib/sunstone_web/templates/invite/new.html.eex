@@ -1,7 +1,9 @@
+<h1 style=" color: #606c76;"><%= @office.name %></h1>
+
 <%= form_for @changeset, Routes.invite_path(@conn, :create, @hash_id), fn f -> %>
 <div style="color:#606c76;">
   <label>
-    Your colleague email: <%= text_input f, :email, placeholder: "colleague@email.com" %>
+    Your colleague email: <%= text_input f, :email, placeholder: "first@email.com,second@email.com" %>
     <%= error_tag f, :email %>
   </label>
   
@@ -9,3 +11,45 @@
 
   <%= submit "Invite" %>
 <% end %>
+
+
+<div style="margin-top: 20px;">
+<h3 style=" color: #606c76;margin:0;">Invitations accepted</h3>
+  <%= for user <- @office.users do %>
+    <%= if user.id != @office.owner_id do %>
+      <div class="container" style="color: #606c76;">
+                      <div class="row">
+                          <div class="column column-90">
+                              <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
+                                <li style="font-size:20px; display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
+                                  > <%=  user.name  %>
+                                </li>
+                              </ul>
+                          </div>
+                      </div>
+      </div>
+      <% end %>
+    <% end %>
+      <%= if length(@office.users) == 0 do %>
+        <div style = "color: #606c76">
+          <h3 style="margin: 0;">Its a bit lonely in here :(</h3>
+          <h3>Invite your colleague to join you!</h3>
+        </div>
+      <% end %>
+</div>
+<h3 style=" color: #606c76;margin:0; margin-top:20px;">Invitations sent</h3>
+  <div >
+    <%= for invite <- @invites do %>
+      <div class="container" style="margin-top: 10px; color: #606c76;">
+                      <div class="row">
+                          <div class="column column-90">
+                              <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
+                                <li style="font-size:20px; display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
+                                  > <%=  invite.email  %>
+                                </li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+    <% end %>
+</div>
