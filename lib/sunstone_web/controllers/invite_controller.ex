@@ -65,7 +65,7 @@ defmodule SunstoneWeb.InviteController do
               },
               "subject" => "Hello there!",
               "content" => [
-                %{"type"=> "text/html", "value" => "<h4 style=\"color:#606c76;\">You colleague expect you at <span style=\"font-weight:bold;\">#{office.name}</span> inside Inoffice.</h4><a href=\"https://www.inoffice.chat/login\">Click Here to enter</a>"}
+                %{"type"=> "text/html", "value" => "<h4>You colleague have invited you to join <span style=\"font-weight:bold;\">#{office.name}</span> at Inoffice.</h4><a href=\"https://www.inoffice.chat/login\">Click Here to enter</a>"}
               ]
               
           }
