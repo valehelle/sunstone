@@ -14,7 +14,6 @@ defmodule SunstoneWeb.InviteController do
   end
 
   def create(conn, %{"invite" => %{"email" => email} = invite,"hash_id" => hash_id})  do
-    IO.inspect invite
     office_id = SunstoneWeb.UserController.decode_id(hash_id)
     office = Chats.get_office!(office_id)
     emails = String.split(email,",");

@@ -41,6 +41,8 @@ Hooks.Main = {
         });
         peer.on('error', function (err) {
             console.log('error')
+
+            document.getElementById('error-peerjs').style.visibility = "visible";
             console.log(err)
         });
         peer.on('close', function (err) {
