@@ -12,7 +12,7 @@ defmodule SunstoneWeb.PageLive do
     if connected?(socket) do
       Accounts.subscribe(office_id)
       SunstoneWeb.Live.LiveMonitor.monitor(self(), __MODULE__, %{user: user, office_id: office_id})
-      send_office_notification(office, user)
+      
     end 
     if Chats.user_is_listed_in_office(office, user) do
       {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office)}
@@ -52,6 +52,8 @@ defmodule SunstoneWeb.PageLive do
   def handle_event("active", %{"peer-id" => peer_id}, socket) do
     user = socket.assigns.user
     office_id = socket.assigns.office_id
+    office = Chats.get_office!(office_id)
+    send_office_notification(office, user)
     {:ok, user} = Accounts.update_user_active(user, %{is_active: true, peer_id: peer_id}, office_id)
     tables = Chats.list_tables(office_id)
     {:noreply, assign(socket, user: user,  tables: tables, chat_list: [])}

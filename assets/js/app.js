@@ -81,26 +81,30 @@ Hooks.Main = {
             });
         });
 
-        function initSW() {
-            navigator.serviceWorker.register('/sw.js').then(function (reg) {
-                reg.pushManager.getSubscription().then(function (sub) {
-                    if (sub == undefined) {
-                        document.getElementById('sub-btn').style.display = "inherit";
-                    } else {
-                        document.getElementById('sub-btn').style.display = "none";
-                        subscibeEvent(sub)
-                    }
-                })
-            })
-
-        }
-        initSW()
-
-
     }
 }
+function initSW() {
+    navigator.serviceWorker.register('/sw.js').then(function (reg) {
+        reg.pushManager.getSubscription().then(function (sub) {
+            if (sub == undefined) {
+                document.getElementById('sub-btn').style.display = "block";
+            } else {
+                document.getElementById('sub-btn').style.display = "none";
+                subscibeEvent(sub)
+            }
+        })
+    })
+
+}
+Hooks.Notification = {
+    mounted() {
+        initSW()
+    }
+}
+
 Hooks.ChatList = {
     updated() {
+
         const ids = document.getElementsByClassName("peer-ids");
         for (var i = 0; i < ids.length; i++) {
             const id = ids[i].getAttribute("peer-id")
@@ -134,6 +138,7 @@ Hooks.ChatList = {
 }
 Hooks.AudioList = {
     mounted() {
+        initSW()
         console.log('mounted')
     },
     updated() {

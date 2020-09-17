@@ -49,13 +49,16 @@ async function subscribe(){
 
 <% end %>
 </ol>
-<div id="sub-btn" style="display: none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" >
-    <h6 style="margin: 0; margin-bottom: 10px;">Would you like to be notified when your colleague enter the office?</h6>
-    <button onclick="subscribe()" phx-update="ignore">Yes notify me</button>
-</div>
+
 <div style="min-height:80vh;">
 <div phx-hook="Main"></div>
 <h1 style="color: #606c76;font-weight: bold; margin-bottom:5px;"><%= @office.name %></h1>
+<%= if @user.is_active do %>
+    <div phx-hook="Notification" id="sub-btn" style="display:none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" phx-update="ignore">
+        <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
+        <button onclick="subscribe()" >Yes notify me</button>
+    </div>
+<% end %>
 <%= if @user.id === @office.owner_id do %>
     <%= link("Invite Colleague", to: Routes.invite_path(@socket, :new, SunstoneWeb.UserController.encode_id(@office.id)), class: "button") %> 
 <% end %>
