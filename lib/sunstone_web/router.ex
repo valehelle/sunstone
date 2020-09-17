@@ -46,8 +46,13 @@ defmodule SunstoneWeb.Router do
     get "/office/uninvited/:hash_id", OfficeController, :uninvited
     live "/office/:hash_id", PageLive, :index
     get "/office", OfficeController, :index
-    
+  
+  end
 
+    scope "/", SunstoneWeb do
+    pipe_through [:api, :auth, :ensure_auth]
+    post "/office/:hash_id/notification", NotificationController, :new
+  
   end
 
 

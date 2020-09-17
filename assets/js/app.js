@@ -2,7 +2,6 @@
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
 import "../css/app.scss"
-
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
 // in "webpack.config.js".
@@ -28,6 +27,9 @@ Hooks.Main = {
     mounted() {
         const pushEvent = (id) => {
             this.pushEvent("active", { "peer-id": id })
+        }
+        const subscibeEvent = (sub) => {
+            this.pushEvent("subscribe-notification", sub)
         }
         peer = new Peer();
         peer.on('open', function (id) {
@@ -78,6 +80,21 @@ Hooks.Main = {
 
             });
         });
+
+        function initSW() {
+            navigator.serviceWorker.register('/sw.js').then(function (reg) {
+                reg.pushManager.getSubscription().then(function (sub) {
+                    if (sub == undefined) {
+                        document.getElementById('sub-btn').style.display = "inherit";
+                    } else {
+                        document.getElementById('sub-btn').style.display = "none";
+                        subscibeEvent(sub)
+                    }
+                })
+            })
+
+        }
+        initSW()
 
 
     }
@@ -159,4 +176,5 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
 

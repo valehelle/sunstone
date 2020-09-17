@@ -9,6 +9,7 @@ defmodule Sunstone.Accounts do
   alias Sunstone.Accounts.User
   alias Comeonin.Bcrypt
   alias Sunstone.Chats.Office
+  alias Sunstone.Accounts.Notification
 
   @doc """
   Returns the list of users.
@@ -43,8 +44,9 @@ defmodule Sunstone.Accounts do
             select: u,
             preload: [
               :active_office,
-              offices: ^from( o in Office,
-                       order_by: [desc: o.inserted_at])
+              notifications: ^from( n in Notification, order_by: [desc: n.id]),
+              offices: ^from( o in Office,order_by: [desc: o.inserted_at])
+              
             ]
 
     Repo.one!(query)
@@ -183,6 +185,27 @@ defmodule Sunstone.Accounts do
       {:error, changeset}
     end
   end
+
+
+
+
+
+
+  def create_update_notifications(%{ "endpoint" => endpoint, "keys" => %{ "auth" => auth, "p256dh" => p256dh} }, user) do
+    
+    %Notification{}
+    |> Notification.changeset(%{"endpoint" => endpoint, "auth" => auth, "p256dh" => p256dh}, user)
+    |> Repo.insert()
+
+  end
+
+
+  def list_notifications() do
+    
+    Repo.all(Notification)
+
+  end
+
 
   def subscribe(office_id) do
     Phoenix.PubSub.subscribe(Sunstone.PubSub, "users:#{office_id}")

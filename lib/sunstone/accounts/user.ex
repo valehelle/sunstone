@@ -4,6 +4,7 @@ defmodule Sunstone.Accounts.User do
   alias Comeonin.Bcrypt
   alias Sunstone.Chats.Table
   alias Sunstone.Chats.Office
+  alias Sunstone.Accounts.Notification
 schema "users" do
     field :email, :string
     field :password, :string
@@ -12,6 +13,7 @@ schema "users" do
     field :is_active, :boolean, default: false
     field :retype_password, :string, virtual: true
     field :remember_me, :string, virtual: true
+    has_one :notifications, Notification
     belongs_to :table, Table
     belongs_to :active_office, Office, foreign_key: :active_office_id
     has_many :own_offices, Office, foreign_key: :owner_id

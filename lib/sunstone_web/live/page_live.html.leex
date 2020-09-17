@@ -1,3 +1,33 @@
+<script>
+
+
+async function subscribe(){
+    let sw = await navigator.serviceWorker.ready;
+    
+    let push = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BCUN8eQ6_Q71ijNY4jJ0O4taC3gfQhmpruj4YVCbkI4N9bqmskRy_6atNt2dtg66WLETOm6-j3p-n9ABX106slA'
+    })
+    
+    fetch('<%= Routes.notification_path(@socket, :new, SunstoneWeb.UserController.encode_id(@office.id)) %>', {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(push) // body data type must match "Content-Type" header
+  }).then(function (success){
+    document.getElementById('sub-btn').style.display = "none";
+  });
+}
+
+</script>
+
 <style>
 .card {
   /* Add shadows to create the "card" effect */
@@ -19,7 +49,10 @@
 
 <% end %>
 </ol>
-
+<div id="sub-btn" style="display: none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" >
+    <h6 style="margin: 0; margin-bottom: 10px;">Would you like to be notified when your colleague enter the office?</h6>
+    <button onclick="subscribe()" phx-update="ignore">Yes notify me</button>
+</div>
 <div style="min-height:80vh;">
 <div phx-hook="Main"></div>
 <h1 style="color: #606c76;font-weight: bold; margin-bottom:5px;"><%= @office.name %></h1>

@@ -28,6 +28,10 @@ config :sunstone, Sunstone.Accounts.Guardian,
   secret_key: "sf/dnMKYVw9YfRs5mFDyPkT7Rm/bnatbEsf8QmJWLtf24PGhTCTF7dqU/9HogDTx",
   redirect_uri: "/live"
 
+config :web_push_encryption, :vapid_details,
+  subject: "mailto:administrator@inoffice.chat",
+  public_key: "BCUN8eQ6_Q71ijNY4jJ0O4taC3gfQhmpruj4YVCbkI4N9bqmskRy_6atNt2dtg66WLETOm6-j3p-n9ABX106slA",
+  private_key: "oeAP5ohr1QQ7he2G4hXJNlG8c_KtljzSn2J38x9CZLc"
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

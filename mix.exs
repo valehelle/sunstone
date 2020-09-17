@@ -52,7 +52,8 @@ defmodule Sunstone.MixProject do
       {:bcrypt_elixir, "~> 0.12"},
       {:hashids, "~> 2.0"},
       {:httpoison, "~> 1.6"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:web_push_encryption, "~> 0.3"}
     ]
   end
 

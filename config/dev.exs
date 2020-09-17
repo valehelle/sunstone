@@ -9,7 +9,8 @@ config :sunstone, Sunstone.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10,
   send_grid_token: "fake token",
-  salt: "this is a random salt"
+  salt: "this is a random salt",
+  vapid_private_key: "pQLS4BaygQH_B7qV09QbkhlM6UNn69l1b6RQCciiyNE"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
