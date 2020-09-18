@@ -86,7 +86,6 @@ Hooks.Notification = {
         const subscibeEvent = (sub) => {
             this.pushEvent("subscribe-notification", sub)
         }
-        initSW()
         navigator.serviceWorker.register('/sw.js').then(function (reg) {
             reg.pushManager.getSubscription().then(function (sub) {
                 if (sub == undefined) {
