@@ -28,9 +28,7 @@ Hooks.Main = {
         const pushEvent = (id) => {
             this.pushEvent("active", { "peer-id": id })
         }
-        const subscibeEvent = (sub) => {
-            this.pushEvent("subscribe-notification", sub)
-        }
+
         peer = new Peer();
         peer.on('open', function (id) {
             console.log('peer open')
@@ -83,22 +81,22 @@ Hooks.Main = {
 
     }
 }
-function initSW() {
-    navigator.serviceWorker.register('/sw.js').then(function (reg) {
-        reg.pushManager.getSubscription().then(function (sub) {
-            if (sub == undefined) {
-                document.getElementById('sub-btn').style.display = "block";
-            } else {
-                document.getElementById('sub-btn').style.display = "none";
-                subscibeEvent(sub)
-            }
-        })
-    })
-
-}
 Hooks.Notification = {
     mounted() {
+        const subscibeEvent = (sub) => {
+            this.pushEvent("subscribe-notification", sub)
+        }
         initSW()
+        navigator.serviceWorker.register('/sw.js').then(function (reg) {
+            reg.pushManager.getSubscription().then(function (sub) {
+                if (sub == undefined) {
+                    document.getElementById('sub-btn').style.display = "block";
+                } else {
+                    document.getElementById('sub-btn').style.display = "none";
+                    subscibeEvent(sub)
+                }
+            })
+        })
     }
 }
 
