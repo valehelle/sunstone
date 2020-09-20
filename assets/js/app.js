@@ -135,7 +135,6 @@ Hooks.ChatList = {
 }
 Hooks.AudioList = {
     mounted() {
-        initSW()
         console.log('mounted')
     },
     updated() {

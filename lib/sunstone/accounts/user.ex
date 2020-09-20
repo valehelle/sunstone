@@ -5,6 +5,9 @@ defmodule Sunstone.Accounts.User do
   alias Sunstone.Chats.Table
   alias Sunstone.Chats.Office
   alias Sunstone.Accounts.Notification
+  alias Sunstone.Accounts.Social
+
+
 schema "users" do
     field :email, :string
     field :password, :string
@@ -14,6 +17,7 @@ schema "users" do
     field :retype_password, :string, virtual: true
     field :remember_me, :string, virtual: true
     has_one :notifications, Notification
+    has_one :socials, Social
     belongs_to :table, Table
     belongs_to :active_office, Office, foreign_key: :active_office_id
     has_many :own_offices, Office, foreign_key: :owner_id

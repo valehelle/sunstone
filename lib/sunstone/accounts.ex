@@ -10,7 +10,7 @@ defmodule Sunstone.Accounts do
   alias Comeonin.Bcrypt
   alias Sunstone.Chats.Office
   alias Sunstone.Accounts.Notification
-
+  alias Sunstone.Accounts.Social
   @doc """
   Returns the list of users.
 
@@ -43,6 +43,7 @@ defmodule Sunstone.Accounts do
             where: u.id == ^id,
             select: u,
             preload: [
+              :socials,
               :active_office,
               notifications: ^from( n in Notification, order_by: [desc: n.id]),
               offices: ^from( o in Office,order_by: [desc: o.inserted_at])
@@ -218,8 +219,118 @@ defmodule Sunstone.Accounts do
 
 
 
+  @doc """
+  Returns the list of socials.
 
+  ## Examples
+
+      iex> list_socials()
+      [%Social{}, ...]
+
+  """
+  def list_socials do
+    Repo.all(Social)
+  end
+
+  @doc """
+  Gets a single social.
+
+  Raises `Ecto.NoResultsError` if the Social does not exist.
+
+  ## Examples
+
+      iex> get_social!(123)
+      %Social{}
+
+      iex> get_social!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_social!(id), do: Repo.get!(Social, id)  |> Repo.preload([:user])
+
+  @doc """
+  Creates a social.
+
+  ## Examples
+
+      iex> create_social(%{field: value})
+      {:ok, %Social{}}
+
+      iex> create_social(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_social(attrs \\ %{}) do
+    %Social{}
+    |> Social.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a social.
+
+  ## Examples
+
+      iex> update_social(social, %{field: new_value})
+      {:ok, %Social{}}
+
+      iex> update_social(social, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_social(%Social{} = social, attrs) do
+    social
+    |> Social.changeset(attrs)
+    |> Repo.update()
+  end
+
+
+  def create_update_social(attr, user, office_id) do
+
+    social = 
+      case user.socials do
+        nil -> %Social{}
+        socials -> get_social!(user.socials.id)
+      end
+
+    social
+    |> Social.changeset(attr, user)
+    |> Repo.insert(
+      on_conflict: :replace_all,
+      conflict_target: :user_id
+    )
+    |> broadcast(:user_updated, office_id)
+
+  end
+
+
+
+  @doc """
+  Deletes a social.
+
+  ## Examples
+
+      iex> delete_social(social)
+      {:ok, %Social{}}
+
+      iex> delete_social(social)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_social(%Social{} = social) do
+    Repo.delete(social)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking social changes.
+
+  ## Examples
+
+      iex> change_social(social)
+      %Ecto.Changeset{data: %Social{}}
+
+  """
+  def change_social(%Social{} = social, attrs \\ %{}) do
+    Social.changeset(social, attrs)
+  end
 end
-
-
- 

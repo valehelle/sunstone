@@ -3,6 +3,7 @@ defmodule SunstoneWeb.PageLive do
   alias Sunstone.Accounts.Guardian
   alias Sunstone.Chats
   alias Sunstone.Accounts
+  alias Sunstone.Accounts.Social
   @impl true
   def mount(%{"hash_id" => hash_id}, %{"guardian_default_token" => token}, socket) do
     {_, user, _} = Guardian.resource_from_token(token)
@@ -15,7 +16,13 @@ defmodule SunstoneWeb.PageLive do
       
     end 
     if Chats.user_is_listed_in_office(office, user) do
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office)}
+      changeset = case user.socials do
+        nil -> Social.changeset(%Social{}, %{}, user)
+        social -> 
+        social = Accounts.get_social!(social.id)
+        Social.changeset(social, %{}, user)
+      end
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset)}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -52,12 +59,26 @@ defmodule SunstoneWeb.PageLive do
   def handle_event("active", %{"peer-id" => peer_id}, socket) do
     user = socket.assigns.user
     office_id = socket.assigns.office_id
-    office = Chats.get_office!(office_id)
-    send_office_notification(office, user)
+    
     {:ok, user} = Accounts.update_user_active(user, %{is_active: true, peer_id: peer_id}, office_id)
     tables = Chats.list_tables(office_id)
-    {:noreply, assign(socket, user: user,  tables: tables, chat_list: [])}
+    office = Chats.get_office!(office_id)
+
+    send_office_notification(office, user)
+    {:noreply, assign(socket, user: user,  tables: tables, chat_list: [], office: office)}
   end
+
+  def handle_event("save", %{"social" => social_param}, socket) do
+    user = socket.assigns.user
+    office_id = socket.assigns.office_id
+    Accounts.create_update_social(social_param, user, office_id)
+    user = Accounts.get_user!(user.id)
+    social = Accounts.get_social!(user.socials.id)
+    changeset = Social.changeset(social, %{}, user)
+    {:noreply, assign(socket, user: user, changeset: changeset)}
+  end
+
+
 
   def handle_event("join", %{"table-id" => table_id}, socket) do
     user = socket.assigns.user
@@ -86,11 +107,12 @@ defmodule SunstoneWeb.PageLive do
     {:noreply, assign(socket, user: user, tables: tables)}
   end
 
-    def handle_info({:user_inactive}, socket) do
+  def handle_info({:user_inactive}, socket) do
      user = socket.assigns.user
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
-    {:noreply, assign(socket, user: user, tables: tables)}
+     office = Chats.get_office!(office_id)
+    {:noreply, assign(socket, user: user, tables: tables, office: office)}
   end
   @impl true
   def unmount(_, %{user: user, office_id: office_id}) do

@@ -23,7 +23,7 @@ defmodule Sunstone.Chats do
             group_by: t.id,
             where: u.is_active == true,
             where: t.office_id == ^office_id,
-            preload: [:users]
+            preload: [:users, users: :socials]
     Repo.all query
   end
 
@@ -143,7 +143,7 @@ defmodule Sunstone.Chats do
 
   """
   def get_office!(id) do 
-    Repo.get!(Office, id) |> Repo.preload([:users, :tables])
+    Repo.get!(Office, id) |> Repo.preload([:users, :tables, users: [:table, :socials]])
     
   end
 
