@@ -41,6 +41,14 @@ async function subscribe(){
 }
 </style>
 
+
+<ol id="broadcast-list" phx-hook="BroadCastList"  style="position: absolute; ">
+<%= if @broadcast do %>
+            <li class="broadcast-peer-ids"  id ="selected-broadcast"  peer-id=<%= @broadcast.peer_id %>><%= @broadcast.name %></li>
+<% end %>
+</ol>
+
+
 <ol phx-hook="ChatList" style="position: absolute; visibility: hidden">
 <%= for user <- @chat_list do %>
     <%= if user.id != @user.id do %>
@@ -70,7 +78,7 @@ async function subscribe(){
         <%= String.at(@user.name, 0) |> String.capitalize %>
     </div>
     <button id="mute-btn" class ="button" onClick="window.toggleMute()" style="margin-top: 16px;">Mute</button>
-
+    <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 16px;">ScreenShare</button>
 </div>
     <div style="margin-left: 15px; display:flex; justify-content: center;">
         <%= f = form_for @changeset, "#", [ phx_submit: :save] %>
@@ -105,6 +113,12 @@ async function subscribe(){
                         <div class="column" style="align-self: center">
                             <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
                                 <button style="margin-bottom:0" phx-click="leave">Leave</button>
+                                 <%= if table.broadcast_id == nil do %>
+                                    <button style="margin-bottom:0 margin-top: 20px;" phx-click="start-sharing-screen">Share Screen</button>
+                                <% end %>
+                                <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
+                                    <button style="margin-bottom:0 margin-top: 20px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
+                                <% end %>
                             <% end %>
                             <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
                                 <button style="margin-bottom:0; min-width: 102.743px" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>

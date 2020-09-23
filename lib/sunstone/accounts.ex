@@ -98,16 +98,24 @@ defmodule Sunstone.Accounts do
   def update_user_active(%User{} = user, attrs, office_id) do
     office = Chats.get_office!(office_id)
     {_, table} = Chats.create_table(%{}, office)
-    new_attrs = Map.merge(attrs, %{is_active: true, table_id: table.id, active_office: office_id})
+    new_attrs = Map.merge(attrs, %{is_active: true, table_id: table.id, active_office: office_id, is_muted: false})
     user
     |> User.update_user_active_changeset(new_attrs)
     |> Repo.update()
     |> broadcast(:user_updated, office_id)
   end
 
+  def update_user_mute(%User{} = user, attrs, office_id) do
+    user
+    |> User.update_user_active_changeset(attrs)
+    |> Repo.update()
+    |> broadcast(:user_updated, office_id)
+  end
+
+
   def update_user_inactive(%User{} = user, office_id) do
     user
-    |> User.update_user_active_changeset(%{is_active: false, peer_id: "", table_id: 1})
+    |> User.update_user_active_changeset(%{is_active: false, peer_id: "", table_id: 1, is_muted: false})
     |> Repo.update()
     |> broadcast(:user_inactive, office_id)
 

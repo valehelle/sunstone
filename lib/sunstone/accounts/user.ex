@@ -15,9 +15,11 @@ schema "users" do
     field :peer_id, :string
     field :is_active, :boolean, default: false
     field :retype_password, :string, virtual: true
+    field :is_muted, :boolean, default: false
     field :remember_me, :string, virtual: true
     has_one :notifications, Notification
     has_one :socials, Social
+    has_one :broadcasting, Table, on_replace: :mark_as_invalid
     belongs_to :table, Table
     belongs_to :active_office, Office, foreign_key: :active_office_id
     has_many :own_offices, Office, foreign_key: :owner_id
@@ -57,7 +59,7 @@ schema "users" do
   end
   def update_user_active_changeset(user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:is_active, :peer_id, :table_id])
+    |> cast(attrs, [:is_active, :peer_id, :table_id, :is_muted])
     |> validate_required([:is_active])
   end
 

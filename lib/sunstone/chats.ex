@@ -44,7 +44,7 @@ defmodule Sunstone.Chats do
   def get_table!(id) do
    query = from t in Table,
            where: t.id == ^id,
-           preload: [:users]
+           preload: [:users, :broadcast]
    Repo.one!(query)
   end
 
@@ -82,6 +82,27 @@ defmodule Sunstone.Chats do
     table
     |> Table.changeset(attrs)
     |> Repo.update()
+  end
+
+  def broadcast_on_table(table, user, office_id) do
+    case true do
+      true ->
+        table
+        |> Table.broadcast_changeset(user)
+        |> Repo.update()
+        |> broadcast(:table_updated, office_id)
+      false ->
+        {:error}
+    end
+
+  end
+  def broadcast_reset_table(%Table{} = table, user, office_id) do
+    case true do
+      true ->
+        Ecto.Changeset.change( Sunstone.Repo.get_by(Table, id: table.id), %{broadcast_id: nil}) |> Sunstone.Repo.update() |> broadcast(:table_updated, office_id)
+      false ->
+        {:error}
+    end
   end
 
   @doc """
@@ -334,4 +355,12 @@ defmodule Sunstone.Chats do
   def change_invite(%Invite{} = invite, attrs \\ %{}) do
     Invite.changeset(invite, attrs)
   end
+
+
+   defp broadcast({:ok, user}, event, office_id) do
+    Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {event})
+    {:ok, user}
+  end
+
+  
 end

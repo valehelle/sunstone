@@ -22,7 +22,7 @@ defmodule SunstoneWeb.PageLive do
         social = Accounts.get_social!(social.id)
         Social.changeset(social, %{}, user)
       end
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset)}
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil)}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -99,12 +99,45 @@ defmodule SunstoneWeb.PageLive do
     
     {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users)}
   end
+  
+  def handle_event("start-sharing-screen", value, socket) do
+    user = socket.assigns.user
+    office_id = socket.assigns.office_id
+    table = Chats.get_table!(user.table_id)
+    Chats.broadcast_on_table(table, user, office_id)
+
+    
+    {:noreply, assign(socket, user: user)}
+  end
+
+  def handle_event("stop-sharing-screen", value, socket) do
+    user = socket.assigns.user
+    office_id = socket.assigns.office_id
+    table = Chats.get_table!(user.table_id)
+    Chats.broadcast_reset_table(table, user, office_id)
+    
+    {:noreply, assign(socket, user: user)}
+  end
+
+  
+
+  def handle_info({:table_updated}, socket) do
+     user = socket.assigns.user
+     office_id = socket.assigns.office_id
+     tables = Chats.list_tables(office_id)
+     table = Chats.get_table!(user.table_id)
+    {:noreply, assign(socket, broadcast: table.broadcast, tables: tables)}
+  end
+
+
+
 
   def handle_info({:user_updated}, socket) do
      user = socket.assigns.user
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
-    {:noreply, assign(socket, user: user, tables: tables)}
+     table = Chats.get_table!(user.table_id)
+    {:noreply, assign(socket, user: user, tables: tables,chat_list: table.users)}
   end
 
   def handle_info({:user_inactive}, socket) do
