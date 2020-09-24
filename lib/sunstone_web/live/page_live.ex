@@ -101,6 +101,15 @@ defmodule SunstoneWeb.PageLive do
      end
     {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users)}
   end
+
+  def handle_event("toggle-mute", value, socket) do
+    user = socket.assigns.user
+    office_id = socket.assigns.office_id
+    {:ok, user} = Accounts.update_user(user, %{is_muted: !user.is_muted}, office_id)
+    {:noreply, assign(socket, user: user)}
+  end
+
+
   
   def handle_event("start-sharing-screen", value, socket) do
     user = socket.assigns.user

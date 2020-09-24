@@ -47,6 +47,7 @@ async function subscribe(){
             <li class="broadcast-peer-ids"  id ="selected-broadcast"  peer-id=<%= @broadcast.peer_id %>><%= @broadcast.name %></li>
 <% end %>
 </ol>
+<div phx-hook="IsMuted" style="display: none;" id="is_muted" is_muted="<%= @user.is_muted %>"></div>
 
 
 <ol phx-hook="ChatList" style="position: absolute; visibility: hidden">
@@ -75,7 +76,14 @@ async function subscribe(){
     <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px; margin-bottom:10px; ">
         <%= String.at(@user.name, 0) |> String.capitalize %>
     </div>
-    <button id="mute-btn" class ="button" onClick="window.toggleMute()" style="margin-top: 16px;">Mute</button>
+    <button class ="button" style="margin-top: 16px;" phx-click="toggle-mute">
+    
+    <%= if @user.is_muted  do %>
+        Unmute
+    <% else %>
+        Mute
+    <% end %>
+    </button>
 </div>
     <div style="margin-left: 15px; display:flex; justify-content: center;">
         <%= f = form_for @changeset, "#", [ phx_submit: :save] %>
@@ -135,9 +143,13 @@ async function subscribe(){
                                     </div>
                                     <div style = "display: flex; flex-direction: column;">
                                     <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
-                                        <%= user.name %> <span style="font-size:14px; align-self: center; margin-left: 5px;"><%= if user.socials != nil && user.socials.status != "" do " (#{user.socials.status})" end %> </span> 
+                                        <%= user.name %> <span style="font-size:14px; align-self: center; margin-left: 5px;"><%= if user.socials != nil && user.socials.status != "" do " (#{user.socials.status})" end %></span> 
                                     </h3>
-                                    <h6 style="margin-left: 15px; color: #606c76; margin-bottom: 0;"><%= if user.socials != nil do user.socials.message end %></h6>
+                                    <h6 style="margin-left: 15px; color: #606c76; margin-bottom: 0;">
+                                        <%= if @user.is_muted  do %>
+                                            Mute
+                                        <% end %>
+                                    </h6>
                                     </div>
                             </li>
                             <% end %>

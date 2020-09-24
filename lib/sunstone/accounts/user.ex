@@ -54,8 +54,7 @@ schema "users" do
   end
   def update_changeset(user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:table_id])
-    |> validate_required([:table_id])
+    |> cast(attrs, [:table_id, :is_muted])
   end
   def update_user_active_changeset(user, attrs \\ %{}) do
     user

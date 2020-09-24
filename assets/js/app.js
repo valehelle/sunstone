@@ -57,6 +57,7 @@ Hooks.Main = {
 
                 localStream = mediaStream
                 pushEvent(id)
+
             }).catch(function (err) {
                 console.log('Failed to get local stream', err);
             });
@@ -128,6 +129,17 @@ Hooks.Notification = {
     }
 }
 
+
+Hooks.IsMuted = {
+    updated() {
+        let is_muted = document.getElementById("is_muted").getAttribute("is_muted")
+        if (is_muted == "true") {
+            localStream.getAudioTracks()[0].enabled = false
+        } else {
+            localStream.getAudioTracks()[0].enabled = true
+        }
+    }
+}
 Hooks.ChatList = {
     updated() {
         const ids = document.getElementsByClassName("peer-ids");
