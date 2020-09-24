@@ -96,7 +96,9 @@ defmodule SunstoneWeb.PageLive do
     table = Chats.get_table!(user.table_id)
     tables = Chats.list_tables(office_id)
 
-    
+    if (table.broadcast_id === user.id) do
+       Chats.broadcast_reset_table(table, user, office_id)
+     end
     {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users)}
   end
   
@@ -137,7 +139,8 @@ defmodule SunstoneWeb.PageLive do
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
-    {:noreply, assign(socket, user: user, tables: tables,chat_list: table.users)}
+     
+    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, broadcast: table.broadcast)}
   end
 
   def handle_info({:user_inactive}, socket) do
@@ -145,12 +148,18 @@ defmodule SunstoneWeb.PageLive do
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      office = Chats.get_office!(office_id)
+     table = Chats.get_table!(user.table_id)
+
     {:noreply, assign(socket, user: user, tables: tables, office: office)}
   end
   @impl true
   def unmount(_, %{user: user, office_id: office_id}) do
      user = Accounts.get_user!(user.id)
+     table = Chats.get_table!(user.table_id)
      Accounts.update_user_inactive(user, office_id)
+    if (table.broadcast_id === user.id) do
+       Chats.broadcast_reset_table(table, user, office_id)
+     end
     :ok
   end
   

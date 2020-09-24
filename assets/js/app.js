@@ -26,6 +26,7 @@ let Hooks = {}
 var callList = []
 var before_ids = []
 var currentBroadcast = null
+var localAudioTrack = null
 var myId
 function createEmptyVideoTrack({ width, height }) {
     const canvas = Object.assign(document.createElement('canvas'), { width, height });
@@ -50,11 +51,11 @@ Hooks.Main = {
             console.log('peer open')
             navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(function (stream) {
                 let audioTrack = stream.getAudioTracks()[0]
+                localAudioTrack = audioTrack
                 let videoTrack = createEmptyVideoTrack({ width: 500, height: 500 })
                 const mediaStream = new MediaStream([audioTrack, videoTrack]);
 
                 localStream = mediaStream
-                console.log(mediaStream)
                 pushEvent(id)
             }).catch(function (err) {
                 console.log('Failed to get local stream', err);
@@ -129,7 +130,6 @@ Hooks.Notification = {
 
 Hooks.ChatList = {
     updated() {
-
         const ids = document.getElementsByClassName("peer-ids");
         var afterId = []
         for (var i = 0; i < ids.length; i++) {
@@ -146,50 +146,66 @@ Hooks.ChatList = {
         for (var i = 0; i < removedIds.length; i++) {
             const id = removedIds[i]
             const song = document.getElementById(id);
-            song.remove()
+            if (song) {
+                song.remove()
+            }
             call = callList.find(call => call.peer == id)
             if (call) {
                 call.close()
             }
             callList = callList.filter(call => call.peer != id)
         }
+        if (afterId[afterId.length - 1] == myId) {
+            for (var i = 0; i < addedIds.length; i++) {
+                const id = addedIds[i]
+                if (id != myId) {
+                    var call = peer.call(id, localStream);
+                    call.on('stream', function (remoteStream) {
+                        console.log('connected to calling ' + id + ', ' + myId)
+
+                        var audio = document.getElementById(id);
+                        if (audio == null) {
+                            let broadcastId = null
+                            let selectedBroadcast = document.getElementById("selected-broadcast")
+                            if (selectedBroadcast) {
+                                broadcastId = selectedBroadcast.getAttribute("peer-id")
+                            }
+                            var video = document.createElement('video')
+                            video.autoplay = 'autoplay';
+                            video.srcObject = remoteStream
+                            video.height = 500
+                            video.width = 500
+                            video.className = 'peer-songs'
+                            video.id = id
+                            if (broadcastId == id) {
+                                video.style.display = "block"
+
+                            } else {
+                                video.style.display = "none"
+
+                            }
+                            video.control = 'control'
+
+                            document.getElementById('song').appendChild(video);
+                        }
+                        console.log('play sound')
+
+                    });
+                    call.on('close', function () {
+                        console.log('call connection close')
 
 
+                    });
+                    call.on('error', function () {
+                        console.log('call connection error')
+                    });
 
-
-        for (var i = 0; i < addedIds.length; i++) {
-            const id = addedIds[i]
-            var call = peer.call(id, localStream);
-            call.on('stream', function (remoteStream) {
-                console.log('connected to calling')
-                var audio = document.getElementById(id);
-                if (audio == null) {
-                    var video = document.createElement('video')
-                    video.autoplay = 'autoplay';
-                    video.srcObject = remoteStream
-                    video.height = 500
-                    video.width = 500
-                    video.className = 'peer-songs'
-                    video.id = id
-                    video.style.display = "none"
-                    video.control = 'control'
-
-                    document.getElementById('song').appendChild(video);
+                    callList.push(call)
                 }
-                console.log('play sound')
 
-            });
-            call.on('close', function () {
-                console.log('call connection close')
-
-
-            });
-            call.on('error', function () {
-                console.log('call connection error')
-            });
-
-            callList.push(call)
+            }
         }
+
     },
     beforeUpdate() {
         before_ids = []
@@ -208,25 +224,26 @@ Hooks.BroadCastList = {
         console.log('mounted')
     },
     updated() {
-        let id = document.getElementById("selected-broadcast").getAttribute("peer-id")
-        let video = document.getElementById(id)
-        if (video) {
-            video.style.display = "block"
-        }
-        currentBroadcast = id
-        if (myId == id) {
-            navigator.mediaDevices.getDisplayMedia({ video: true, audio: false }).then(function (videoStream) {
-                var screenVideoTrack = videoStream.getVideoTracks()[0];
-                videoStreamTrack = screenVideoTrack
-                for (var i = 0; i < callList.length; i++) {
-                    const call = callList[i]
-                    call.peerConnection.getSenders()[1].replaceTrack(screenVideoTrack)
-
+        let selectedBroadcast = document.getElementById("selected-broadcast")
+        if (selectedBroadcast) {
+            let id = selectedBroadcast.getAttribute("peer-id")
+            let video = document.getElementById(id)
+            if (video) {
+                video.style.display = "block"
+            }
+            currentBroadcast = id
+            if (myId == id) {
+                if (videoStreamTrack) {
+                    for (var i = 0; i < callList.length; i++) {
+                        const call = callList[i]
+                        call.peerConnection.getSenders()[1].replaceTrack(videoStreamTrack)
+                    }
                 }
-            }).catch(function (err) {
-                console.log('Failed to get local stream', err);
-            });
+            }
+        } else {
+            currentBroadcast = null
         }
+
     },
     beforeUpdate() {
         if (currentBroadcast) {
@@ -237,9 +254,10 @@ Hooks.BroadCastList = {
         }
         if (myId == currentBroadcast) {
             console.log('disabled!')
-            videoStreamTrack.enabled = false
-        } else {
-            console.log(myId, currentBroadcast)
+            if (videoStreamTrack) {
+                videoStreamTrack.enabled = false
+
+            }
         }
     }
 }
@@ -277,17 +295,21 @@ window.toggleMute = function () {
 
 
 window.startScreenSharing = function () {
-    navigator.mediaDevices.getDisplayMedia({ video: true, audio: false }).then(function (videoStream) {
-        var screenVideoTrack = videoStream.getVideoTracks()[0];
-        videoStreamTrack = screenVideoTrack
-        for (var i = 0; i < callList.length; i++) {
-            const call = callList[i]
-            call.peerConnection.getSenders()[1].replaceTrack(screenVideoTrack)
-
-        }
-    }).catch(function (err) {
-        console.log('Failed to get local stream', err);
-    });
+    if (!videoStreamTrack) {
+        navigator.mediaDevices.getDisplayMedia({ video: true, audio: false }).then(function (videoStream) {
+            var screenVideoTrack = videoStream.getVideoTracks()[0];
+            videoStreamTrack = screenVideoTrack
+            const mediaStream = new MediaStream([localAudioTrack, videoStreamTrack]);
+            localStream = mediaStream
+            document.getElementById("share-screen-btn").click()
+        }).catch(function (err) {
+            console.log('Failed to get video stream', err);
+        });
+    } else {
+        videoStreamTrack.enabled = true
+        document.getElementById("share-screen-btn").click()
+        //videoStreamTrack.enabled = true
+    }
 }
 
 

@@ -51,9 +51,7 @@ async function subscribe(){
 
 <ol phx-hook="ChatList" style="position: absolute; visibility: hidden">
 <%= for user <- @chat_list do %>
-    <%= if user.id != @user.id do %>
-            <li class="peer-ids" peer-id=<%= user.peer_id %>><%= user.name %></li>
-    <% end %>
+    <li class="peer-ids" peer-id=<%= user.peer_id %>><%= user.name %></li>
 
 <% end %>
 </ol>
@@ -78,7 +76,6 @@ async function subscribe(){
         <%= String.at(@user.name, 0) |> String.capitalize %>
     </div>
     <button id="mute-btn" class ="button" onClick="window.toggleMute()" style="margin-top: 16px;">Mute</button>
-    <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 16px;">ScreenShare</button>
 </div>
     <div style="margin-left: 15px; display:flex; justify-content: center;">
         <%= f = form_for @changeset, "#", [ phx_submit: :save] %>
@@ -114,7 +111,9 @@ async function subscribe(){
                             <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
                                 <button style="margin-bottom:0" phx-click="leave">Leave</button>
                                  <%= if table.broadcast_id == nil do %>
-                                    <button style="margin-bottom:0 margin-top: 20px;" phx-click="start-sharing-screen">Share Screen</button>
+                                     <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 16px;">Share Screen</button>
+
+                                    <button style="margin-bottom:0 margin-top: 20px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
                                 <% end %>
                                 <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
                                     <button style="margin-bottom:0 margin-top: 20px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
