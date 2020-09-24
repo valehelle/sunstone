@@ -7,7 +7,7 @@ defmodule Sunstone.Chats do
   alias Sunstone.Repo
 
   alias Sunstone.Chats.Table
-
+  alias Sunstone.Accounts.User
   @doc """
   Returns the list of tables.
 
@@ -18,12 +18,17 @@ defmodule Sunstone.Chats do
 
   """
   def list_tables(office_id) do
+    user_query = from u in User, 
+                  order_by: u.id,
+                  preload: [:socials]
+                  
     query = from t in Table,
             join: u in assoc(t, :users),
             group_by: t.id,
             where: u.is_active == true,
             where: t.office_id == ^office_id,
-            preload: [:users, users: :socials]
+            preload: [users: ^user_query],
+            order_by: t.id
     Repo.all query
   end
 

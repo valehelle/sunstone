@@ -146,7 +146,7 @@ async function subscribe(){
                                         <%= user.name %> <span style="font-size:14px; align-self: center; margin-left: 5px;"><%= if user.socials != nil && user.socials.status != "" do " (#{user.socials.status})" end %></span> 
                                     </h3>
                                     <h6 style="margin-left: 15px; color: #606c76; margin-bottom: 0;">
-                                        <%= if @user.is_muted  do %>
+                                        <%= if user.is_muted  do %>
                                             Mute
                                         <% end %>
                                     </h6>
