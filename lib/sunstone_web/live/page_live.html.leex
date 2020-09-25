@@ -1,4 +1,50 @@
 <script>
+var fullscreen = false
+function requestFullScreen(){
+    var videoContainer = document.getElementById('video-container');
+        document.getElementById('video-container').addEventListener('fullscreenchange', (event) => {
+            // document.fullscreenElement will point to the element that
+            // is in fullscreen mode if there is one. If not, the value
+            // of the property is null.
+            var elem =  document.getElementById("song");
+            var button = document.getElementById("full-screen-btn")
+            if (document.fullscreenElement) {
+                elem.style.backgroundColor = "black"
+                button.innerHTML = "Exit Fullscreen"
+            } else {
+                elem.style.backgroundColor = "lightgrey"
+                button.innerHTML = "Fullscreen"
+            }
+        });
+
+    if(!fullscreen){
+
+         if (videoContainer.requestFullscreen) {
+            videoContainer.requestFullscreen();
+        } else if (videoContainer.mozRequestFullScreen) { /* Firefox */
+            videoContainer.mozRequestFullScreen();
+        } else if (videoContainer.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            videoContainer.webkitRequestFullscreen();
+        } else if (videoContainer.msRequestFullscreen) { /* IE/Edge */
+            videoContainer.msRequestFullscreen();
+        }
+        fullscreen = true
+    }else{
+        if(document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if(document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if(document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+
+        fullscreen = false
+    }
+
+
+}
+
+
 
 
 async function subscribe(){
@@ -39,12 +85,19 @@ async function subscribe(){
 .card:hover {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
+video {
+  /* override other styles to make responsive */
+  width: 100%    !important;
+  height: 100%   !important;
+}
+
+
 </style>
 
 
 <ol id="broadcast-list" phx-hook="BroadCastList"  style="position: absolute; ">
 <%= if @broadcast do %>
-            <li class="broadcast-peer-ids"  id ="selected-broadcast"  peer-id=<%= @broadcast.peer_id %>><%= @broadcast.name %></li>
+            <li style="display: none;" class="broadcast-peer-ids"  id ="selected-broadcast"  peer-id=<%= @broadcast.peer_id %>><%= @broadcast.name %></li>
 <% end %>
 </ol>
 <div phx-hook="IsMuted" style="display: none;" id="is_muted" is_muted="<%= @user.is_muted %>"></div>
@@ -108,24 +161,50 @@ async function subscribe(){
     </div>
 </div>
 
-
 <h2 style=" color: #606c76;margin:0; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Online</h2>
 
         <div>
             <%= for table <- @tables do %>
                 <div class="container" style=" overflow: hidden;">
-                    <div class="row">
-                        <div class="column" style="align-self: center">
+                    <div class = "row" style="margin-left: 0;">
+                        <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
+                            <div id="video-container" style="position: relative; display:flex; flex-direction: column; width: 100%; ">
+                                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: black; border: 1px solid lightgray; min-height:400px;">
+                                </div>
+                                <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
+                                    <div style="position: absolute; width:100%; min-height:400px; display:flex;">
+                                        <h5 id="sharing-screen-title"style="color: white; text-align:center; flex:1; align-self:center;">You are sharing your screen</h5>
+                                    </div>
+                                <% end %>
+                                <div style="display:flex; justify-content:center">
+                                    <button class ="button" style="margin-top: 16px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
+                                        <%= if @user.is_muted  do %>
+                                            Unmute
+                                        <% else %>
+                                            Mute
+                                        <% end %>
+                                    </button>
+                                    <button id="full-screen-btn" class ="button" style="margin-top: 16px;margin-right: 10px" onClick="requestFullScreen()">
+                                        Fullscreen
+                                    </button>
+                                    <%= if table.broadcast_id == nil do %>
+                                        <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 16px; margin-right: 10px">Share Screen</button>
+
+                                        <button style="margin-bottom:0 margin-top: 20px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
+                                    <% end %>
+                                    <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
+                                        <button style=" margin-top: 16px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
+                                    <% end %>
+                                    
+                                </div>
+                            </div>
+                        <% end %>
+                    </div>
+                    <div class="row" style="margin-left: 0;">
+                        <div class="column" style="align-self: center; padding-left:0;">
                             <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
                                 <button style="margin-bottom:0" phx-click="leave">Leave</button>
-                                 <%= if table.broadcast_id == nil do %>
-                                     <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 16px;">Share Screen</button>
 
-                                    <button style="margin-bottom:0 margin-top: 20px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
-                                <% end %>
-                                <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
-                                    <button style="margin-bottom:0 margin-top: 20px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
-                                <% end %>
                             <% end %>
                             <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
                                 <button style="margin-bottom:0; min-width: 102.743px" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
@@ -137,19 +216,25 @@ async function subscribe(){
                         <div class="column column-90" style=" margin-left: 10px; padding-left: 0px; ">
                             <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
                             <%= for user <- table.users do %>
-                            <li style="width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 0;">
-                                    <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px; margin-bottom:10px; ">
+                            <li style="width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                                    <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px;">
                                         <%= String.at(user.name, 0) |> String.capitalize %>
                                     </div>
-                                    <div style = "display: flex; flex-direction: column;">
+                                    <div style = "justify-content: center; display: flex; flex-direction: column;">
                                     <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
-                                        <%= user.name %> <span style="font-size:14px; align-self: center; margin-left: 5px;"><%= if user.socials != nil && user.socials.status != "" do " (#{user.socials.status})" end %></span> 
-                                    </h3>
-                                    <h6 style="margin-left: 15px; color: #606c76; margin-bottom: 0;">
+                                        <%= user.name %> 
+                                        <span style="display: flex; justify-content: center; font-size:14px; align-self: center; margin-left: 5px;"> 
+                                            &#9679; <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
+                                            &nbsp; 
                                         <%= if user.is_muted  do %>
-                                            Mute
+                                            <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
+                                        <% else %>
+                                            <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
                                         <% end %>
-                                    </h6>
+                                            
+                                        </span> 
+
+                                    </h3>
                                     </div>
                             </li>
                             <% end %>
@@ -182,8 +267,6 @@ async function subscribe(){
                                 </div>
                             </div>
                         </div>
-            <div id ="song" phx-hook="AudioList" phx-update="ignore">
-            </div>
         </div>
 
             

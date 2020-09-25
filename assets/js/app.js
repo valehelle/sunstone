@@ -85,8 +85,8 @@ Hooks.Main = {
                 if (audio == null) {
                     var video = document.createElement('video')
                     video.autoplay = 'autoplay';
-                    video.height = 500
-                    video.width = 500
+                    video.height = "100%"
+                    video.width = "100%"
                     video.srcObject = remoteStream
                     video.className = 'peer-songs'
                     video.control = 'control'
@@ -185,8 +185,8 @@ Hooks.ChatList = {
                             var video = document.createElement('video')
                             video.autoplay = 'autoplay';
                             video.srcObject = remoteStream
-                            video.height = 500
-                            video.width = 500
+                            video.height = "100%"
+                            video.width = "100%"
                             video.className = 'peer-songs'
                             video.id = id
                             if (broadcastId == id) {
