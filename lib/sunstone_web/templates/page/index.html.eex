@@ -1,23 +1,13 @@
 <div style="color:#606c76;">
-    <h1 style="font-weight:bold; font-size: 60px; margin-bottom:10px;">A place for remote teams to socialize</h1>
-    <h3 style="">See who is around and instantly pop in to talk without having to call.</h3>
-
+    <h1 style="font-weight:bold; font-size: 60px; margin-bottom:10px;">A voice chat tool for your team</h1>
+    <h3 style="">Whether your working from home or office, Inoffice makes it easy for you talk to your teams and communicate more often.</h3>
     <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button")%> 
     <br>
      <img src="<%= Routes.static_path(@conn, "/images/inoffice-new.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:10px;border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;">
 </div>
 <div style="color:#606c76; margin-top: 50px;">
     <h2>Why Inoffice?</h2>
-    <h3>With the recent pandemic, companies are beginning to offer their staff the opportunities to work remotely.</h3>
-    <h3>There are a lot of things that you gain by working remotely but unfortunately there are also some things that you loss.</h3>
-    <h3>One of it is the ability to have small talk or chat with your colleagues.</h3>
-    <h3>This is what Inoffice is trying to solve and why it exists.</h3>
-</div>
-<div style="color:#606c76; margin-top: 50px; margin-bottom: 200px;">
-    <h2>How is Inoffice different?</h2>
-    <h3 style="">Existing solution only cater to official meetings.</h3>
-    <h3 style="margin-bottom:0;"> With <span style="font-weight:bold">Inoffice</span>, </h3>
-    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> There is no "call" concept. If you see someone, you can click and chat instantly.</h3>
-    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> Voice only. You don't have to worry about your looks and it is less intrusive.</h3>
-    <h3 style="margin-bottom:0;"><span style="font-weight:bold;">></span> Easily view who your colleagues are chatting with and join them.</h3>
+    <h4> > Hop into a conversation with your team members, no call required.</h4>
+    <h4> > See who is talking to who and join in.</h4>
+    <h4> > Easy to use. Try it and you will know!</h4>
 </div>
