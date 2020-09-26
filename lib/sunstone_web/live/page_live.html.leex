@@ -12,7 +12,7 @@ function requestFullScreen(){
                 elem.style.backgroundColor = "black"
                 button.innerHTML = "Exit Fullscreen"
             } else {
-                elem.style.backgroundColor = "lightgrey"
+                elem.style.backgroundColor = "black"
                 button.innerHTML = "Fullscreen"
             }
         });
@@ -124,76 +124,74 @@ video {
 <% end %>
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
-<div style="display: flex ; color: #606c76;">
-<div style="display: flex; flex-direction: column; justify-content: center; width: 174px;">
-    <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px; margin-bottom:10px; ">
-        <%= String.at(@user.name, 0) |> String.capitalize %>
+    <div style="display: flex ; color: #606c76; flex-direction: column;">
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <div style="display: flex">
+                <h3 style="margin: 0; align-self: center;"><%= @user.name %></h3>
+                <%= f = form_for @changeset, "#", [ phx_change: :save, style: "margin-bottom: 0;"] %>
+                <%= select(f, :status, [[key: "Available", value: "Available"],
+                                    [key: "Busy", value: "Busy"],
+                                    [key: "Do Not Disturb", value: "Do Not Disturb"],
+                                    [key: "Be Right Back", value: "Be Right Back"],
+                                    [key: "Not at My Desk", value: "Not at My Desk"],
+                                    [key: "Meeting", value: "Meeting"],
+                                    [key: "Breakfast", value: "Breakfast"],
+                                    [key: "Lunch", value: "Lunch"],
+                                    [key: "Dinner", value: "Dinner"],
+                                    [key: "Hungry", value: "Hungry"]
+                                    ], style: "margin:0; margin-left:10px; align-self:center;")%>
+                </form>
+            <button class ="button" style="margin-left: 10px; margin-bottom: 0;" phx-click="toggle-mute">
+                    <%= if @user.is_muted  do %>
+                        Unmute
+                    <% else %>
+                        Mute
+                    <% end %>
+            </button>
+            </div>
+        </div>
     </div>
-    <button class ="button" style="margin-top: 16px;" phx-click="toggle-mute">
-    
-    <%= if @user.is_muted  do %>
-        Unmute
-    <% else %>
-        Mute
-    <% end %>
-    </button>
-</div>
-    <div style="margin-left: 15px; display:flex; justify-content: center;">
-        <%= f = form_for @changeset, "#", [ phx_submit: :save] %>
-        <div style="display: flex">
-        <h3 style="margin: 0; align-self: center;"><%= @user.name %></h3>
-        <%= select(f, :status, [[key: "Available", value: "Available"],
-                            [key: "Busy", value: "Busy"],
-                            [key: "Be Right Back", value: "Be Right Back"],
-                            [key: "Not at My Desk", value: "Not at My Desk"],
-                            [key: "Meeting", value: "Meeting"],
-                            [key: "Breakfast", value: "Lunch Time"],
-                            [key: "Lunch", value: "Lunch Time"],
-                            [key: "Dinner", value: "Lunch Time"],
-                            [key: "Hungry", value: "Hungry"]
-                            ], style: "margin:0; margin-left:10px;")%>
-        <%= error_tag f, :status %>
-    </div>
-    <%= text_input f, :message, style: "margin-top: 10px;", placeholder: "Share something new" %>
-    <%= error_tag f, :message %>
-
-    <%= submit "Update" %>
-    </div>
-</div>
 
 <h2 style=" color: #606c76;margin:0; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Online</h2>
 
         <div>
             <%= for table <- @tables do %>
                 <div class="container" style=" overflow: hidden;">
-                    <div class = "row" style="margin-left: 0;">
+                    <div class = "row" style="margin-left: 0; margin-top:10px;">
                         <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
                             <div id="video-container" style="position: relative; display:flex; flex-direction: column; width: 100%; ">
-                                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: black; border: 1px solid lightgray; min-height:400px;">
+                                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: black; min-height:400px;">
                                 </div>
                                 <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
                                     <div style="position: absolute; width:100%; min-height:400px; display:flex;">
                                         <h5 id="sharing-screen-title"style="color: white; text-align:center; flex:1; align-self:center;">You are sharing your screen</h5>
                                     </div>
                                 <% end %>
+                                <h4 style="margin:0; margin-top: 10px; color: #606c76">
+                                <%= if table.broadcast_id != nil && table.broadcast_id != @user.id do %>
+                                    <%= table.broadcast.name %> is sharing.
+                                <% else %>
+                                    No one is sharing the screen.
+                                <% end %>
+                                </h4>
                                 <div style="display:flex; justify-content:center">
-                                    <button class ="button" style="margin-top: 16px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
+                                    <button class ="button" style="margin-top: 10px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
                                         <%= if @user.is_muted  do %>
                                             Unmute
                                         <% else %>
                                             Mute
                                         <% end %>
                                     </button>
-                                    <button id="full-screen-btn" class ="button" style="margin-top: 16px;margin-right: 10px" onClick="requestFullScreen()">
+                                    <button id="full-screen-btn" class ="button" style="margin-top: 10px;margin-right: 10px" onClick="requestFullScreen()">
                                         Fullscreen
                                     </button>
                                     <%= if table.broadcast_id == nil do %>
-                                        <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 16px; margin-right: 10px">Share Screen</button>
+                                        <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 10px; margin-right: 10px">Share Screen</button>
 
-                                        <button style="margin-bottom:0 margin-top: 20px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
+                                        <button style="margin-bottom:0 margin-top: 10px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
                                     <% end %>
                                     <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
-                                        <button style=" margin-top: 16px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
+                                        <button style=" margin-top: 10px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
                                     <% end %>
                                     
                                 </div>
@@ -216,25 +214,25 @@ video {
                         <div class="column column-90" style=" margin-left: 10px; padding-left: 0px; ">
                             <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
                             <%= for user <- table.users do %>
-                            <li style="width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
                                     <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px;">
                                         <%= String.at(user.name, 0) |> String.capitalize %>
                                     </div>
                                     <div style = "justify-content: center; display: flex; flex-direction: column;">
-                                    <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
-                                        <%= user.name %> 
-                                        <span style="display: flex; justify-content: center; font-size:14px; align-self: center; margin-left: 5px;"> 
-                                            &#9679; <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
-                                            &nbsp; 
-                                        <%= if user.is_muted  do %>
-                                            <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
-                                        <% else %>
-                                            <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
-                                        <% end %>
-                                            
-                                        </span> 
+                                        <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
+                                            <%= user.name %> 
+                                            <span style="display: flex; justify-content: center; font-size:14px; align-self: center; margin-left: 5px;"> 
+                                                &#9679; <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
+                                                &nbsp; 
+                                            <%= if user.is_muted  do %>
+                                                <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
+                                            <% else %>
+                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
+                                            <% end %>
+                                                
+                                            </span> 
 
-                                    </h3>
+                                        </h3>
                                     </div>
                             </li>
                             <% end %>
@@ -250,15 +248,14 @@ video {
                                     <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
                                         <%= for user <- @office.users do %>
                                             <%= if !user.is_active || user.table.office_id != @office.id do %>
-                                                <li style="width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 0;">
-                                                        <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px; margin-bottom:10px; ">
+                                                <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                                                        <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px;">
                                                             <%= String.at(user.name, 0) |> String.capitalize %>
                                                         </div>
-                                                        <div style = "display: flex; flex-direction: column;">
+                                                        <div style = "justify-content: center; display: flex; flex-direction: column;">
                                                         <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
-                                                            <%= user.name %> <span style="font-size:14px; align-self: center; margin-left: 5px;">(Offline)</span>
+                                                            <%= user.name %> <span style="display: flex; justify-content: center; font-size:14px; align-self: center; margin-left: 5px;">(Offline)</span>
                                                         </h3>
-                                                        <h6 style="margin-left: 15px; color: #606c76; margin-bottom: 0;"><%= if user.socials != nil do user.socials.message end %></h6>
                                                         </div>
                                                 </li>
                                             <% end %>

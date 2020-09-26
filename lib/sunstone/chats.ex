@@ -27,7 +27,7 @@ defmodule Sunstone.Chats do
             group_by: t.id,
             where: u.is_active == true,
             where: t.office_id == ^office_id,
-            preload: [users: ^user_query],
+            preload: [:broadcast, users: ^user_query],
             order_by: t.id
     Repo.all query
   end
