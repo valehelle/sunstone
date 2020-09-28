@@ -24,7 +24,7 @@ body {
 
 .container{
   margin: 0 auto;
-  max-width: 70rem;
+  max-width: 140rem;
   width: 100%
 }
 select {
@@ -98,4 +98,10 @@ header nav a {
     flex-basis: 527px;
     margin: 2rem 1rem;
   }
+}
+
+.center-width{
+  margin: 0 auto;
+  max-width: 70rem;
+  width: 100%
 }

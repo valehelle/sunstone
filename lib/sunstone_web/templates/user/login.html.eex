@@ -1,3 +1,4 @@
+<div class="center-width">
 <div style="color:#606c76;">
 <%= form_for @changeset, Routes.user_path(@conn, :create_login), fn f -> %>
   <label>
@@ -19,4 +20,5 @@
   <%= submit "Login" %>
 <% end %>
   <%= link("Click here to Register.", to: Routes.user_path(@conn, :register))%> 
+</div>
 </div>

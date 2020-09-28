@@ -1,2 +1,4 @@
+<div class="center-width">
 <h3 style="color: #606c76;">Unfortunately you are not invited to <span style="font-weight:bold"> <%= @office.name %> </span>.</h3>
 <h3 style="color: #606c76;">Please ask the owner of the Office to invite you.</h3>
+</div>

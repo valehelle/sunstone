@@ -116,7 +116,7 @@ defmodule SunstoneWeb.PageLive do
     office_id = socket.assigns.office_id
     table = Chats.get_table!(user.table_id)
     Chats.broadcast_on_table(table, user, office_id)
-
+    user = Accounts.get_user!(user.id)
     
     {:noreply, assign(socket, user: user)}
   end
@@ -126,7 +126,8 @@ defmodule SunstoneWeb.PageLive do
     office_id = socket.assigns.office_id
     table = Chats.get_table!(user.table_id)
     Chats.broadcast_reset_table(table, user, office_id)
-    
+    user = Accounts.get_user!(user.id)
+
     {:noreply, assign(socket, user: user)}
   end
 
@@ -134,10 +135,11 @@ defmodule SunstoneWeb.PageLive do
 
   def handle_info({:table_updated}, socket) do
      user = socket.assigns.user
+     user = Accounts.get_user!(user.id)
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
-    {:noreply, assign(socket, broadcast: table.broadcast, tables: tables)}
+    {:noreply, assign(socket, user: user, broadcast: table.broadcast, tables: tables)}
   end
 
 
@@ -145,6 +147,7 @@ defmodule SunstoneWeb.PageLive do
 
   def handle_info({:user_updated}, socket) do
      user = socket.assigns.user
+     user = Accounts.get_user!(user.id)
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
@@ -154,6 +157,7 @@ defmodule SunstoneWeb.PageLive do
 
   def handle_info({:user_inactive}, socket) do
      user = socket.assigns.user
+     user = Accounts.get_user!(user.id)
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      office = Chats.get_office!(office_id)

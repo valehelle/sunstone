@@ -1,3 +1,4 @@
+<div class="center-width">
 <%= link(@office.name, to: Routes.page_path(@conn, :index, @hash_id), style: "color: #606c76;font-weight: bold; margin-bottom:5px; font-size: 3.6rem;" ) %>
 
 <%= form_for @changeset, Routes.invite_path(@conn, :create, @hash_id), fn f -> %>
@@ -54,4 +55,5 @@
                       </div>
                   </div>
     <% end %>
+</div>
 </div>

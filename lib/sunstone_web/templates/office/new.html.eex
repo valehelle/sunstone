@@ -1,4 +1,4 @@
-
+<div class="center-width">
 <%= form_for @changeset, Routes.office_path(@conn, :create), fn f -> %>
 <div style="color:#606c76;">
     <label>
@@ -9,3 +9,4 @@
 
   <%= submit "Create" %>
 <% end %>
+</div>

@@ -12,7 +12,7 @@ function requestFullScreen(){
                 elem.style.backgroundColor = "black"
                 button.innerHTML = "Exit Fullscreen"
             } else {
-                elem.style.backgroundColor = "black"
+                elem.style.backgroundColor = "lightgray"
                 button.innerHTML = "Fullscreen"
             }
         });
@@ -109,173 +109,183 @@ video {
 
 <% end %>
 </ol>
-
-<div style="min-height:80vh;">
+<h2 style="color: #606c76;margin-bottom:5px;"><%= @office.name %></h2>
+    <%= if @user.id === @office.owner_id do %>
+        <%= link("Invite Colleague", to: Routes.invite_path(@socket, :new, SunstoneWeb.UserController.encode_id(@office.id)), class: "button") %> 
+    <% end %>
+        <%= if @user.is_active && false do %>
+            <div phx-hook="Notification" id="sub-btn" style="display:none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" phx-update="ignore">
+                <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
+                <button onclick="subscribe()" >Yes notify me</button>
+            </div>
+        <% end %>
 <div phx-hook="Main"></div>
-<h1 style="color: #606c76;font-weight: bold; margin-bottom:5px;"><%= @office.name %></h1>
-<%= if @user.is_active do %>
-    <div phx-hook="Notification" id="sub-btn" style="display:none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" phx-update="ignore">
-        <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
-        <button onclick="subscribe()" >Yes notify me</button>
-    </div>
-<% end %>
-<%= if @user.id === @office.owner_id do %>
-    <%= link("Invite Colleague", to: Routes.invite_path(@socket, :new, SunstoneWeb.UserController.encode_id(@office.id)), class: "button") %> 
-<% end %>
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
-    <div style="display: flex ; color: #606c76; flex-direction: column;">
-        <div style="display: flex; flex-direction: column; justify-content: center;">
-            <div style="display: flex">
-                <h3 style="margin: 0; align-self: center;"><%= @user.name %></h3>
-                <%= f = form_for @changeset, "#", [ phx_change: :save, style: "margin-bottom: 0;"] %>
-                <%= select(f, :status, [[key: "Available", value: "Available"],
-                                    [key: "Busy", value: "Busy"],
-                                    [key: "Do Not Disturb", value: "Do Not Disturb"],
-                                    [key: "Be Right Back", value: "Be Right Back"],
-                                    [key: "Not at My Desk", value: "Not at My Desk"],
-                                    [key: "Meeting", value: "Meeting"],
-                                    [key: "Breakfast", value: "Breakfast"],
-                                    [key: "Lunch", value: "Lunch"],
-                                    [key: "Dinner", value: "Dinner"],
-                                    [key: "Hungry", value: "Hungry"]
-                                    ], style: "margin:0; margin-left:10px; align-self:center;")%>
-                </form>
-            <button class ="button" style="margin-left: 10px; margin-bottom: 0;" phx-click="toggle-mute">
-                    <%= if @user.is_muted  do %>
-                        Unmute
-                    <% else %>
-                        Mute
-                    <% end %>
-            </button>
-            </div>
-        </div>
-    </div>
+<div style="height:70vh; display:flex; ">
+    <div style="flex:.4;  overflow:scroll;">
 
-<h2 style=" color: #606c76;margin:0; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Online</h2>
-
-        <div>
-            <%= for table <- @tables do %>
-                <div class="container" style=" overflow: hidden;">
-                    <div class = "row" style="margin-left: 0; margin-top:10px;">
-                        <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
-                            <div id="video-container" style="position: relative; display:flex; flex-direction: column; width: 100%; ">
-                                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: black; min-height:400px;">
-                                </div>
-                                <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
-                                    <div style="position: absolute; width:100%; min-height:400px; display:flex;">
-                                        <h5 id="sharing-screen-title"style="color: white; text-align:center; flex:1; align-self:center;">You are sharing your screen</h5>
-                                    </div>
-                                <% end %>
-                                <h4 style="margin:0; margin-top: 10px; color: #606c76">
-                                <%= if table.broadcast_id != nil && table.broadcast_id != @user.id do %>
-                                    <%= table.broadcast.name %> is sharing.
-                                <% else %>
-                                    No one is sharing the screen.
-                                <% end %>
-                                </h4>
-                                <div style="display:flex; justify-content:center">
-                                    <button class ="button" style="margin-top: 10px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
-                                        <%= if @user.is_muted  do %>
-                                            Unmute
-                                        <% else %>
-                                            Mute
-                                        <% end %>
-                                    </button>
-                                    <button id="full-screen-btn" class ="button" style="margin-top: 10px;margin-right: 10px" onClick="requestFullScreen()">
-                                        Fullscreen
-                                    </button>
-                                    <%= if table.broadcast_id == nil do %>
-                                        <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 10px; margin-right: 10px">Share Screen</button>
-
-                                        <button style="margin-bottom:0 margin-top: 10px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
-                                    <% end %>
-                                    <%= if table.broadcast_id != nil && table.broadcast_id == @user.id do %>
-                                        <button style=" margin-top: 10px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
-                                    <% end %>
-                                    
-                                </div>
-                            </div>
-                        <% end %>
-                    </div>
-                    <div class="row" style="margin-left: 0;">
-                        <div class="column" style="align-self: center; padding-left:0;">
-                            <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
-                                <button style="margin-bottom:0" phx-click="leave">Leave</button>
-
-                            <% end %>
-                            <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
-                                <button style="margin-bottom:0; min-width: 102.743px" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
-                            <% end %>
-                            <%= if length(table.users) == 1 and Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil do %>
-                                <button style="margin-bottom:0; min-width: 102.743px; visibility:hidden;">self</button>
-                            <% end %>
+        
+            <div style="display: flex ; color: #606c76; flex-direction: column;">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <div style="display: flex; flex-direction: column;">
+                        <div>
+                            <h3 style="margin: 0; align-self: center;"><%= @user.name %></h3>
                         </div>
-                        <div class="column column-90" style=" margin-left: 10px; padding-left: 0px; ">
-                            <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
-                            <%= for user <- table.users do %>
-                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
-                                    <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px;">
-                                        <%= String.at(user.name, 0) |> String.capitalize %>
-                                    </div>
-                                    <div style = "justify-content: center; display: flex; flex-direction: column;">
-                                        <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
-                                            <%= user.name %> 
-                                            <span style="display: flex; justify-content: center; font-size:14px; align-self: center; margin-left: 5px;"> 
-                                                &#9679; <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
-                                                &nbsp; 
-                                            <%= if user.is_muted  do %>
-                                                <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
-                                            <% else %>
-                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
-                                            <% end %>
-                                                
-                                            </span> 
-
-                                        </h3>
-                                    </div>
-                            </li>
-                            <% end %>
-                            </ul>
+                        <div style="display:flex">
+                            <%= f = form_for @changeset, "#", [ phx_change: :save, style: "margin-bottom: 0;"] %>
+                            <%= select(f, :status, [[key: "Available", value: "Available"],
+                                                [key: "Busy", value: "Busy"],
+                                                [key: "Do Not Disturb", value: "Do Not Disturb"],
+                                                [key: "Be Right Back", value: "Be Right Back"],
+                                                [key: "Not at My Desk", value: "Not at My Desk"],
+                                                [key: "Meeting", value: "Meeting"],
+                                                [key: "Breakfast", value: "Breakfast"],
+                                                [key: "Lunch", value: "Lunch"],
+                                                [key: "Dinner", value: "Dinner"],
+                                                [key: "Hungry", value: "Hungry"]
+                                                ], style: "margin:0;")%>
+                            </form>
+                            <button class ="button" style="margin-left: 10px; margin-bottom: 0;" phx-click="toggle-mute">
+                                    <%= if @user.is_muted  do %>
+                                        Unmute
+                                    <% else %>
+                                        Mute
+                                    <% end %>
+                            </button>
                         </div>
                     </div>
                 </div>
-            <% end %>
-            <h2 style=" color: #606c76;margin:0; margin-top: 25px;  padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Offline</h2>
-                  <div class="container" style="margin-top: 10px; margin-bottom: 20px; overflow: hidden;">
-                            <div class="row">
-                                <div class="column column-90" style=" margin-left: 10px; padding-left: 0px; ">
-                                    <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
-                                        <%= for user <- @office.users do %>
-                                            <%= if !user.is_active || user.table.office_id != @office.id do %>
-                                                <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
-                                                        <div style="justify-self: center; align-self: center; height:50px; width: 50px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 35px; font-weight: bold; padding-top: 10px;">
-                                                            <%= String.at(user.name, 0) |> String.capitalize %>
-                                                        </div>
-                                                        <div style = "justify-content: center; display: flex; flex-direction: column;">
-                                                        <h3 style="margin-left:15px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; color: #606c76;">
-                                                            <%= user.name %> <span style="display: flex; justify-content: center; font-size:14px; align-self: center; margin-left: 5px;">(Offline)</span>
-                                                        </h3>
-                                                        </div>
-                                                </li>
-                                            <% end %>
-                                        <% end %>
-                                                </ul>
+            </div>
+
+        <h3 style=" color: #606c76;margin:0; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Online</h3>
+
+                <div >
+                    <%= for table <- @tables do %>
+                        <div class="container">
+                            <div class="row" style="margin-left: 0; width: 100%;">
+                                <div class="column column-20" style="align-self: center; padding-left:0;">
+                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
+                                        <button style="margin-bottom:0" phx-click="leave">Leave</button>
+
+                                    <% end %>
+                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
+                                        <button style="margin-bottom:0; min-width: 102.743px" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
+                                    <% end %>
+                                </div>
+                                <div class="column" style=" margin-left: 10px; padding-left: 0px; padding-right: 0; border-right: 1px solid lightgray;">
+                                    <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                                    <%= for user <- table.users do %>
+                                    <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                                            <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 5px;">
+                                                <%= String.at(user.name, 0) |> String.capitalize %>
+                                            </div>
+                                            <div style = "justify-content: center; display: flex; flex-direction: column;">
+                                                <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                                    <%= user.name %> 
+                                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                                        <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
+                                                        &nbsp; 
+                                                    <%= if user.is_muted  do %>
+                                                        <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
+                                                    <% else %>
+                                                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
+                                                    <% end %>
+                                                        
+                                                    </span> 
+
+                                                </h4>
+                                            </div>
+                                    </li>
+                                    <% end %>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-        </div>
+                    <% end %>
+                    <h3 style=" color: #606c76;margin:0; margin-top: 25px;  padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Offline</h3>
+                        <div class="container" style="margin-bottom: 20px;">
+                                    <div class="row" style="width: 100%; margin: 0;">
+                                        <div class="column" style="padding-left: 0px; padding-right: 0;">
+                                            <ul style="padding: 0px;  list-style: none; margin:0;list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
+                                                <%= for user <- @office.users do %>
+                                                    <%= if !user.is_active || user.table.office_id != @office.id do %>
+                                                        <li style="border-right: 1px solid lightgrey; padding-top: 10px; border-bottom: 1px solid lightgrey; margin-top: 10px; width: 100%; display: flex; float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                                                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 5px;">
+                                                                    <%= String.at(user.name, 0) |> String.capitalize %>
+                                                                </div>
+                                                                <div style = "justify-content: center; display: flex; flex-direction: column;">
+                                                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                                                        <%= user.name %> 
+                                                                        <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;">         
+                                                                          Offline
+                                                                        </span> 
 
-            
-<% else %>
-    <div style="color: #606c76; margin-top: 25px;">
-    <h4>Please enable the microphone to enter.</h4>
-    <h4>If there is no pop up to enable the microphone, try refresh the page.</h4>
-    <h4> Don't worry about people hearing you, they still need to connect to you to hear your voice.</h4>
+                                                                    </h4>
+                                                                </div>
+                                                        </li>
+                                                        
+                                                    <% end %>
+                                                <% end %>
+                                                        </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                </div>
     </div>
+    <div style="flex:.6; padding-left:10px;">
+            <div id="video-container" style="position: relative;  width: 100%; height:100%;">
+                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%;">
+         
+                </div>
+                <div style="position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,0.3);">
+
+                    <h4 style="margin:0; margin-top: 10px; color: white; text-align:center">
+                        <%= if @user.table.broadcast_id != nil do %>
+                            <%= if @user.table.broadcast_id == @user.id do %>
+                                You are sharing your screen.
+                            <% else %>
+                                <%= @user.table.broadcast.name %> is sharing.   
+                            <% end %>
+                        <% else %>
+                            No one is sharing the screen.
+                        <% end %>
+                    </h4>
+                    <div style="display:flex; justify-content:center">
+                        <button class ="button" style="margin-top: 10px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
+                            <%= if @user.is_muted  do %>
+                                Unmute
+                            <% else %>
+                                Mute
+                            <% end %>
+                        </button>
+                        <button id="full-screen-btn" class ="button" style="margin-top: 10px;margin-right: 10px" onClick="requestFullScreen()">
+                            Fullscreen
+                        </button>
+                        <%= if @user.table.broadcast_id == nil do %>
+                            <button id="screen-share" class ="button" onClick="window.startScreenSharing()" style="margin-top: 10px; margin-right: 10px">Share Screen</button>
+
+                            <button style="margin-bottom:0 margin-top: 10px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
+                        <% end %>
+                        <%= if @user.table.broadcast_id != nil && @user.table.broadcast_id == @user.id do %>
+                            <button style=" margin-top: 10px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
+                        <% end %>
+                    </div>
+                </div>
+                
+            </div>
+    </div>
+</div>
+<% else %>
+            <div style="color: #606c76; margin-top: 25px; height: 80vh;">
+            <h4>Please enable the microphone to enter.</h4>
+            <h4>If there is no pop up to enable the microphone, try refresh the page.</h4>
+            <h4> Don't worry about people hearing you, they still need to connect to you to hear your voice.</h4>
+            </div>
 
 <% end %>
-</div>
+
+
 <h6 style="margin-top:40px;">Found any bugs or feature request? <a style="font-weight:bold" href = "mailto:hazmi@inoffice.chat">Contact Us</a></h6>
 
 
