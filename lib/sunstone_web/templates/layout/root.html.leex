@@ -22,8 +22,8 @@
 
 
   </head>
-  <body>
-    <header  >
+  <body style="margin: 0">
+    <header  style="background-color:#F03A47; margin-bottom: 0;">
       <section class="container">
         <nav role="navigation">
         <style>
@@ -31,12 +31,17 @@
             float: left;
           }
           #logo{
-            color: #606c76;
+            color: white;
             font-weight: bold;
             font-size: 3rem;
           }
-          #logo:hover{
-            color: #cdd1d4;
+          form {
+            margin-bottom: 0;
+          }
+          @media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
+            #logo{
+              margin-left:0;
+            }
           }
         </style>
         <script>
@@ -54,26 +59,26 @@
             
             <%= if Guardian.Plug.current_resource(@conn) do %>
               <li>
-              <button type="button" class= "button button-clear" onclick= "homeClick()" >Home</button> 
+              <button type="button" class= "button button-clear" onclick= "homeClick()"  style="color: white;">Home</button> 
               </li>
             <% end %>
              <li>
             <%= if Guardian.Plug.current_resource(@conn) do %>
               <%= form_for @conn, Routes.user_path(@conn, :logout), fn f -> %>
-                <%= button("Logout", to: Routes.user_path(@conn, :logout), class: "button button-clear", type: "submit")%> 
+                <%= button("Logout", to: Routes.user_path(@conn, :logout), class: "button button-clear", type: "submit",  style: "color: white;")%> 
               <%= end %>
             <% else %>
-              <button type="button" class= "button button-clear" onclick= "loginRedirect()" >Login</button> 
+              <button type="button" class= "button button-clear" onclick= "loginRedirect()" style="color: white;" >Login</button> 
             <% end %>
             </li>
           </ul>
         </nav>
-        <a href="/" id="logo">
+        <a href="/" id="logo" style="margin-left:20px;">
           Inoffice
         </a>
       </section>
     </header>
-    <div style="">
+    <div style="margin: 0;">
     <%= @inner_content %>
     </div>
 

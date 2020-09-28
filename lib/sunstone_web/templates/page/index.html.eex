@@ -1,15 +1,31 @@
-<div class="center-width">
-<div style="color:#606c76;">
-    <h1 style="font-weight:bold; font-size: 60px; margin-bottom:10px;">A voice chat tool for your team</h1>
-    <h3 style="">Whether your working from home or office, Inoffice makes it easy for you talk to your teams and communicate more often.</h3>
-    <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button")%> 
-    <br>
-     <img src="<%= Routes.static_path(@conn, "/images/inoffice-new.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:10px;border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;">
+
+<style>
+@media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
+  #main-content{
+     margin-left:-20px; margin-right:-20px;
+  }
+    
+}
+
+</style>
+<div id="parent-main" >
+<div style="background-color:#F03A47; color:white;" id="main-content">
+    <div style="color:#white; padding: 20px;" class="center-width" >
+        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Communication tool for your team</h1>
+        <h3 style=" ">Whether your working from home or office, Inoffice makes it easy for you to talk to your teams and communicate more often.</h3>
+        <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "background-color: #2B3A67;")%> 
+        <img src="<%= Routes.static_path(@conn, "/images/new-look.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:3px; background-color:white; margin-top: 30px; border-radius: 5px;">
+
+    </div>
 </div>
-<div style="color:#606c76; margin-top: 50px;">
-    <h2>Why Inoffice?</h2>
-    <h4> > Hop into a conversation with your team members, no call required.</h4>
-    <h4> > See who is talking to who and join in.</h4>
-    <h4> > Easy to use. Try it and you will know!</h4>
+<div style="color:#606c76; padding: 20px; padding-top: 40px; " class="center-width">
+    <h2 style="color: #F03A47">Why Inoffice?</h2>
+    <h3>Just like in a real office environment, your team members can:</h3>
+    <div >
+        <h4 style="font-weight: bold;" >Look who is around to talk.</h4>
+        <h4 style="font-weight: bold;">Hop in and talk without having to call.</h4>
+        <h4 style="font-weight: bold;">See who are having a conversation and join in.</h4>
+        <h4 style="font-weight: bold;">Share your screen to better communicate your idea or problem.</h4>
+    </div>
 </div>
 </div>
