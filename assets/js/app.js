@@ -307,6 +307,17 @@ window.toggleMute = function () {
 
 
 window.startScreenSharing = function () {
+    try {
+        gtag('event', 'live',
+            {
+                'share_screen': "true",
+
+            });
+    } catch (e) {
+        console.log('e')
+    }
+
+
     if (!videoStreamTrack) {
         navigator.mediaDevices.getDisplayMedia({ video: true, audio: false }).then(function (videoStream) {
             var screenVideoTrack = videoStream.getVideoTracks()[0];
