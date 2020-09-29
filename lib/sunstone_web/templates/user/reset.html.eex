@@ -9,5 +9,5 @@
 
   <%= submit "Request Reset Password" %>
 <% end %>
-<%= link("Already have an account? Click here to Login.", to: Routes.user_path(@conn, :login))%> 
+<%= link("Click here to Register.", to: Routes.user_path(@conn, :register))%> 
 </div>

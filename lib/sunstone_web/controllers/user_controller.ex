@@ -121,7 +121,9 @@ defmodule SunstoneWeb.UserController do
     changeset = Reset.changeset(%Reset{}, reset_param)
     case Accounts.get_user_by_email(email) do
       nil -> 
-        render conn, "reset.html", changeset: changeset
+        changeset = Ecto.Changeset.add_error(changeset, :email, "Email not found")
+        IO.inspect changeset
+        render conn, "reset.html", changeset: %{changeset | action: :insert}
       user -> 
       uuid = UUID.uuid1()
       params = %{user_id: user.id, token: uuid, has_expired: false}
