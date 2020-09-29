@@ -14,7 +14,7 @@
         <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Communication tool for your team</h1>
         <h3 style=" ">Whether your working from home or office, Inoffice makes it easy for you to talk to your teams and communicate more often.</h3>
         <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "background-color: #4CAF50;")%> 
-        <img src="<%= Routes.static_path(@conn, "/images/new-look.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:3px; background-color:white; margin-top: 30px; border-radius: 5px;">
+        <img src="<%= Routes.static_path(@conn, "/images/inoffice-revamp.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:3px; background-color:white; margin-top: 30px; border-radius: 5px;">
 
     </div>
 </div>
@@ -22,10 +22,10 @@
     <h2 style="color: #F03A47">Why Inoffice?</h2>
     <h3>Just like in a real office environment, your team members can:</h3>
     <div >
-        <h4 style="font-weight: bold;" >Look who is around to talk.</h4>
-        <h4 style="font-weight: bold;">Hop in and talk without having to call.</h4>
-        <h4 style="font-weight: bold;">See who are having a conversation and join in.</h4>
-        <h4 style="font-weight: bold;">Share your screen to better communicate your idea or problem.</h4>
+        <h4 style="">> Look who is around to talk.</h4>
+        <h4 style="">> Hop in and talk with your team members without having to call.</h4>
+        <h4 style="">> See who are having a conversation and join in.</h4>
+        <h4 style="">> Share your screen to better communicate your idea or problem.</h4>
     </div>
 </div>
 </div>
