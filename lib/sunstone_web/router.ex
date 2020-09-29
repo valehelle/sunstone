@@ -33,6 +33,11 @@ defmodule SunstoneWeb.Router do
     post "/new", UserController, :create
     post "/logout", UserController, :logout
     get "/contact", PageController, :contact
+    get "/request_reset", UserController, :new_reset
+    post "/request_reset", UserController, :create_reset
+    get "/reset", UserController, :new_reset_password
+    post "/reset", UserController, :create_reset_password
+    put "/reset", UserController, :create_reset_password
   end
 
 

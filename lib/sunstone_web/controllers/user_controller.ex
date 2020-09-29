@@ -3,6 +3,7 @@ defmodule SunstoneWeb.UserController do
   alias Sunstone.Accounts
   alias Sunstone.Accounts.User
   alias Sunstone.Accounts.Guardian
+  alias Sunstone.Accounts.Reset
 
   def index(conn, _params) do
     render conn, "index.html"
@@ -80,6 +81,79 @@ defmodule SunstoneWeb.UserController do
    ])
     Hashids.decode!(s, hash_id) |> List.first()
   end
+
+
+
+
+ def send_email(email, uuid) do
+      headers = %{
+            "Authorization" => "Bearer #{Application.get_env(:sunstone, Sunstone.Repo)[:send_grid_token]}",
+            "Content-Type" => "application/json"
+          }
+          body = %{
+            "personalizations" => 
+              [
+                %{"to" => 
+                  [
+                    %{"email" => email},
+                  ]
+                  }
+              ],
+              "from" => 
+              %{
+                "email" => "customer_support@inoffice.chat",
+              },
+              "subject" => "Password Reset",
+              "content" => [
+                %{"type"=> "text/html", "value" => "<h4>Someone requested to reset the password on your Inoffice account. If you did not request this, please ignore this email.</h4><h4><a href=\"https://www.inoffice.chat/reset?token=#{uuid}\">Reset Password</a></h4>"}
+              ]
+              
+          }
+          url = "https://api.sendgrid.com/v3/mail/send"
+        HTTPoison.post url, Poison.encode!(body), headers
+  end
+  def new_reset(conn, _) do
+    changeset = Reset.changeset(%Reset{}, %{})
+    render conn, "reset.html", changeset: changeset
+  end
+
+  def create_reset(conn, %{"reset" => %{"email" => email} = reset_param}) do
+    changeset = Reset.changeset(%Reset{}, reset_param)
+    case Accounts.get_user_by_email(email) do
+      nil -> 
+        render conn, "reset.html", changeset: changeset
+      user -> 
+      uuid = UUID.uuid1()
+      params = %{user_id: user.id, token: uuid, has_expired: false}
+      Accounts.invalidate_reset(user.id)
+      Accounts.create_reset(params)
+      send_email(user.email, uuid)
+      IO.inspect uuid
+      render conn, "reset_request_success.html", changeset: changeset
+    end
+  end
+
+  def new_reset_password(conn, %{"token" => token}) do
+    changeset = Reset.changeset(%Reset{}, %{token: token})
+    render conn, "reset_password.html", token: token, changeset: changeset
+  end
+
+  def create_reset_password(conn, %{"reset" => %{"token" => token, "password" => password, "retype_password" => retype_password}}) do
+    
+    case Accounts.get_user_by_token(token) do
+      {:ok, user} -> 
+        case Accounts.update_user_password(user, %{password: password, retype_password: retype_password}) do
+        {:ok, _} ->
+          Accounts.invalidate_reset(user.id)
+          render conn, "reset_success.html"
+        {:error, changeset} -> 
+          changeset = Reset.changeset(%Reset{}, %{token: token})
+          render conn, "reset_password.html", token: token, changeset: changeset
+        end
+      _ -> render conn, "reset_error.html"
+    end
+  end
+
 
 
 

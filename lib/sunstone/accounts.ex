@@ -11,6 +11,8 @@ defmodule Sunstone.Accounts do
   alias Sunstone.Chats.Office
   alias Sunstone.Accounts.Notification
   alias Sunstone.Accounts.Social
+  alias Sunstone.Accounts.Reset
+
   @doc """
   Returns the list of users.
 
@@ -53,6 +55,22 @@ defmodule Sunstone.Accounts do
 
     Repo.one!(query)
   end
+  def get_user_by_email(email), do: Repo.get_by(User, email: email)
+  
+  def get_user_by_token(token) do 
+    query = from r in Reset, 
+            where: r.token == ^token,
+            where: r.has_expired == false
+
+    Repo.one(query)
+    case Repo.one(query) do
+      nil -> {:error}
+      reset -> 
+      user = get_user!(reset.user_id)
+      {:ok, user}
+    end
+  end
+
   @doc """
   Creates a user.
 
@@ -95,6 +113,12 @@ defmodule Sunstone.Accounts do
     |> Repo.update()
     |> broadcast(:user_updated, office_id)
   end
+  def update_user_password(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
 
   def update_user_active(%User{} = user, attrs, office_id) do
     office = Chats.get_office!(office_id)
@@ -342,4 +366,28 @@ defmodule Sunstone.Accounts do
   def change_social(%Social{} = social, attrs \\ %{}) do
     Social.changeset(social, attrs)
   end
+
+  def create_reset(attrs \\ %{}) do
+    %Reset{}
+    |> Reset.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_reset(%Reset{} = reset, attrs) do
+    reset
+    |> Reset.changeset(attrs)
+    |> Repo.update()
+  end
+
+
+  def invalidate_reset(user_id) do
+    query = from r in Reset, 
+            where: r.user_id == ^user_id
+    resets = Repo.all(query)
+    for reset <- resets do
+      update_reset(reset, %{has_expired: true})
+    end
+  end
+
+
 end

@@ -53,7 +53,8 @@ defmodule Sunstone.MixProject do
       {:hashids, "~> 2.0"},
       {:httpoison, "~> 1.6"},
       {:poison, "~> 3.1"},
-      {:web_push_encryption, "~> 0.3"}
+      {:web_push_encryption, "~> 0.3"},
+      { :elixir_uuid, "~> 1.2" }
     ]
   end
 

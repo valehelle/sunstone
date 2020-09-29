@@ -1,0 +1,13 @@
+<div class="center-width">
+<%= form_for @changeset, Routes.user_path(@conn, :create_reset), fn f -> %>
+<div style="color:#606c76;">
+  <label>
+    Your registered email: <%= text_input f, :email, placeholder: "email@example.com" %>
+    <%= error_tag f, :email %>
+  </label>
+</div>
+
+  <%= submit "Request Reset Password" %>
+<% end %>
+<%= link("Already have an account? Click here to Login.", to: Routes.user_path(@conn, :login))%> 
+</div>
