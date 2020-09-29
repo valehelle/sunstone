@@ -109,10 +109,8 @@ video {
 
 <% end %>
 </ol>
-<h2 style="color: #606c76;margin-bottom:5px; margin-top: 50px;"><%= @office.name %></h2>
-    <%= if @user.id === @office.owner_id do %>
-        <%= link("Invite Colleague", to: Routes.invite_path(@socket, :new, SunstoneWeb.UserController.encode_id(@office.id)), class: "button") %> 
-    <% end %>
+<a href="/office" class = "button button-outline" style="margin-top: 20px;">Go Back</a>
+<h2 style="color: #606c76;margin-bottom:5px; margin-top:30px;"><%= @office.name %></h2>
         <%= if @user.is_active && false do %>
             <div phx-hook="Notification" id="sub-btn" style="display:none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" phx-update="ignore">
                 <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
@@ -123,12 +121,12 @@ video {
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
 <div style="height:70vh; display:flex; ">
-    <div style="flex:.4;  overflow:scroll;">
+    <div style="flex:.3;  overflow:scroll;">
 
         
             <div style="display: flex ; color: #606c76; flex-direction: column;">
-                <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; flex-direction: column; justify-content: center; padding-bottom: 10px; border-bottom: 1px solid lightgray;">
+                    <div style="display: flex; flex-direction: column; ">
                         <div>
                             <h3 style="margin: 0; align-self: center;"><%= @user.name %></h3>
                         </div>
@@ -146,7 +144,7 @@ video {
                                                 [key: "Hungry", value: "Hungry"]
                                                 ], style: "margin:0;")%>
                             </form>
-                            <button class ="button" style="margin-left: 10px; margin-bottom: 0;" phx-click="toggle-mute">
+                            <button class ="button button-outline" style="margin-left: 10px; margin-bottom: 0;" phx-click="toggle-mute">
                                     <%= if @user.is_muted  do %>
                                         Unmute
                                     <% else %>
@@ -158,26 +156,17 @@ video {
                 </div>
             </div>
 
-        <h3 style=" color: #606c76;margin:0; margin-top: 25px; padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Online</h3>
+        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Online</h3>
 
                 <div >
                     <%= for table <- @tables do %>
-                        <div class="container">
-                            <div class="row" style="margin-left: 0; width: 100%;">
-                                <div class="column column-20" style="align-self: center; padding-left:0;">
-                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
-                                        <button style="margin-bottom:0" phx-click="leave">Leave</button>
-
-                                    <% end %>
-                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
-                                        <button style="margin-bottom:0; min-width: 102.743px" phx-click="join" phx-value-table-id=<%= table.id %> >Chat</button>
-                                    <% end %>
-                                </div>
-                                <div class="column" style=" margin-left: 10px; padding-left: 0px; padding-right: 0; border-right: 1px solid lightgray;">
-                                    <ul style="border-bottom: 1px solid lightgrey; padding: 10px;  list-style: none; margin:0; height:100%; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                        <div class="container" style="padding: 5px;">
+                            <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                                <div class="column" style=" margin-left: 10px; padding: 10px;">
+                                    <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
                                     <%= for user <- table.users do %>
                                     <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
-                                            <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 5px;">
+                                            <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                                 <%= String.at(user.name, 0) |> String.capitalize %>
                                             </div>
                                             <div style = "justify-content: center; display: flex; flex-direction: column;">
@@ -199,19 +188,33 @@ video {
                                     </li>
                                     <% end %>
                                     </ul>
+
+                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
+                                        <button style="margin-bottom:0; float:right;" phx-click="leave">Leave</button>
+
+                                    <% end %>
+                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
+                                        <button style="margin-bottom:0; min-width: 102.743px; float:right;" phx-click="join" phx-value-table-id=<%= table.id %> >
+                                        <%= if length(table.users) == 1 do %>
+                                            Talk
+                                        <% else %>
+                                            Join
+                                        <% end %>
+                                        </button>
+                                    <% end %>
                                 </div>
                             </div>
                         </div>
                     <% end %>
-                    <h3 style=" color: #606c76;margin:0; margin-top: 25px;  padding-bottom: 5px; border-bottom: 1px solid lightgrey;">Offline</h3>
-                        <div class="container" style="margin-bottom: 20px;">
-                                    <div class="row" style="width: 100%; margin: 0;">
-                                        <div class="column" style="padding-left: 0px; padding-right: 0;">
+                    <h3 style=" color: #606c76;margin:0; margin-top: 25px; ">Offline</h3>
+                        <div class="container" style="margin-bottom: 20px; padding:5px;">
+                                    <div class="row" style="width: 100%; margin: 0; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1); min-height: 40px;">
+                                        <div class="column" style="margin-left: 10px; padding: 10px;">
                                             <ul style="padding: 0px;  list-style: none; margin:0;list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
                                                 <%= for user <- @office.users do %>
                                                     <%= if !user.is_active || user.table.office_id != @office.id do %>
-                                                        <li style="border-right: 1px solid lightgrey; padding-top: 10px; border-bottom: 1px solid lightgrey; margin-top: 10px; width: 100%; display: flex; float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
-                                                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 5px;">
+                                                        <li style=" padding-top: 10px;margin-top: 10px; width: 100%; display: flex; float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                                                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                                                     <%= String.at(user.name, 0) |> String.capitalize %>
                                                                 </div>
                                                                 <div style = "justify-content: center; display: flex; flex-direction: column;">
@@ -233,9 +236,9 @@ video {
                                 </div>
                 </div>
     </div>
-    <div style="flex:.6; padding-left:10px;">
+    <div style="flex:.7; padding-left:10px;">
             <div id="video-container" style="position: relative;  width: 100%; height:100%;">
-                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%;">
+                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%; ">
          
                 </div>
                 <div style="position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,0.3);">

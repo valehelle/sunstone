@@ -6,25 +6,27 @@
 </div>
 <div style="margin-top: 20px;">
   <%= for office <- @user.offices do %>
-    <div  style="margin-top: 10px; margin-bottom: 10px;">
+    <div  style="margin-top: 10px; margin-bottom: 10px; padding: 5px; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
                     <div class="row">
-                        <div class="column" style="align-self: center">
-                          <a href="<%= Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id)) %>" style="margin-bottom:0; min-width: 102.743px" class="button">Enter</a>
-                        </div>
-                        <div class="column column-90">
-                            <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
+                        <div class="column">
+                            <ul style="list-style: none; margin:0; list-style-type:none;white-space:nowrap;overflow-x:auto;">
                               <li style="font-size:20px; display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
                                <%=  office.name  %>
                               </li>
                             </ul>
+                              <a href="<%= Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id)) %>" style="margin-bottom:0; min-width: 102.743px; float:right;" class="button">Enter</a>
+                                  <%= if @user.id === office.owner_id do %>
+                                      <%= link("Invite Colleague", to: Routes.invite_path(@conn, :new, SunstoneWeb.UserController.encode_id(office.id)), class: "button button-outline", style: "float:right; margin-right: 10px;") %> 
+                                  <% end %>
+
                         </div>
                     </div>
                 </div>
     <% end %>
       <%= if length(@user.offices) == 0 do %>
         <div style = "color: #606c76">
-          <h3 style="margin: 0;">Its a bit lonely in here :(</h3>
-          <h3>Create your own office or ask your colleague to invite you into theirs :D</h3>
+          <h3 style="margin-bottom: 5px;">Its a bit lonely in here :(</h3>
+          <h3>Create your own office or ask your colleague to invite you into their office.</h3>
         </div>
       <% end %>
 </div>
@@ -34,17 +36,13 @@
       <%= form_for @changeset, Routes.invite_path(@conn, :accept, SunstoneWeb.UserController.encode_id(invite.office.id)), fn f -> %>
       <div style="margin-top: 10px; margin-bottom: 10px;">
                       <div class="row">
-                          <div class="column" style="align-self: center">
-                            <%= submit "Accept", style: "margin-bottom:0; min-width: 102.743px", class: "button"%>
-                          </div>
-                          <div class="column column-90">
-                              <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto;">
+                              <ul style="list-style: none; margin:0; height:100%;list-style-type:none;white-space:nowrap;overflow-x:auto; width: 100%; padding: 5px;">
                                 <li style="font-size:20px; display: inline-grid; border-radius:5px;  float:left; height:100%; margin:0; padding-left:10px; padding-right:10px; padding-top:5px; margin-right:10px;">
-                                <%=  invite.office.name  %>
+                                 <%=  invite.office.owner.name  %> has invited you to join <%=  invite.office.name  %>
                                 </li>
+                                 <%= submit "Accept", style: "margin-bottom:0; min-width: 102.743px; float:right;", class: "button"%>
                               </ul>
-                          </div>
-                      </div>
+                        </div>
                   </div>
         <% end %>
     <% end %>

@@ -268,7 +268,7 @@ defmodule Sunstone.Chats do
   def list_invites_from_email(email) do
     query = from i in Invite,
            where: i.email == ^email,
-           preload: [:office]
+           preload: [office: :owner]
     Repo.all(query)
   end
 
