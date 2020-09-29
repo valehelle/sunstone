@@ -169,7 +169,7 @@ defmodule Sunstone.Chats do
 
   """
   def get_office!(id) do 
-    Repo.get!(Office, id) |> Repo.preload([:users, :tables, users: [:table, :socials]])
+    Repo.get!(Office, id) |> Repo.preload([:owner, :users, :tables, users: [:table, :socials]])
     
   end
 
