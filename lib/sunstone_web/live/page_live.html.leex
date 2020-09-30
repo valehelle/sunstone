@@ -111,12 +111,12 @@ video {
 </ol>
 <a href="/office" class = "button button-outline" style="margin-top: 20px;">Go Back</a>
 <h2 style="color: #606c76;margin-bottom:5px; margin-top:30px;"><%= @office.name %></h2>
-        <%= if @user.is_active && false do %>
+<%= if @user.is_active do %>
             <div phx-hook="Notification" id="sub-btn" style="display:none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" phx-update="ignore">
                 <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
                 <button onclick="subscribe()" >Yes notify me</button>
             </div>
-        <% end %>
+<% end %>
 <div phx-hook="Main"></div>
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
@@ -156,7 +156,7 @@ video {
                 </div>
             </div>
 
-        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Online</h3>
+        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Desks</h3>
 
                 <div >
                     <%= for table <- @tables do %>
@@ -195,11 +195,7 @@ video {
                                     <% end %>
                                     <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
                                         <button style="margin-bottom:0; min-width: 102.743px; float:right;" phx-click="join" phx-value-table-id=<%= table.id %> >
-                                        <%= if length(table.users) == 1 do %>
-                                            Talk
-                                        <% else %>
                                             Join
-                                        <% end %>
                                         </button>
                                     <% end %>
                                 </div>

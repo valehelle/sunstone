@@ -36,7 +36,16 @@ defmodule SunstoneWeb.PageLive do
     Enum.each(colleagues, fn colleague -> 
       colleague = Accounts.get_user!(colleague.id)
       if(colleague.id != user.id && colleague.notifications != nil ) do
-        send_notification(colleague, "#{user.name} has entered #{office.name}")
+        send_notification(colleague, "#{user.name} has entered #{office.name}.")
+      end
+    end)
+  end
+  def send_table_notification(table, user) do
+    colleagues = table.users
+    Enum.each(colleagues, fn colleague -> 
+      colleague = Accounts.get_user!(colleague.id)
+      if(colleague.id != user.id && colleague.notifications != nil ) do
+        send_notification(colleague, "#{user.name} has join your desk.")
       end
     end)
   end
@@ -86,6 +95,7 @@ defmodule SunstoneWeb.PageLive do
     {:ok, user} = Accounts.update_user(user, %{table_id: table_id}, office_id)
     tables = Chats.list_tables(office_id)
     table = Chats.get_table!(user.table_id)
+    send_table_notification(table, user)
     {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users)}
   end
 

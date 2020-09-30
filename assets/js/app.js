@@ -46,7 +46,7 @@ Hooks.Main = {
             this.pushEvent("active", { "peer-id": id })
         }
 
-        peer = new Peer();
+        peer = new Peer({ host: "inoffice-peerjs.herokuapp.com", secure: true });
         peer.on('open', function (id) {
             console.log('peer open')
             navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(function (stream) {
