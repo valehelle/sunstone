@@ -80,19 +80,50 @@ Hooks.Main = {
 
             call.on('stream', function (remoteStream) {
 
+
                 console.log('connected from someone calling')
                 var audio = document.getElementById(call.peer);
                 if (audio == null) {
+                    let audioTrack = remoteStream.getAudioTracks()[0]
+                    let videoTrack = remoteStream.getVideoTracks()[0]
+                    const audioStream = new MediaStream([audioTrack]);
+                    const videoStream = new MediaStream([videoTrack]);
+
                     var video = document.createElement('video')
                     video.autoplay = 'autoplay';
                     video.height = "100%"
                     video.width = "100%"
-                    video.srcObject = remoteStream
+                    video.srcObject = videoStream
                     video.className = 'peer-songs'
                     video.control = 'control'
                     video.style.display = "none"
+                    video.setAttribute('playsinline', 'playsinline');
                     video.id = call.peer
+
+                    var audio = document.createElement('audio')
+                    audio.autoplay = 'autoplay';
+                    audio.height = "100%"
+                    audio.width = "100%"
+                    audio.srcObject = audioStream
+                    audio.className = 'peer-songs audio-peer'
+                    audio.control = 'control'
+                    audio.style.display = "none"
+                    audio.id = `${call.peer}-audio`
                     document.getElementById('song').appendChild(video);
+                    document.getElementById('song').appendChild(audio);
+
+                    var audio = document.getElementById(`${call.peer}-audio`);
+                    var promise = audio.play();
+
+                    if (promise !== undefined) {
+                        promise.then(_ => {
+
+                            // Autoplay started!
+                        }).catch(error => {
+                            // Show something in the UI that the video is muted
+                            alert('autoplay disabled')
+                        });
+                    }
                 }
 
 
@@ -134,6 +165,7 @@ Hooks.IsMuted = {
     updated() {
         let is_muted = document.getElementById("is_muted").getAttribute("is_muted")
         if (is_muted == "true") {
+
             localStream.getAudioTracks()[0].enabled = false
         } else {
             localStream.getAudioTracks()[0].enabled = true
@@ -157,7 +189,11 @@ Hooks.ChatList = {
         });
         for (var i = 0; i < removedIds.length; i++) {
             const id = removedIds[i]
-            const song = document.getElementById(id);
+            const video = document.getElementById(id);
+            const song = document.getElementById(`${id}-audio`);
+            if (video) {
+                video.remove()
+            }
             if (song) {
                 song.remove()
             }
@@ -182,13 +218,21 @@ Hooks.ChatList = {
                             if (selectedBroadcast) {
                                 broadcastId = selectedBroadcast.getAttribute("peer-id")
                             }
+
+                            let audioTrack = remoteStream.getAudioTracks()[0]
+                            let videoTrack = remoteStream.getVideoTracks()[0]
+                            const audioStream = new MediaStream([audioTrack]);
+                            const videoStream = new MediaStream([videoTrack]);
+
                             var video = document.createElement('video')
                             video.autoplay = 'autoplay';
-                            video.srcObject = remoteStream
                             video.height = "100%"
                             video.width = "100%"
+                            video.srcObject = videoStream
                             video.className = 'peer-songs'
-                            video.id = id
+                            video.setAttribute('playsinline', 'playsinline');
+                            video.control = 'control'
+
                             if (broadcastId == id) {
                                 video.style.display = "block"
 
@@ -196,9 +240,19 @@ Hooks.ChatList = {
                                 video.style.display = "none"
 
                             }
-                            video.control = 'control'
 
+                            video.id = call.peer
+                            var audio = document.createElement('audio')
+                            audio.autoplay = 'autoplay';
+                            audio.height = "100%"
+                            audio.width = "100%"
+                            audio.srcObject = audioStream
+                            audio.className = 'peer-songs audio-peer'
+                            audio.control = 'control'
+                            audio.style.display = "none"
+                            audio.id = `${call.peer}-audio`
                             document.getElementById('song').appendChild(video);
+                            document.getElementById('song').appendChild(audio);
                         }
                         console.log('play sound')
 
@@ -242,6 +296,20 @@ Hooks.BroadCastList = {
             let video = document.getElementById(id)
             if (video) {
                 video.style.display = "block"
+                var promise = video.play();
+
+                if (promise !== undefined) {
+                    promise.then(_ => {
+                        document.getElementById("play-in-line").style.display = "none"
+                        // Autoplay started!
+                    }).catch(error => {
+                        document.getElementById("play-in-line").style.display = "flex"
+                        // Show something in the UI that the video is muted
+                        alert('autoplay disabled')
+                    });
+                }
+
+
             }
             currentBroadcast = id
             if (myId == id) {
@@ -292,7 +360,6 @@ Hooks.AudioList = {
 window.toggleMute = function () {
     mute = !mute
     var muteBtn = document.getElementById("mute-btn")
-    console.log(localStream.getVideoTracks())
     if (localStream && mute) {
         localStream.getAudioTracks()[0].enabled = false
         // videoStreamTrack.enabled = false
@@ -305,6 +372,21 @@ window.toggleMute = function () {
     }
 }
 
+window.playVideo = function () {
+    let selectedBroadcast = document.getElementById("selected-broadcast")
+    if (selectedBroadcast) {
+        let broadcastId = selectedBroadcast.getAttribute("peer-id")
+        let video = document.getElementById(broadcastId)
+        if (video) {
+            video.play()
+            document.getElementById("play-in-line").style.display = "none"
+
+        } else {
+
+            alert('gone')
+        }
+    }
+}
 
 window.startScreenSharing = function () {
     try {
