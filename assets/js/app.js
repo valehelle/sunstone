@@ -45,6 +45,9 @@ Hooks.Main = {
             myId = id
             this.pushEvent("active", { "peer-id": id })
         }
+        const connectedEvent = (id) => {
+            this.pushEvent("connected", { "peer-id": id })
+        }
 
         peer = new Peer({ host: "inoffice-peerjs.herokuapp.com", secure: true });
         peer.on('open', function (id) {
@@ -121,9 +124,10 @@ Hooks.Main = {
                             // Autoplay started!
                         }).catch(error => {
                             // Show something in the UI that the video is muted
-                            alert('autoplay disabled')
+                            alert('Audio autoplay disabled')
                         });
                     }
+                    connectedEvent(call.peer)
                 }
 
 
@@ -132,11 +136,9 @@ Hooks.Main = {
             });
             call.on('close', function () {
                 console.log('answering connection close')
-
             });
             call.on('error', function () {
                 console.log('answering connection error')
-
             });
         });
 
@@ -173,7 +175,16 @@ Hooks.IsMuted = {
     }
 }
 Hooks.ChatList = {
+
     updated() {
+
+        const connectedEvent = (id) => {
+            this.pushEvent("connected", { "peer-id": id })
+        }
+        const disconnectedEvent = (id) => {
+            this.pushEvent("disconnected", { "peer-id": id })
+        }
+
         const ids = document.getElementsByClassName("peer-ids");
         var afterId = []
         for (var i = 0; i < ids.length; i++) {
@@ -201,8 +212,11 @@ Hooks.ChatList = {
             if (call) {
                 call.close()
             }
+            disconnectedEvent(id)
             callList = callList.filter(call => call.peer != id)
         }
+        console.log('after id is')
+        console.log(afterId)
         if (afterId[afterId.length - 1] == myId) {
             for (var i = 0; i < addedIds.length; i++) {
                 const id = addedIds[i]
@@ -241,7 +255,7 @@ Hooks.ChatList = {
 
                             }
 
-                            video.id = call.peer
+                            video.id = id
                             var audio = document.createElement('audio')
                             audio.autoplay = 'autoplay';
                             audio.height = "100%"
@@ -253,8 +267,11 @@ Hooks.ChatList = {
                             audio.id = `${call.peer}-audio`
                             document.getElementById('song').appendChild(video);
                             document.getElementById('song').appendChild(audio);
+                            console.log('play sound')
+                            connectedEvent(id)
                         }
-                        console.log('play sound')
+
+
 
                     });
                     call.on('close', function () {
@@ -305,7 +322,7 @@ Hooks.BroadCastList = {
                     }).catch(error => {
                         document.getElementById("play-in-line").style.display = "flex"
                         // Show something in the UI that the video is muted
-                        alert('autoplay disabled')
+                        alert('Video autoplay disabled')
                     });
                 }
 

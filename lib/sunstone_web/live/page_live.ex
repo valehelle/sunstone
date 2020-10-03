@@ -22,7 +22,7 @@ defmodule SunstoneWeb.PageLive do
         social = Accounts.get_social!(social.id)
         Social.changeset(social, %{}, user)
       end
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil)}
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [])}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -109,7 +109,7 @@ defmodule SunstoneWeb.PageLive do
     if (table.broadcast_id === user.id) do
        Chats.broadcast_reset_table(table, user, office_id)
      end
-    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users)}
+    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, connected_list: [])}
   end
 
   def handle_event("toggle-mute", value, socket) do
@@ -117,6 +117,16 @@ defmodule SunstoneWeb.PageLive do
     office_id = socket.assigns.office_id
     {:ok, user} = Accounts.update_user(user, %{is_muted: !user.is_muted}, office_id)
     {:noreply, assign(socket, user: user)}
+  end
+
+  def handle_event("connected", %{"peer-id" => peer_id}, socket) do
+    connected_list = socket.assigns.connected_list ++ [peer_id]
+    {:noreply, assign(socket, connected_list: connected_list)}
+  end
+
+  def handle_event("disconnected", %{"peer-id" => peer_id}, socket) do
+    connected_list = socket.assigns.connected_list -- [peer_id]
+    {:noreply, assign(socket, connected_list: connected_list)}
   end
 
 
@@ -149,10 +159,9 @@ defmodule SunstoneWeb.PageLive do
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
+
     {:noreply, assign(socket, user: user, broadcast: table.broadcast, tables: tables)}
   end
-
-
 
 
   def handle_info({:user_updated}, socket) do
@@ -161,8 +170,8 @@ defmodule SunstoneWeb.PageLive do
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
-     
-    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, broadcast: table.broadcast)}
+     office = Chats.get_office!(office_id)
+    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, broadcast: table.broadcast, office: office)}
   end
 
   def handle_info({:user_inactive}, socket) do

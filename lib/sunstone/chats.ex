@@ -47,9 +47,12 @@ defmodule Sunstone.Chats do
 
   """
   def get_table!(id) do
+   user_query = from u in User, 
+                order_by: u.updated_at
    query = from t in Table,
            where: t.id == ^id,
-           preload: [:users, :broadcast]
+           preload: [:broadcast, users: ^user_query]
+    IO.inspect "new"
    Repo.one!(query)
   end
 

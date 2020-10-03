@@ -151,7 +151,7 @@ video {
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
 <div id = "video-online-container" style="display:flex; ">
-    <div id = "video-online-child" style="flex:.3;  max-height: 80vh; min-height:80vh; overflow: scroll;">
+    <div id = "video-online-child" style="flex:.4;  max-height: 80vh; min-height:80vh; overflow: scroll;">
             <div style="display: flex ; color: #606c76; flex-direction: column;">
                 <div style="display: flex; flex-direction: column; justify-content: center; padding-bottom: 10px; border-bottom: 1px solid lightgray;">
                     <div style="display: flex; flex-direction: column; ">
@@ -208,7 +208,14 @@ video {
                                                     <% else %>
                                                         <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
                                                     <% end %>
-                                                        
+                                                        &nbsp; 
+                                                        <%= if length(table.users) > 1 && Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil && user.id != @user.id do %>
+                                                           <%= if Enum.find_index(@connected_list, fn peer_id -> user.peer_id == peer_id end) == nil do %> 
+                                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-yellow.svg") %>" > 
+                                                            <%= else %>
+                                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-green.svg") %>" > 
+                                                            <%= end %>
+                                                        <%= end %>
                                                     </span> 
 
                                                 </h4>
@@ -259,7 +266,7 @@ video {
                                 </div>
                 </div>
     </div>
-    <div id="video-container-parent" style="flex:.7; padding-left:10px; min-height: 70vh;">
+    <div id="video-container-parent" style="flex:.6; padding-left:10px; min-height: 70vh;">
             <div id="video-container" style="position: relative;  width: 100%; height: 100%;">
                 <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%; ">
 
