@@ -145,13 +145,14 @@ Hooks.Main = {
     }
 }
 Hooks.Notification = {
-    mounted() {
+    updated() {
         const subscibeEvent = (sub) => {
             this.pushEvent("subscribe-notification", sub)
         }
         navigator.serviceWorker.register('/sw.js').then(function (reg) {
             reg.pushManager.getSubscription().then(function (sub) {
                 if (sub == undefined) {
+                    console.log('change display to block')
                     document.getElementById('sub-btn').style.display = "block";
                 } else {
                     document.getElementById('sub-btn').style.display = "none";
