@@ -123,7 +123,7 @@ defmodule Sunstone.Accounts do
   def update_user_active(%User{} = user, attrs, office_id) do
     office = Chats.get_office!(office_id)
     {_, table} = Chats.create_table(%{}, office)
-    new_attrs = Map.merge(attrs, %{is_active: true, table_id: table.id, active_office: office_id, is_muted: false})
+    new_attrs = Map.merge(attrs, %{is_active: true, table_id: table.id, active_office: office_id, is_muted: true})
     user
     |> User.update_user_active_changeset(new_attrs)
     |> Repo.update()
@@ -150,7 +150,7 @@ defmodule Sunstone.Accounts do
   def leave_table(%User{} = user, office_id) do
     office = Chats.get_office!(office_id)
     {_, table} = Chats.create_table(%{}, office)
-    attrs = %{table_id: table.id}
+    attrs = %{table_id: table.id, is_muted: true}
     user
     |> User.update_changeset(attrs)
     |> Repo.update()

@@ -22,7 +22,7 @@ defmodule SunstoneWeb.PageLive do
         social = Accounts.get_social!(social.id)
         Social.changeset(social, %{}, user)
       end
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [])}
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false)}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -151,6 +151,14 @@ defmodule SunstoneWeb.PageLive do
     {:noreply, assign(socket, user: user)}
   end
 
+  def handle_event("show_sub_btn", _, socket) do
+
+    {:noreply, assign(socket, show_sub_btn: true)}
+  end
+  def handle_event("hide_sub_btn", _, socket) do
+    {:noreply, assign(socket, show_sub_btn: false)}
+  end
+
   
 
   def handle_info({:table_updated}, socket) do
@@ -184,6 +192,8 @@ defmodule SunstoneWeb.PageLive do
 
     {:noreply, assign(socket, user: user, tables: tables, office: office)}
   end
+
+
   @impl true
   def unmount(_, %{user: user, office_id: office_id}) do
      user = Accounts.get_user!(user.id)

@@ -28,6 +28,7 @@ var before_ids = []
 var currentBroadcast = null
 var localAudioTrack = null
 var myId
+var showNotification = false
 function createEmptyVideoTrack({ width, height }) {
     const canvas = Object.assign(document.createElement('canvas'), { width, height });
     canvas.getContext('2d').fillRect(0, 0, width, height);
@@ -60,6 +61,7 @@ Hooks.Main = {
 
                 localStream = mediaStream
                 pushEvent(id)
+
 
             }).catch(function (err) {
                 console.log('Failed to get local stream', err);
@@ -145,17 +147,22 @@ Hooks.Main = {
     }
 }
 Hooks.Notification = {
-    updated() {
+    mounted() {
         const subscibeEvent = (sub) => {
             this.pushEvent("subscribe-notification", sub)
+        }
+        const showButton = () => {
+            this.pushEvent("show_sub_btn")
+        }
+        const hideButton = () => {
+            this.pushEvent("hide_sub_btn")
         }
         navigator.serviceWorker.register('/sw.js').then(function (reg) {
             reg.pushManager.getSubscription().then(function (sub) {
                 if (sub == undefined) {
-                    console.log('change display to block')
-                    document.getElementById('sub-btn').style.display = "block";
+                    showButton()
                 } else {
-                    document.getElementById('sub-btn').style.display = "none";
+                    hideButton()
                     subscibeEvent(sub)
                 }
             })
@@ -168,7 +175,7 @@ Hooks.IsMuted = {
     updated() {
         let is_muted = document.getElementById("is_muted").getAttribute("is_muted")
         if (is_muted == "true") {
-
+            console.log('muting the mic')
             localStream.getAudioTracks()[0].enabled = false
         } else {
             localStream.getAudioTracks()[0].enabled = true
@@ -178,7 +185,9 @@ Hooks.IsMuted = {
 Hooks.ChatList = {
 
     updated() {
-
+        const toggleMute = (id) => {
+            this.pushEvent("toggle-mute", {})
+        }
         const connectedEvent = (id) => {
             this.pushEvent("connected", { "peer-id": id })
         }
@@ -216,7 +225,13 @@ Hooks.ChatList = {
             disconnectedEvent(id)
             callList = callList.filter(call => call.peer != id)
         }
-        console.log('after id is')
+        if (before_ids.length > 1 && ids.length === 1) {
+            let is_muted = document.getElementById("is_muted").getAttribute("is_muted")
+            if (is_muted == "false") {
+                toggleMute()
+            }
+        }
+
         console.log(afterId)
         if (afterId[afterId.length - 1] == myId) {
             for (var i = 0; i < addedIds.length; i++) {

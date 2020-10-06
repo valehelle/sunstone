@@ -141,13 +141,15 @@ video {
 </ol>
 <a href="/office" class = "button button-outline" style="margin-top: 20px;">Go Back</a>
 <h2 style="color: #606c76;margin-bottom:5px; margin-top:30px;"><%= @office.name %></h2>
-<div phx-hook="Notification" id="sub-btn" style="display:none; margin-bottom: 20px; border-bottom: 1px solid lightgrey;" >
-<%= if @user.is_active do %>
+<div phx-hook="Notification">
+</div>
+<%= if @show_sub_btn do %>
+<div id="sub-btn" style="margin-bottom: 20px; border-bottom: 1px solid lightgrey;" >
     <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
     <button onclick="subscribe()" >Yes notify me</button>
-           
+</div>       
 <% end %>
- </div>
+
 <div phx-hook="Main"></div>
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
@@ -320,7 +322,7 @@ video {
             <div style="color: #606c76; margin-top: 25px; height: 80vh;">
             <h4>Please enable the microphone to enter.</h4>
             <h4>If there is no pop up to enable the microphone, try refresh the page.</h4>
-            <h4>Don't worry about people hearing you, they still need to enter your desk to hear your voice.</h4>
+            <h4>Don't worry about people hearing you, it is muted by default and everytime you leave a desk.</h4>
             </div>
 
 <% end %>
