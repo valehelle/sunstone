@@ -49,101 +49,102 @@ Hooks.Main = {
         const connectedEvent = (id) => {
             this.pushEvent("connected", { "peer-id": id })
         }
+        if (!peer) {
+            peer = new Peer({ host: "inoffice-peerjs.herokuapp.com", secure: true });
+            peer.on('open', function (id) {
+                console.log('peer open')
+                console.log(id)
+                navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(function (stream) {
+                    let audioTrack = stream.getAudioTracks()[0]
+                    localAudioTrack = audioTrack
+                    let videoTrack = createEmptyVideoTrack({ width: 500, height: 500 })
+                    const mediaStream = new MediaStream([audioTrack, videoTrack]);
 
-        peer = new Peer({ host: "inoffice-peerjs.herokuapp.com", secure: true });
-        peer.on('open', function (id) {
-            console.log('peer open')
-            navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(function (stream) {
-                let audioTrack = stream.getAudioTracks()[0]
-                localAudioTrack = audioTrack
-                let videoTrack = createEmptyVideoTrack({ width: 500, height: 500 })
-                const mediaStream = new MediaStream([audioTrack, videoTrack]);
-
-                localStream = mediaStream
-                pushEvent(id)
+                    localStream = mediaStream
+                    pushEvent(id)
 
 
-            }).catch(function (err) {
-                console.log('Failed to get local stream', err);
+                }).catch(function (err) {
+                    console.log('Failed to get local stream', err);
+                });
             });
-        });
-        peer.on('error', function (err) {
-            console.log('error')
+            peer.on('error', function (err) {
+                console.log('error')
 
-            document.getElementById('error-peerjs').style.visibility = "visible";
-            console.log(err)
-        });
-        peer.on('close', function (err) {
-            console.log('close')
-            console.log(err)
-        });
-        peer.on('call', function (call) {
-            console.log('Answering incoming call from ' + call.peer);
-            console.log(peer)
-            call.answer(localStream)
-            callList.push(call)
+                document.getElementById('error-peerjs').style.visibility = "visible";
+                console.log(err)
+            });
+            peer.on('close', function (err) {
+                console.log('close')
+                console.log(err)
+            });
+            peer.on('call', function (call) {
+                console.log('Answering incoming call from ' + call.peer);
+                console.log(peer)
+                call.answer(localStream)
+                callList.push(call)
 
-            call.on('stream', function (remoteStream) {
+                call.on('stream', function (remoteStream) {
 
 
-                console.log('connected from someone calling')
-                var audio = document.getElementById(call.peer);
-                if (audio == null) {
-                    let audioTrack = remoteStream.getAudioTracks()[0]
-                    let videoTrack = remoteStream.getVideoTracks()[0]
-                    const audioStream = new MediaStream([audioTrack]);
-                    const videoStream = new MediaStream([videoTrack]);
+                    console.log('connected from someone calling')
+                    var audio = document.getElementById(call.peer);
+                    if (audio == null) {
+                        let audioTrack = remoteStream.getAudioTracks()[0]
+                        let videoTrack = remoteStream.getVideoTracks()[0]
+                        const audioStream = new MediaStream([audioTrack]);
+                        const videoStream = new MediaStream([videoTrack]);
 
-                    var video = document.createElement('video')
-                    video.autoplay = 'autoplay';
-                    video.height = "100%"
-                    video.width = "100%"
-                    video.srcObject = videoStream
-                    video.className = 'peer-songs'
-                    video.control = 'control'
-                    video.style.display = "none"
-                    video.setAttribute('playsinline', 'playsinline');
-                    video.id = call.peer
+                        var video = document.createElement('video')
+                        video.autoplay = 'autoplay';
+                        video.height = "100%"
+                        video.width = "100%"
+                        video.srcObject = videoStream
+                        video.className = 'peer-songs'
+                        video.control = 'control'
+                        video.style.display = "none"
+                        video.setAttribute('playsinline', 'playsinline');
+                        video.id = call.peer
 
-                    var audio = document.createElement('audio')
-                    audio.autoplay = 'autoplay';
-                    audio.height = "100%"
-                    audio.width = "100%"
-                    audio.srcObject = audioStream
-                    audio.className = 'peer-songs audio-peer'
-                    audio.control = 'control'
-                    audio.style.display = "none"
-                    audio.id = `${call.peer}-audio`
-                    document.getElementById('song').appendChild(video);
-                    document.getElementById('song').appendChild(audio);
+                        var audio = document.createElement('audio')
+                        audio.autoplay = 'autoplay';
+                        audio.height = "100%"
+                        audio.width = "100%"
+                        audio.srcObject = audioStream
+                        audio.className = 'peer-songs audio-peer'
+                        audio.control = 'control'
+                        audio.style.display = "none"
+                        audio.id = `${call.peer}-audio`
+                        document.getElementById('song').appendChild(video);
+                        document.getElementById('song').appendChild(audio);
 
-                    var audio = document.getElementById(`${call.peer}-audio`);
-                    var promise = audio.play();
+                        var audio = document.getElementById(`${call.peer}-audio`);
+                        var promise = audio.play();
 
-                    if (promise !== undefined) {
-                        promise.then(_ => {
+                        if (promise !== undefined) {
+                            promise.then(_ => {
 
-                            // Autoplay started!
-                        }).catch(error => {
-                            // Show something in the UI that the video is muted
-                            alert('Audio autoplay disabled')
-                        });
+                                // Autoplay started!
+                            }).catch(error => {
+                                // Show something in the UI that the video is muted
+                                alert('Audio autoplay disabled')
+                            });
+                        }
+                        connectedEvent(call.peer)
                     }
-                    connectedEvent(call.peer)
-                }
 
 
 
 
+                });
+                call.on('close', function () {
+                    console.log('answering connection close')
+                });
+                call.on('error', function () {
+                    console.log('answering connection error')
+                });
             });
-            call.on('close', function () {
-                console.log('answering connection close')
-            });
-            call.on('error', function () {
-                console.log('answering connection error')
-            });
-        });
-
+        }
     }
 }
 Hooks.Notification = {
@@ -157,16 +158,19 @@ Hooks.Notification = {
         const hideButton = () => {
             this.pushEvent("hide_sub_btn")
         }
-        navigator.serviceWorker.register('/sw.js').then(function (reg) {
-            reg.pushManager.getSubscription().then(function (sub) {
-                if (sub == undefined) {
-                    showButton()
-                } else {
-                    hideButton()
-                    subscibeEvent(sub)
-                }
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register('/sw.js').then(function (reg) {
+                reg.pushManager.getSubscription().then(function (sub) {
+                    if (sub == undefined) {
+                        showButton()
+                    } else {
+                        hideButton()
+                        subscibeEvent(sub)
+                    }
+                })
             })
-        })
+        }
+
     }
 }
 
@@ -394,14 +398,14 @@ window.toggleMute = function () {
     mute = !mute
     var muteBtn = document.getElementById("mute-btn")
     if (localStream && mute) {
-        localStream.getAudioTracks()[0].enabled = false
+        localAudioTrack.enabled = false
         // videoStreamTrack.enabled = false
 
-        muteBtn.innerHTML = "Unmute"
+        //muteBtn.innerHTML = "Unmute"
     } else {
-        localStream.getAudioTracks()[0].enabled = true
+        localAudioTrack.enabled = true
         // videoStreamTrack.enabled = true
-        muteBtn.innerHTML = "Mute"
+        // muteBtn.innerHTML = "Mute"
     }
 }
 
