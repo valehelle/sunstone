@@ -64,7 +64,7 @@ defmodule SunstoneWeb.InviteController do
               },
               "subject" => "#{office.owner.name} send you an invitation",
               "content" => [
-                %{"type"=> "text/html", "value" => "<h4 style=\"margin:0\">Your colleague #{office.owner.name} have invited you to join #{office.name} at Inoffice.</h4><a href=\"https://www.inoffice.chat/login\">Click Here to register</a>"}
+                %{"type"=> "text/html", "value" => "<h4 style=\"margin:0\">Your colleague #{office.owner.name} have invited you to join #{office.name} at Inoffice.</h4><a href=\"https://www.inoffice.chat/register\">Click Here to register</a>"}
               ]
               
           }
