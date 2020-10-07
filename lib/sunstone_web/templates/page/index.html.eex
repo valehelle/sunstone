@@ -5,26 +5,317 @@
      padding-left:20px; padding-right: 20px;
   }
     
-
+     @media only screen and (max-width: 860px) {
+     .why {
+         flex-direction: column;
+     }
+     .flex-reverse {
+         flex-direction: column-reverse; 
+     }
+     #whyid{
+         padding: 0!important;
+     }
+    }
 
 </style>
 <div id="parent-main" >
 <div style="background-color:#F03A47; color:white;" id="main-content">
-    <div style="color:#white; padding: 20px;" class="center-width" >
-        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Improve collaboration between remote developers</h1>
+    <div style="color:#white; padding: 20px; margin: 0 auto; max-width: 90rem; min-height: 50vh; padding-top: 10vh;" >
+        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Collaboration tool for remote developers</h1>
         <h3 style=" ">Whether your working from home or office, Inoffice makes it easy for you to talk to your team members and collaborate more often.</h3>
         <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "background-color: #4CAF50;")%> 
-        <img src="<%= Routes.static_path(@conn, "/images/inoffice-revamp-screenshot.png") %>" alt="Inoffice" width="100%" height="100%" style="padding:3px; background-color:white; margin-top: 30px; border-radius: 5px;">
 
     </div>
 </div>
-<div style="color:#606c76; padding: 20px; padding-top: 40px; " class="center-width">
-    <h2 style="color: #F03A47">Why Inoffice?</h2>
-    <h3>Just like in a real office environment, your team members can:</h3>
-    <div >
-        <h4 style="">> Look who is around to talk.</h4>
-        <h4 style="">> Hop in and voice chat with your team members without having to call.</h4>
-        <h4 style="">> See who are having a conversation and join in.</h4>
+<div id= "whyid" style="color:#606c76; padding: 20px; padding-top: 40px; margin: 0 auto; max-width: 90rem;">
+    <div style="">
+        <div class= "why" style="display: flex; ">
+        <div style="flex:.5; display: flex; flex-direction: column; margin-bottom: 20px;">
+        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Desks</h3>
+            <div class="container" style="padding: 5px;">
+                <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                    <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                        <div style="padding-top:5px; padding-bottom: 5px;">
+                            <img style="fill=#606c76; float:right;" src="/images/lock_open-24px.svg" width="18" height="18">
+                        </div>
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    M                                            
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Mary                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Office)                                                        
+                                        &nbsp; 
+                                        -
+                                        Available                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                        </ul>
+                        <button style="margin-bottom:0; float:right;" phx-click="toggle-locked">
+                            Talk
+                        </button>
+                    </div>
+                </div>
+            </div>
+              <div class="container" style="padding: 5px;">
+                <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                    <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                        <div style="padding-top:5px; padding-bottom: 5px;">
+                            <img style="fill=#606c76; float:right;" src="/images/lock_open-24px.svg" width="18" height="18">
+                        </div>
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    N                                           
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Nick                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Remote)                                                        
+                                        &nbsp; 
+                                        -
+                                        Available                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                        </ul>
+                        <button style="margin-bottom:0; float:right;" phx-click="toggle-locked">
+                            Talk
+                        </button>
+                    </div>
+                </div>
+            </div>
+              <div class="container" style="padding: 5px;">
+                <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                    <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                        <div style="padding-top:5px; padding-bottom: 5px;">
+                            <img style="fill=#606c76; float:right;" src="/images/lock_open-24px.svg" width="18" height="18">
+                        </div>
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    A                                            
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Alex                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Remote)                                                        
+                                        &nbsp; 
+                                        -
+                                        Busy                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                        </ul>
+                        <button style="margin-bottom:0; float:right;" phx-click="toggle-locked">
+                            Lock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="flex:.5; display:flex; justify-content: center; flex-direction: column; padding-left: 20px; padding-right: 20px">
+            <h1 style="font-weight: bold; font-size: 50px; text-align: center">Look around</h1>
+            <h4 style="text-align: center; margin: 0;">See who is online and where are they working from.</h4>
+             <h4 style="text-align: center">Instantly pop in to talk without having to call.</h4>
+        </div>
+        </div>
+        <div class= "why flex-reverse" style="display: flex; margin-top: 50px; ">
+        <div style="flex:.5; display:flex; justify-content: center; flex-direction: column; padding-left: 20px; padding-right: 20px">
+            <h1 style="font-weight: bold; font-size: 50px; text-align: center">Join in</h1>
+            <h4 style="text-align: center">See who is talking to who and join in the conversation.</h4>
+        </div>
+        <div style="flex:.5; display: flex; flex-direction: column;  margin-bottom: 20px;">
+        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Desks</h3>
+            <div class="container" style="padding: 5px;">
+                <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                    <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                        <div style="padding-top:5px; padding-bottom: 5px;">
+                            <img style="fill=#606c76; float:right;" src="/images/lock_open-24px.svg" width="18" height="18">
+                        </div>
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    A                                            
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Andrew                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Office)                                                        
+                                        &nbsp; 
+                                        -
+                                        Available                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    M                                            
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Micheal                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Office)                                                        
+                                        &nbsp; 
+                                        -
+                                        Available                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                        </ul>
+                        <button style="margin-bottom:0; float:right;" phx-click="toggle-locked">
+                            Join
+                        </button>
+                    </div>
+                </div>
+            </div>
+              
+              <div class="container" style="padding: 5px;">
+                <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                    <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                        <div style="padding-top:5px; padding-bottom: 5px;">
+                            <img style="fill=#606c76; float:right;" src="/images/lock_open-24px.svg" width="18" height="18">
+                        </div>
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    A                                            
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Alex Lee                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Remote)                                                        
+                                        &nbsp; 
+                                        -
+                                        Busy                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                        </ul>
+                        <button style="margin-bottom:0; float:right;" phx-click="toggle-locked">
+                            Lock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+     <div class= "why" style="display: flex; margin-top: 50px;">
+        <div  style="flex:.5; display: flex; flex-direction: column;  margin-bottom: 20px;">
+        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Desks</h3>
+            <div class="container" style="padding: 5px;">
+                <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                    <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                        <div style="padding-top:5px; padding-bottom: 5px;">
+                            <img style="fill=#606c76; float:right;" src="/images/lock-24px.svg" width="18" height="18">
+                        </div>
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    L                                            
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        Lily                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Office)                                                        
+                                        &nbsp; 
+                                        -
+                                        Available                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                            <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
+                                    M                                           
+                                </div>
+                                <div style="justify-content: center; display: flex; flex-direction: column;">
+                                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                                        May                                                    
+                                    <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
+                                        (Office)                                                        
+                                        &nbsp; 
+                                        -
+                                        Available                                                       
+                                        &nbsp;
+                                        &nbsp;
+                                        <img style="fill=#606c76;" src="/images/mic_off-24px.svg" width="18" height="18">
+                                        &nbsp; 
+                                        </span> 
+
+                                        </h4>
+                                </div>
+                                            
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="flex:.5; display:flex; justify-content: center; flex-direction: column; padding-left: 20px; padding-right: 20px">
+            <h1 style="font-weight: bold; font-size: 50px; text-align: center">Privacy</h1>
+            <h4 style="text-align: center; margin: 0;">Some conversation are better left private.</h4>
+             <h4 style="text-align: center">Lock the desk so that no one else can join.</h4>
+        </div>
+        </div>
     </div>
 </div>
 </div>
