@@ -164,6 +164,9 @@ video {
                         </div>
                         <div style="display:flex">
                             <%= f = form_for @changeset, "#", [ phx_change: :save, style: "margin-bottom: 0;"] %>
+                            <%= select(f, :message, [[key: "Remote", value: "Remote"],
+                                                [key: "Office", value: "Office"],
+                                                ], style: "margin:0;")%>
                             <%= select(f, :status, [[key: "Available", value: "Available"],
                                                 [key: "Busy", value: "Busy"],
                                                 [key: "Do Not Disturb", value: "Do Not Disturb"],
@@ -195,9 +198,16 @@ video {
                         <div class="container" style="padding: 5px;">
                             <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
                                 <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
+                                    <div style = "padding-top:5px; padding-bottom: 5px;">
+                                        <%= if table.is_locked do %>
+                                            <img style="fill=#606c76; float:right;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/lock-24px.svg") %>">
+                                        <% else %>
+                                            <img style="fill=#606c76; float:right;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/lock_open-24px.svg") %>">
+                                        <% end %>
+                                    </div>
                                     <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
                                     <%= for user <- table.users do %>
-                                    <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 10px;">
+                                    <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
                                             <div style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                                 <%= String.at(user.name, 0) |> String.capitalize %>
                                             </div>
@@ -205,8 +215,13 @@ video {
                                                 <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
                                                     <%= user.name %> 
                                                     <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
-                                                        <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
+                                                        <%= if user.socials != nil && user.socials.message != "" do "(#{user.socials.message})" end %>
                                                         &nbsp; 
+                                                        -
+                                                        <%= if user.socials != nil && user.socials.status != "" do " #{user.socials.status} " end %>
+                                                      
+                                                        &nbsp;
+                                                        &nbsp;
                                                     <%= if user.is_muted  do %>
                                                         <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
                                                     <% else %>
@@ -224,19 +239,36 @@ video {
 
                                                 </h4>
                                             </div>
+                                        
                                     </li>
                                     <% end %>
                                     </ul>
 
+
+
                                     <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
-                                        <button style="margin-bottom:0; float:right;" phx-click="leave">Leave</button>
+                                        <button style="margin-bottom:0; float:right; margin-left: 10px;" phx-click="leave">Leave</button>
 
                                     <% end %>
-                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil do %>
+
+                                                                        
+                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil && !table.is_locked do %>
                                         <button style="margin-bottom:0; min-width: 102.743px; float:right;" phx-click="join" phx-value-table-id=<%= table.id %> >
                                             Join
                                         </button>
                                     <% end %>
+
+                                    <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil do %>
+                                        <button style="margin-bottom:0; float:right;" phx-click="toggle-locked" >
+                                        <%= if table.is_locked do %>
+                                            Unlock
+                                        <% else %>
+                                            Lock
+                                        <% end%>
+                                        </button>
+
+                                    <% end %>
+
                                 </div>
                             </div>
                         </div>

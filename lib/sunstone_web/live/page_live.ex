@@ -118,6 +118,13 @@ defmodule SunstoneWeb.PageLive do
     {:ok, user} = Accounts.update_user(user, %{is_muted: !user.is_muted}, office_id)
     {:noreply, assign(socket, user: user)}
   end
+  def handle_event("toggle-locked", value, socket) do
+    user = socket.assigns.user
+    table = Chats.get_table!(user.table_id)
+    office_id = socket.assigns.office_id
+    Chats.locked_table(table, %{is_locked: !table.is_locked}, office_id)
+    {:noreply, assign(socket, user: user)}
+  end
 
   def handle_event("connected", %{"peer-id" => peer_id}, socket) do
     connected_list = socket.assigns.connected_list ++ [peer_id]

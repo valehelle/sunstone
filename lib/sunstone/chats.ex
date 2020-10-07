@@ -113,6 +113,15 @@ defmodule Sunstone.Chats do
     end
   end
 
+  def locked_table(%Table{} = table, param,  office_id) do
+    table
+    |> Table.locked_changeset(param)
+    |> Repo.update()
+    |> broadcast(:table_updated, office_id)
+
+  end
+
+
   @doc """
   Deletes a table.
 
@@ -209,6 +218,7 @@ defmodule Sunstone.Chats do
     delete_invite(invite) 
 
   end
+
 
   @doc """
   Updates a office.

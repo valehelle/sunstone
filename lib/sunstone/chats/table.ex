@@ -7,6 +7,7 @@ defmodule Sunstone.Chats.Table do
     has_many :users, User
     belongs_to :office, Office
     belongs_to :broadcast, User, foreign_key: :broadcast_id, on_replace: :update
+    field :is_locked, :boolean, default: false
     timestamps()
   end
 
@@ -29,4 +30,11 @@ defmodule Sunstone.Chats.Table do
     table
     |> change(broadcast: nil)
   end
+  
+  def locked_changeset(table, attrs) do
+    table
+    |> cast(attrs, [:is_locked])
+    |> validate_required([:is_locked])
+  end
+
 end
