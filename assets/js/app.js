@@ -356,9 +356,16 @@ Hooks.BroadCastList = {
                         call.peerConnection.getSenders()[1].replaceTrack(videoStreamTrack)
                     }
                 }
+            } else {
+                var vid = document.getElementById("self-video")
+                vid.style.display = "none"
             }
         } else {
             currentBroadcast = null
+            var vid = document.getElementById("self-video")
+            if (vid) {
+                vid.style.display = "none"
+            }
         }
 
     },
@@ -444,12 +451,32 @@ window.startScreenSharing = function () {
             const mediaStream = new MediaStream([localAudioTrack, videoStreamTrack]);
             localStream = mediaStream
             document.getElementById("share-screen-btn").click()
+
+            var vid = document.getElementById("self-video")
+            if (!vid) {
+                var video = document.createElement('video')
+                video.autoplay = 'autoplay';
+                video.height = "100%"
+                video.width = "100%"
+                video.srcObject = mediaStream
+                video.className = 'peer-songs'
+                video.control = 'control'
+                video.style.display = "block"
+                video.id = "self-video"
+                video.setAttribute('playsinline', 'playsinline');
+                document.getElementById('song').appendChild(video);
+            }
+
+
         }).catch(function (err) {
             console.log('Failed to get video stream', err);
         });
     } else {
         videoStreamTrack.enabled = true
         document.getElementById("share-screen-btn").click()
+        var vid = document.getElementById("self-video")
+        vid.style.display = "block"
+        vid.play()
         //videoStreamTrack.enabled = true
     }
 }
