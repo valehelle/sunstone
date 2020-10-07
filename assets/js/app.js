@@ -327,6 +327,10 @@ Hooks.BroadCastList = {
         console.log('mounted')
     },
     updated() {
+        const stopSharing = (sub) => {
+            this.pushEvent("stop-sharing-screen", sub)
+        }
+
         let selectedBroadcast = document.getElementById("selected-broadcast")
         if (selectedBroadcast) {
             let id = selectedBroadcast.getAttribute("peer-id")
@@ -355,6 +359,17 @@ Hooks.BroadCastList = {
                         const call = callList[i]
                         call.peerConnection.getSenders()[1].replaceTrack(videoStreamTrack)
                     }
+
+                    videoStreamTrack.onended = function () {
+                        videoStreamTrack = null
+                        var vid = document.getElementById("self-video")
+                        if (vid) {
+                            vid.remove()
+                        }
+                        stopSharing()
+
+                    };
+
                 }
             } else {
                 var vid = document.getElementById("self-video")
@@ -452,6 +467,8 @@ window.startScreenSharing = function () {
             localStream = mediaStream
             document.getElementById("share-screen-btn").click()
 
+
+
             var vid = document.getElementById("self-video")
             if (!vid) {
                 var video = document.createElement('video')
@@ -460,6 +477,7 @@ window.startScreenSharing = function () {
                 video.width = "100%"
                 video.srcObject = mediaStream
                 video.className = 'peer-songs'
+                video.muted = "muted"
                 video.control = 'control'
                 video.style.display = "block"
                 video.id = "self-video"
