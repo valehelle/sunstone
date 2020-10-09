@@ -160,6 +160,7 @@ Hooks.Notification = {
         }
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js').then(function (reg) {
+
                 reg.pushManager.getSubscription().then(function (sub) {
                     if (sub == undefined) {
                         showButton()
@@ -200,6 +201,11 @@ Hooks.ChatList = {
         }
 
         const ids = document.getElementsByClassName("peer-ids");
+        if (ids.length > 1) {
+            const sound = document.getElementById("notification-sound");
+            sound.play();
+
+        }
         var afterId = []
         for (var i = 0; i < ids.length; i++) {
             const id = ids[i].getAttribute("peer-id")
@@ -208,6 +214,12 @@ Hooks.ChatList = {
         var removedIds = before_ids.filter(function (id) {
             return afterId.indexOf(id) == -1;
         });
+        console.log('remove id')
+        console.log(removedIds.length)
+        if (removedIds.length >= 1) {
+            const sound = document.getElementById("leave-notification-sound");
+            sound.play();
+        }
 
         var addedIds = afterId.filter(function (id) {
             return before_ids.indexOf(id) == -1;
@@ -235,8 +247,6 @@ Hooks.ChatList = {
                 toggleMute()
             }
         }
-
-        console.log(afterId)
         if (afterId[afterId.length - 1] == myId) {
             for (var i = 0; i < addedIds.length; i++) {
                 const id = addedIds[i]

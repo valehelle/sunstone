@@ -22,7 +22,7 @@ defmodule SunstoneWeb.PageLive do
         social = Accounts.get_social!(social.id)
         Social.changeset(social, %{}, user)
       end
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false)}
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false, nudge_list: [])}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -50,20 +50,37 @@ defmodule SunstoneWeb.PageLive do
     end)
   end
   def send_notification(user, text) do
-    body = ~s({"body": "#{text}"})
-    subscription = %{keys: %{p256dh: user.notifications.p256dh, auth: user.notifications.auth }, endpoint: user.notifications.endpoint}
-    gcm_api_key = "BGQpjZfJ_qNF5I6n-jfeyCDM48sAYqyqRw1smJLVwMrHT4ifYVX77fjchc5Bb8wnj-IyxW3bQz3eu_hMDUpgFTQ"
+    case user.notifications do
+      nil -> {:error}
+      notification ->
+        body = ~s({"body": "#{text}"})
+        subscription = %{keys: %{p256dh: notification.p256dh, auth: notification.auth }, endpoint: notification.endpoint}
+        gcm_api_key = nil
 
-    # or just send the push
-    WebPushEncryption.send_web_push(body, subscription, gcm_api_key)
+        # or just send the push
+        WebPushEncryption.send_web_push(body, subscription, gcm_api_key)
+    end
+
     
   end
 
   def handle_event("subscribe-notification", param, socket) do
     user = socket.assigns.user
-    Accounts.create_update_notifications(param,user)
+    IO.inspect param
+    IO.inspect Accounts.create_update_notifications(param,user)
     {:noreply, assign(socket, nothing: [])}
   end
+  
+  def handle_event("nudge", %{"peer-id" => peer_id}, socket) do
+    user = socket.assigns.user
+    office_id = socket.assigns.office_id
+    nudgedUser = Accounts.get_user_by_peer(peer_id)
+    text = "#{user.name} nudged you."
+    send_notification(nudgedUser, text) 
+    {:noreply, socket}
+   # Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {:nudge, office_id: office_id})
+  end
+
 
   def handle_event("active", %{"peer-id" => peer_id}, socket) do
     user = socket.assigns.user
@@ -73,7 +90,7 @@ defmodule SunstoneWeb.PageLive do
     tables = Chats.list_tables(office_id)
     office = Chats.get_office!(office_id)
 
-    send_office_notification(office, user)
+    #send_office_notification(office, user)
     {:noreply, assign(socket, user: user,  tables: tables, chat_list: [], office: office)}
   end
 
@@ -177,6 +194,7 @@ defmodule SunstoneWeb.PageLive do
 
     {:noreply, assign(socket, user: user, broadcast: table.broadcast, tables: tables)}
   end
+
 
 
   def handle_info({:user_updated}, socket) do

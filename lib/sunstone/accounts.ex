@@ -57,6 +57,17 @@ defmodule Sunstone.Accounts do
   end
   def get_user_by_email(email), do: Repo.get_by(User, email: email)
   
+  def get_user_by_peer(peer_id) do
+    query = from u in User,
+            where: u.peer_id == ^peer_id,
+            select: u,
+            preload: [
+              notifications: ^from( n in Notification, order_by: [desc: n.id]),
+            ]
+
+    Repo.one!(query)
+  end
+
   def get_user_by_token(token) do 
     query = from r in Reset, 
             where: r.token == ^token,

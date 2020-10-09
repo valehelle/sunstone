@@ -81,6 +81,16 @@ async function subscribe(){
   });
 }
 
+function nudgeClick(el){
+    el.disabled = true
+    var nudgeSound = document.getElementById("nudge-sound");
+    nudgeSound.play()
+    setTimeout(unNudge, 5000, el)
+}
+function unNudge(el){
+    el.disabled = false;
+}
+
 </script>
 
 <style>
@@ -235,9 +245,20 @@ video {
                                                                 <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-green.svg") %>" > 
                                                             <%= end %>
                                                         <%= end %>
+                                                        
                                                     </span> 
 
                                                 </h4>
+                                                <%= if user.id != @user.id do %> 
+                                                <button style="
+                                                    margin-left: 10px;
+                                                    width: 100px;
+                                                    height: 30px;
+                                                    padding: 0;
+                                                    line-height: 0;
+                                                " id="<%= user.peer_id %>-id" phx-click="nudge" onClick="nudgeClick(this)"  phx-value-peer-id=<%= user.peer_id %> >Nudge</button>
+                                                <% end %> 
+
                                             </div>
                                         
                                     </li>
@@ -268,6 +289,7 @@ video {
                                         </button>
 
                                     <% end %>
+
 
                                 </div>
                             </div>
@@ -359,6 +381,16 @@ video {
             </div>
 
 <% end %>
-
-
+ <audio controls id="notification-sound" style="display: none">
+  <source src="<%= Routes.static_path(@socket, "/sounds/notification.wav") %>">
+Your browser does not support the audio element.
+</audio> 
+ <audio controls id="leave-notification-sound" style="display: none">
+  <source src="<%= Routes.static_path(@socket, "/sounds/leave_notification.wav") %>">
+Your browser does not support the audio element.
+</audio> 
+ <audio controls id="nudge-sound" style="display: none">
+  <source src="<%= Routes.static_path(@socket, "/sounds/nudge.mp3") %>">
+Your browser does not support the audio element.
+</audio> 
 <h6 style="margin-top:40px;">Found any bugs or feature request? <a style="font-weight:bold" href = "mailto:hazmi@inoffice.chat">Contact Us</a></h6>
