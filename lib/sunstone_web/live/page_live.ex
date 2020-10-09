@@ -66,8 +66,7 @@ defmodule SunstoneWeb.PageLive do
 
   def handle_event("subscribe-notification", param, socket) do
     user = socket.assigns.user
-    IO.inspect param
-    IO.inspect Accounts.create_update_notifications(param,user)
+    Accounts.create_update_notifications(param,user)
     {:noreply, assign(socket, nothing: [])}
   end
   
