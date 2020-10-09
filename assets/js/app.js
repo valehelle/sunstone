@@ -218,7 +218,7 @@ Hooks.ChatList = {
         console.log(removedIds.length)
         if (removedIds.length >= 1) {
             const sound = document.getElementById("leave-notification-sound");
-            sound.play();
+            //sound.play();
         }
 
         var addedIds = afterId.filter(function (id) {
