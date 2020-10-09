@@ -91,6 +91,10 @@ function unNudge(el){
     el.disabled = false;
 }
 
+function leaveClick(){
+    var nudgeSound = document.getElementById("leave-notification-sound");
+    nudgeSound.play()
+}
 </script>
 
 <style>
@@ -268,7 +272,7 @@ video {
 
 
                                     <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil and length(table.users) > 1 do %>
-                                        <button style="margin-bottom:0; float:right; margin-left: 10px;" phx-click="leave">Leave</button>
+                                        <button style="margin-bottom:0; float:right; margin-left: 10px;" phx-click="leave" onClick="leaveClick()">Leave</button>
 
                                     <% end %>
 
@@ -393,6 +397,24 @@ video {
             </div>
 
 <% end %>
+
+<ol style="display: none" phx-hook="NudgeList"  phx-update="none">
+<%= for nudge <- @nudge_list do %>
+    <li class="nudge" ><%= nudge %></li>
+<% end %>
+</ol>
+<ol style="display: none" phx-hook="JoinNotificationList"  phx-update="none">
+<%= for join <- @join_notification_list do %>
+    <li class="join-item" ><%= join %></li>
+<% end %>
+</ol>
+<ol style="display: none" phx-hook="LeaveNotificationList"  phx-update="none">
+<%= for leave <- @leave_notification_list do %>
+    <li class="leave-item" ><%= leave %></li>
+<% end %>
+</ol>
+
+
  <audio controls id="notification-sound" style="display: none">
   <source src="<%= Routes.static_path(@socket, "/sounds/notification.wav") %>">
 Your browser does not support the audio element.

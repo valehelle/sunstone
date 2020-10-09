@@ -22,7 +22,7 @@ defmodule SunstoneWeb.PageLive do
         social = Accounts.get_social!(social.id)
         Social.changeset(social, %{}, user)
       end
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false, nudge_list: [])}
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false, nudge_list: [], join_notification_list: [], leave_notification_list: [])}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -76,8 +76,9 @@ defmodule SunstoneWeb.PageLive do
     nudgedUser = Accounts.get_user!(peer_id)
     text = "#{user.name} nudged you."
     send_notification(nudgedUser, text) 
+    
+    Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {:nudge, peer_id: peer_id})
     {:noreply, socket}
-   # Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {:nudge, office_id: office_id})
   end
 
 
@@ -108,6 +109,7 @@ defmodule SunstoneWeb.PageLive do
   def handle_event("join", %{"table-id" => table_id}, socket) do
     user = socket.assigns.user
     office_id = socket.assigns.office_id
+    Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {:join_notification, table_id: table_id})
     {:ok, user} = Accounts.update_user(user, %{table_id: table_id}, office_id)
     tables = Chats.list_tables(office_id)
     table = Chats.get_table!(user.table_id)
@@ -118,13 +120,15 @@ defmodule SunstoneWeb.PageLive do
   def handle_event("leave", value, socket) do
     user = socket.assigns.user
     office_id = socket.assigns.office_id
+    Phoenix.PubSub.broadcast(Sunstone.PubSub, "users:#{office_id}", {:leave_notification, table_id: user.table_id})
     {:ok, user} = Accounts.leave_table(user, office_id)
     table = Chats.get_table!(user.table_id)
     tables = Chats.list_tables(office_id)
 
     if (table.broadcast_id === user.id) do
        Chats.broadcast_reset_table(table, user, office_id)
-     end
+    end
+    
     {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, connected_list: [])}
   end
 
@@ -193,6 +197,41 @@ defmodule SunstoneWeb.PageLive do
 
     {:noreply, assign(socket, user: user, broadcast: table.broadcast, tables: tables)}
   end
+
+  def handle_info({:nudge, param}, socket) do
+      user = socket.assigns.user
+      {id, _}= Integer.parse(param[:peer_id])
+      case user.id == id do
+        true -> 
+        nudge_list = socket.assigns.nudge_list
+        nudge_list = nudge_list ++ [1]
+        {:noreply, assign(socket, nudge_list: nudge_list)}
+        false -> {:noreply, socket}
+      end
+  end
+  def handle_info({:leave_notification, param}, socket) do
+      user = socket.assigns.user
+      case user.table_id == param[:table_id] do
+        true -> 
+        leave_notification_list = socket.assigns.leave_notification_list
+        leave_notification_list = leave_notification_list ++ [1]
+        {:noreply, assign(socket, leave_notification_list: leave_notification_list)}
+        false -> {:noreply, socket}
+      end
+  end
+  def handle_info({:join_notification, param}, socket) do
+      user = socket.assigns.user
+      {id, _}= Integer.parse(param[:table_id])
+      case user.table_id == id do
+        true -> 
+        join_notification_list = socket.assigns.join_notification_list
+        join_notification_list = join_notification_list ++ [1]
+        {:noreply, assign(socket, join_notification_list: join_notification_list)}
+        false -> {:noreply, socket}
+      end
+  end
+
+
 
 
 

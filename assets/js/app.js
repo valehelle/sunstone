@@ -201,11 +201,6 @@ Hooks.ChatList = {
         }
 
         const ids = document.getElementsByClassName("peer-ids");
-        if (ids.length > 1) {
-            const sound = document.getElementById("notification-sound");
-            sound.play();
-
-        }
         var afterId = []
         for (var i = 0; i < ids.length; i++) {
             const id = ids[i].getAttribute("peer-id")
@@ -214,16 +209,17 @@ Hooks.ChatList = {
         var removedIds = before_ids.filter(function (id) {
             return afterId.indexOf(id) == -1;
         });
+        console.log(before_ids)
         console.log('remove id')
         console.log(removedIds.length)
-        if (removedIds.length >= 1) {
-            const sound = document.getElementById("leave-notification-sound");
-            //sound.play();
-        }
+
 
         var addedIds = afterId.filter(function (id) {
             return before_ids.indexOf(id) == -1;
         });
+
+        var playLeaveSound = false
+
         for (var i = 0; i < removedIds.length; i++) {
             const id = removedIds[i]
             const video = document.getElementById(id);
@@ -233,6 +229,7 @@ Hooks.ChatList = {
             }
             if (song) {
                 song.remove()
+                playLeaveSound = true;
             }
             call = callList.find(call => call.peer == id)
             if (call) {
@@ -241,6 +238,8 @@ Hooks.ChatList = {
             disconnectedEvent(id)
             callList = callList.filter(call => call.peer != id)
         }
+
+
         if (before_ids.length > 1 && ids.length === 1) {
             let is_muted = document.getElementById("is_muted").getAttribute("is_muted")
             if (is_muted == "false") {
@@ -425,6 +424,44 @@ Hooks.AudioList = {
         console.log(document.getElementById("song").getElementsByClassName("peer-songs"))
     }
 }
+var nudgeLength = 0;
+Hooks.NudgeList = {
+    updated() {
+        var nudges = document.getElementsByClassName("nudge")
+        if (nudges && nudges.length > nudgeLength) {
+            let audio = document.getElementById("nudge-sound")
+            audio.play()
+            nudgeLength = nudges.length
+        }
+
+    }
+}
+var joinsLength = 0;
+Hooks.JoinNotificationList = {
+    updated() {
+        var joins = document.getElementsByClassName("join-item")
+        console.log(joins)
+        if (joins && joins.length > joinsLength) {
+            let audio = document.getElementById("notification-sound")
+            audio.play()
+            joinsLength = joins.length
+        }
+
+    }
+}
+var leaveLength = 0;
+Hooks.LeaveNotificationList = {
+    updated() {
+        var leaves = document.getElementsByClassName("leave-item")
+        if (leaves && leaves.length > leaveLength) {
+            let audio = document.getElementById("leave-notification-sound")
+            audio.play()
+            leaveLength = leaves.length
+        }
+
+    }
+}
+
 
 window.toggleMute = function () {
     mute = !mute
