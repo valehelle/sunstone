@@ -52,7 +52,6 @@ defmodule Sunstone.Chats do
    query = from t in Table,
            where: t.id == ^id,
            preload: [:broadcast, users: ^user_query]
-    IO.inspect "new"
    Repo.one!(query)
   end
 

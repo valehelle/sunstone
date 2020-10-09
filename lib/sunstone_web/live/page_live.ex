@@ -73,7 +73,7 @@ defmodule SunstoneWeb.PageLive do
   def handle_event("nudge", %{"peer-id" => peer_id}, socket) do
     user = socket.assigns.user
     office_id = socket.assigns.office_id
-    nudgedUser = Accounts.get_user_by_peer(peer_id)
+    nudgedUser = Accounts.get_user!(peer_id)
     text = "#{user.name} nudged you."
     send_notification(nudgedUser, text) 
     {:noreply, socket}
@@ -89,7 +89,7 @@ defmodule SunstoneWeb.PageLive do
     tables = Chats.list_tables(office_id)
     office = Chats.get_office!(office_id)
 
-    #send_office_notification(office, user)
+    send_office_notification(office, user)
     {:noreply, assign(socket, user: user,  tables: tables, chat_list: [], office: office)}
   end
 

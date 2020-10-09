@@ -3,7 +3,8 @@ self.addEventListener('push', function (event) {
     const title = 'Inoffice';
     const json = event.data.json()
     const options = {
-        body: json.body
+        body: json.body,
+        silent: true,
     };
 
 
