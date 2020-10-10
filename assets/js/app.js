@@ -443,6 +443,7 @@ Hooks.JoinNotificationList = {
         console.log(joins)
         if (joins && joins.length > joinsLength) {
             let audio = document.getElementById("notification-sound")
+            audio.volume = 0.4;
             audio.play()
             joinsLength = joins.length
         }
