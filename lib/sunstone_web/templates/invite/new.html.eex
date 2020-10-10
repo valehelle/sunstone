@@ -5,14 +5,14 @@
 <%= form_for @changeset, Routes.invite_path(@conn, :create, @hash_id), fn f -> %>
 <div style="color:#606c76; margin-top: 20px;">
   <label>
-    Your colleague email: <%= text_input f, :email, placeholder: "first@email.com,second@email.com" %>
+    Your team members email: <%= text_input f, :email, placeholder: "first@email.com,second@email.com" %>
     <%= error_tag f, :email %>
   </label>
   
 </div>
 
   <%= submit "Invite" %>
-  <h6 style=" color: #606c76;margin:0;">* You may need to request your colleague to check spam, all mail or promotion tab.</h6>
+  <h6 style=" color: #606c76;margin:0;">* You may need to request your team members to check spam, all mail or promotion tab.</h6>
 
 <% end %>
 

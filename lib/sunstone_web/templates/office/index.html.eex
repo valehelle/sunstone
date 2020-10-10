@@ -16,7 +16,7 @@
                             </ul>
                               <a href="<%= Routes.page_path(@conn, :index, SunstoneWeb.UserController.encode_id(office.id)) %>" style="margin-bottom:0; min-width: 102.743px; float:right;" class="button">Enter</a>
                                   <%= if @user.id === office.owner_id do %>
-                                      <%= link("Invite Colleague", to: Routes.invite_path(@conn, :new, SunstoneWeb.UserController.encode_id(office.id)), class: "button button-outline", style: "float:right; margin-right: 10px;") %> 
+                                      <%= link("Invite Members", to: Routes.invite_path(@conn, :new, SunstoneWeb.UserController.encode_id(office.id)), class: "button button-outline", style: "float:right; margin-right: 10px;") %> 
                                   <% end %>
 
                         </div>

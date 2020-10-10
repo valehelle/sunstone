@@ -44,7 +44,7 @@
 <div id="parent-main" >
 <div style="background-color:#F03A47; color:white;" id="main-content">
     <div style="color:#white; padding: 20px; margin: 0 auto; max-width: 90rem; min-height: 50vh; padding-top: 10vh;" >
-        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Collaboration tool for flexible developers</h1>
+        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Collaboration tool for remote developers</h1>
         <h3 style=" ">Whether your working from home or office, Inoffice makes it easy for you to talk to your team members and collaborate more often.</h3>
         <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "background-color: #4CAF50;")%> 
 
@@ -357,7 +357,7 @@
     <div class= "why flex-reverse" style="display: flex; margin-top: 50px; ">
         <div style="flex:.5; display:flex; justify-content: center; flex-direction: column; padding-left: 20px; padding-right: 20px">
             <h1 style="font-weight: bold; font-size: 50px; text-align: center">Give a nudge</h1>
-            <h4 style="text-align: center">If you want to get your colleague attention, give them a nudge.</h4>
+            <h4 style="text-align: center">Want to get your team members attention? Give them a nudge.</h4>
         </div>
         <div style="flex:.5; display: flex; flex-direction: column;  margin-bottom: 20px;">
         <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Offline</h3>
