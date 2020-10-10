@@ -401,8 +401,11 @@
                 </div>
             </div>
               
-    
         </div>
+        </div>
+        <div style="margin-top: 80px; display: grid;">
+        <h1 style="text-align: center;">Ready to start create your own office?</h1>
+            <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "justify-self:center;")%> 
         </div>
 
 </div>
