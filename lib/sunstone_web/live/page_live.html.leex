@@ -84,11 +84,13 @@ async function subscribe(){
 function nudgeClick(el){
     el.disabled = true
     var nudgeSound = document.getElementById("nudge-sound");
+    el.parentElement.parentElement.classList.add("circle-name");
     nudgeSound.play()
     setTimeout(unNudge, 5000, el)
 }
 function unNudge(el){
     el.disabled = false;
+    el.parentElement.parentElement.classList.remove("circle-name");
 }
 
 function leaveClick(){
@@ -139,6 +141,26 @@ video {
     border-color: white;
     color:white;
     background-color: transparent;
+}
+
+  .circle-name {
+    animation: nudge .4s linear;
+  }
+
+
+ @keyframes nudge {
+  
+  0% {
+    transform: rotate(-7deg);
+  }
+  
+  33% {
+    transform: rotate(7deg);
+  }
+  
+  66% {
+    transform: rotate(-7deg);
+  }
 }
 </style>
 

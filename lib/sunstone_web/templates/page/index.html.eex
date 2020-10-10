@@ -367,11 +367,11 @@
  
                         <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
                            
-                            <li  style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                            <li  id= "nudge-parent"  style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
                                 <div   style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                     M                                            
                                 </div>
-                                <div id= "nudge-parent"  style="justify-content: center; display: flex; flex-direction: column;">
+                                <div  style="justify-content: center; display: flex; flex-direction: column;">
                                     <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
                                         Micheal                                                    
                                     <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center; margin-left: 5px;"> 
