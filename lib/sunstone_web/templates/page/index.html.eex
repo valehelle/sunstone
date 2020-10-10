@@ -26,17 +26,17 @@
 
  @keyframes nudge {
   
-  0% {
-    transform: rotate(-7deg);
-  }
-  
-  33% {
-    transform: rotate(7deg);
-  }
-  
-  66% {
-    transform: rotate(-7deg);
-  }
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 </style>
@@ -365,9 +365,9 @@
                 <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
                     <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
  
-                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                        <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0;">
                            
-                            <li  id= "nudge-parent"  style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                            <li  id= "nudge-parent"  style=" width: 90%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px;">
                                 <div   style="justify-self: center; align-self: center; height:30px; width: 30px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                     M                                            
                                 </div>

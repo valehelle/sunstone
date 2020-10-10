@@ -54,7 +54,13 @@ function requestFullScreen(){
 }
 
 
+let globalsw = null
 
+async function serviceWorker(){
+    let sw = await navigator.serviceWorker.ready;
+    globalsw = sw
+}
+serviceWorker()
 
 async function subscribe(){
     let sw = await navigator.serviceWorker.ready;
@@ -82,11 +88,33 @@ async function subscribe(){
 }
 
 function nudgeClick(el){
-    el.disabled = true
+    
     var nudgeSound = document.getElementById("nudge-sound");
-    el.parentElement.parentElement.classList.add("circle-name");
-    nudgeSound.play()
-    setTimeout(unNudge, 5000, el)
+    
+    var peerId = el.getAttribute("peer-id");
+    var button = document.getElementById(peerId + "-id")
+    if(globalsw != undefined && globalsw.pushManager){
+        globalsw.pushManager.getSubscription()
+        .then(function(subscription) {
+            if (!subscription) {
+                alert('You will only be able to nudge if you allow the notification.')
+            return;
+            }
+            button.click()
+            nudgeSound.play()
+            el.disabled = true
+            el.parentElement.parentElement.classList.add("circle-name");
+            setTimeout(unNudge, 5000, el)
+        })
+        .catch(function(err) {
+            console.log('Error during getSubscription()', err);
+        });
+    }else{
+     alert('You will only be able to nudge if you allow the notification.')
+    }
+
+
+ 
 }
 function unNudge(el){
     el.disabled = false;
@@ -150,17 +178,17 @@ video {
 
  @keyframes nudge {
   
-  0% {
-    transform: rotate(-7deg);
-  }
-  
-  33% {
-    transform: rotate(7deg);
-  }
-  
-  66% {
-    transform: rotate(-7deg);
-  }
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 </style>
 
@@ -185,8 +213,8 @@ video {
 </div>
 <%= if @show_sub_btn do %>
 <div id="sub-btn" style="margin-bottom: 20px; border-bottom: 1px solid lightgrey;" >
-    <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Would you like to be notified when your colleague enter the office?</h6>
-    <button onclick="subscribe()" >Yes notify me</button>
+    <h6 style="margin: 0; margin-bottom: 10px; color:#606c76;">Get notification when someone enter your desk or nudge you.</h6>
+    <button onclick="subscribe()" >Notify me</button>
 </div>       
 <% end %>
 
@@ -195,7 +223,7 @@ video {
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
 <div id = "video-online-container" style="display:flex; ">
-    <div id = "video-online-child" style="flex:.4;  max-height: 80vh; min-height:80vh; overflow: scroll;">
+    <div id = "video-online-child" style="flex:.5;  max-height: 80vh; min-height:80vh; overflow: scroll;">
             <div style="display: flex ; color: #606c76; flex-direction: column;">
                 <div style="display: flex; flex-direction: column; justify-content: center; padding-bottom: 10px; border-bottom: 1px solid lightgray;">
                     <div style="display: flex; flex-direction: column; ">
@@ -237,17 +265,17 @@ video {
                     <%= for table <- @tables do %>
                         <div class="container" style="padding: 5px;">
                             <div class="row" style="margin-left: 0; width: 100%; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
-                                <div class="column" style=" margin-left: 10px; padding: 10px; padding-right: 20px; padding-left: 20px;">
-                                    <div style = "padding-top:5px; padding-bottom: 5px;">
+                                <div class="column" style=" padding: 10px; padding-right: 20px; padding-left: 20px;">
+                                    <div style = "padding-top:5px;">
                                         <%= if table.is_locked do %>
                                             <img style="fill=#606c76; float:right;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/lock-24px.svg") %>">
                                         <% else %>
                                             <img style="fill=#606c76; float:right;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/lock_open-24px.svg") %>">
                                         <% end %>
                                     </div>
-                                    <ul style="padding: 10px;  list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0; padding-bottom: 0;">
+                                    <ul style="padding-top: 10px; padding-bottom:10px; list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0;">
                                     <%= for user <- table.users do %>
-                                    <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; padding-bottom: 20px;">
+                                    <li style="width: 90%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; margin-top: 5px; ">
                                             <div style="justify-self: center; align-self: center; height:40px; width: 40px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                                 <%= String.at(user.name, 0) |> String.capitalize %>
                                             </div>
@@ -283,7 +311,15 @@ video {
                                                     height: 30px;
                                                     padding: 0;
                                                     line-height: 0;
-                                                " id="<%= user.peer_id %>-id" phx-click="nudge" onClick="nudgeClick(this)"  phx-value-peer-id=<%= user.id %> >Nudge</button>
+                                                "  onClick="nudgeClick(this)"  peer-id=<%= user.id %> >Nudge</button>
+                                                <button class="button button-outline"  style="
+                                                    margin-left: 10px;
+                                                    width: 100px;
+                                                    height: 30px;
+                                                    padding: 0;
+                                                    display: none;
+                                                    line-height: 0;
+                                                " id="<%= user.id %>-id" phx-click="nudge" phx-value-peer-id=<%= user.id %> >Nudge</button>
                                                 <% end %> 
 
                                             </div>
@@ -326,11 +362,11 @@ video {
 
                         <div class="container" style="margin-bottom: 20px; padding:5px;">
                                     <div class="row" style="width: 100%; margin: 0; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1); min-height: 40px;">
-                                        <div class="column" style="margin-left: 10px; padding: 10px;">
-                                            <ul style="padding: 0px;  list-style: none; margin:0;list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
+                                        <div class="column" style="margin-left: 10px;">
+                                            <ul style="padding: 10px;  list-style: none; margin:0;list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 0">
                                                 <%= for user <- @office.users do %>
                                                     <%= if !user.is_active || user.table.office_id != @office.id do %>
-                                                        <li style="margin-top: 10px; width: 100%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px;">
+                                                        <li style="margin-top: 10px; width: 90%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px;">
                                                             <div style="justify-self: center; align-self: center; height:40px; width: 40px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                                                 <%= String.at(user.name, 0) |> String.capitalize %>
                                                             </div>
@@ -343,16 +379,23 @@ video {
                                                                     </span> 
 
                                                                 </h4>
-                                                                <%= if user.id != @user.id do %> 
                                                                 <button class="button button-outline" style="
                                                                     margin-left: 10px;
                                                                     width: 100px;
                                                                     height: 30px;
                                                                     padding: 0;
                                                                     line-height: 0;
-                                                                " id="<%= user.peer_id %>-id" phx-click="nudge" onClick="nudgeClick(this)"  phx-value-peer-id=<%= user.id %> >Nudge</button>
-                                                                <% end %> 
-
+                                                                "onClick="nudgeClick(this)"  peer-id=<%= user.id %> >Nudge</button>
+                                                                
+                                                                <button class="button button-outline"  style="
+                                                                        margin-left: 10px;
+                                                                        display: none;
+                                                                        width: 100px;
+                                                                        height: 30px;
+                                                                        padding: 0;
+                                                                        display: none;
+                                                                        line-height: 0;
+                                                                    " id="<%= user.id %>-id" phx-click="nudge" phx-value-peer-id=<%= user.id %> >Nudge</button>
                                                             </div>
                                                         </li>
                                                     <% end %>
@@ -363,7 +406,7 @@ video {
                                 </div>
                 </div>
     </div>
-    <div id="video-container-parent" style="flex:.6; padding-left:10px; min-height: 70vh;">
+    <div id="video-container-parent" style="flex:.5; padding-left:10px; min-height: 70vh;">
             <div id="video-container" style="position: relative;  width: 100%; height: 100%;">
                 <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%; ">
 
