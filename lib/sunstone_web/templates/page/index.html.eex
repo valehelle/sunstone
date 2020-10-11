@@ -403,12 +403,15 @@
               
         </div>
         </div>
-        <div style="margin-top: 80px; display: grid;">
-        <h1 style="text-align: center;">Ready to start create your own office?</h1>
-            <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "justify-self:center;")%> 
-        </div>
+
 
 </div>
+</div>
+<div style="margin-top: 50px; background-color:#F03A47; color:white; padding-top:50px; padding-bottom: 50px;" id="main-content">
+        <div style="display: grid;">
+        <h1 style="text-align: center;">Ready to create your own office?</h1>
+            <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "justify-self:center; background-color: #4CAF50;")%> 
+        </div>
 </div>
  <audio controls id="notification-sound" style="display: none">
   <source src="<%= Routes.static_path(@conn, "/sounds/notification.wav") %>">
