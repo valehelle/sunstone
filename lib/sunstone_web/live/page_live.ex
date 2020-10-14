@@ -85,12 +85,18 @@ defmodule SunstoneWeb.PageLive do
   def handle_event("active", %{"peer-id" => peer_id}, socket) do
     user = socket.assigns.user
     office_id = socket.assigns.office_id
-    
+    previous_date = user.updated_at
     {:ok, user} = Accounts.update_user_active(user, %{is_active: true, peer_id: peer_id}, office_id)
+    current_date = user.updated_at
+    
     tables = Chats.list_tables(office_id)
     office = Chats.get_office!(office_id)
 
-    send_office_notification(office, user)
+    case NaiveDateTime.diff(current_date, previous_date) > 1800 do
+      true -> 
+      send_office_notification(office, user)
+      false -> IO.inspect "nothing"
+    end
     {:noreply, assign(socket, user: user,  tables: tables, chat_list: [], office: office)}
   end
 
