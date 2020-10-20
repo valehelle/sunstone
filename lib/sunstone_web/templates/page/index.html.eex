@@ -44,10 +44,11 @@
 <div id="parent-main" >
 <div style="background-color:#F03A47; color:white;" id="main-content">
     <div style="color:#white; padding: 20px; margin: 0 auto; max-width: 90rem; min-height: 50vh; padding-top: 10vh;" >
-        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">Communication tool for remote developers</h1>
-        <h3 style=" ">Whether your working from home or office, Inoffice makes it easy for you to talk to your team members and collaborate more often.</h3>
+        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">A place for team to have small chats</h1>
+        <h3 style=" ">Whether you are working from home or office, Inoffice makes it easy for you to talk to your team members and have small chats.</h3>
         <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "background-color: #4CAF50;")%> 
-
+        <br>
+        <img style="padding:10px;border: 1px solid lightgrey; margin-top: 30px; border-radius: 5px;" src="/images/inoffice-revamp.png" width="100%" height="100%">
     </div>
 </div>
 <div id= "whyid" style="color:#606c76; padding: 20px; padding-top: 40px; margin: 0 auto; max-width: 90rem;">
