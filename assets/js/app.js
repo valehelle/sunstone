@@ -21,6 +21,7 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 var peer
 var localStream = null
 var videoStreamTrack = null
+var localVideoCameraTrack = null
 var mute = false
 let Hooks = {}
 var callList = []
@@ -58,7 +59,15 @@ Hooks.Main = {
                     let audioTrack = stream.getAudioTracks()[0]
                     localAudioTrack = audioTrack
                     let videoTrack = createEmptyVideoTrack({ width: 500, height: 500 })
-                    const mediaStream = new MediaStream([audioTrack, videoTrack]);
+
+                    let videoCameraTrack = null
+                    if (localVideoCameraTrack) {
+                        videoCameraTrack = localVideoCameraTrack
+                    } else {
+                        videoCameraTrack = createEmptyVideoTrack({ width: 500, height: 500 })
+                    }
+
+                    const mediaStream = new MediaStream([audioTrack, videoTrack, videoCameraTrack]);
 
                     localStream = mediaStream
                     pushEvent(id)
@@ -92,8 +101,10 @@ Hooks.Main = {
                     if (audio == null) {
                         let audioTrack = remoteStream.getAudioTracks()[0]
                         let videoTrack = remoteStream.getVideoTracks()[0]
+                        let videoCameraTrack = remoteStream.getVideoTracks()[1]
                         const audioStream = new MediaStream([audioTrack]);
                         const videoStream = new MediaStream([videoTrack]);
+                        const videoCameraStream = new MediaStream([videoCameraTrack]);
 
                         var video = document.createElement('video')
                         video.autoplay = 'autoplay';
@@ -106,6 +117,9 @@ Hooks.Main = {
                         video.setAttribute('playsinline', 'playsinline');
                         video.id = call.peer
 
+                        var videoCamera = document.getElementById(`${call.peer}-camera`)
+                        videoCamera.srcObject = videoCameraStream
+
                         var audio = document.createElement('audio')
                         audio.autoplay = 'autoplay';
                         audio.height = "100%"
@@ -117,6 +131,7 @@ Hooks.Main = {
                         audio.id = `${call.peer}-audio`
                         document.getElementById('song').appendChild(video);
                         document.getElementById('song').appendChild(audio);
+                        document.getElementById('song').appendChild(videoCamera);
 
                         var audio = document.getElementById(`${call.peer}-audio`);
                         var promise = audio.play();
@@ -264,8 +279,10 @@ Hooks.ChatList = {
 
                             let audioTrack = remoteStream.getAudioTracks()[0]
                             let videoTrack = remoteStream.getVideoTracks()[0]
+                            let videoCameraTrack = remoteStream.getVideoTracks()[1]
                             const audioStream = new MediaStream([audioTrack]);
                             const videoStream = new MediaStream([videoTrack]);
+                            const videoCameraStream = new MediaStream([videoCameraTrack]);
 
                             var video = document.createElement('video')
                             video.autoplay = 'autoplay';
@@ -283,6 +300,10 @@ Hooks.ChatList = {
                                 video.style.display = "none"
 
                             }
+
+                            var videoCamera = document.getElementById(`${call.peer}-camera`)
+                            videoCamera.srcObject = videoCameraStream
+
 
                             video.id = id
                             var audio = document.createElement('audio')
@@ -424,6 +445,25 @@ Hooks.AudioList = {
         console.log(document.getElementById("song").getElementsByClassName("peer-songs"))
     }
 }
+Hooks.IsSharingCamera = {
+    updated() {
+        console.log('after share camera')
+
+        var isShareCamera = document.getElementById("is-share-camera").getAttribute("is-share-camera")
+        if (isShareCamera == 'true') {
+            if (localVideoCameraTrack) {
+                localVideoCameraTrack.enabled = true
+                for (var i = 0; i < callList.length; i++) {
+                    const call = callList[i]
+                    call.peerConnection.getSenders()[2].replaceTrack(localVideoCameraTrack)
+                }
+
+            }
+        } else {
+            localVideoCameraTrack.enabled = false
+        }
+    },
+}
 var nudgeLength = 0;
 Hooks.NudgeList = {
     updated() {
@@ -479,6 +519,37 @@ window.toggleMute = function () {
     }
 }
 
+window.toggleCamera = function () {
+    if (localVideoCameraTrack) {
+        localVideoCameraTrack.enabled = true;
+        document.getElementById('share-camera').click();
+    } else {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(function (stream) {
+            let videoCameraTrack = stream.getVideoTracks()[0]
+            localVideoCameraTrack = videoCameraTrack
+            let videoCameraStream = new MediaStream([videoCameraTrack]);
+            //video stream track can be null. Please handle this and also update the screen sharing to include local video
+            let localVideoStreamTrack = null;
+
+            if (videoStreamTrack) {
+                localVideoStreamTrack = videoStreamTrack
+            } else {
+                localVideoStreamTrack = createEmptyVideoTrack({ width: 500, height: 500 })
+            }
+
+            const mediaStream = new MediaStream([localAudioTrack, localVideoStreamTrack, localVideoCameraTrack]);
+            localStream = mediaStream
+            document.getElementById(`${myId}-camera`).srcObject = videoCameraStream
+            document.getElementById('share-camera').click();
+        }).catch(function (err) {
+            console.log('Failed to get local stream', err);
+        });
+    }
+
+
+}
+
+
 window.playVideo = function () {
     let selectedBroadcast = document.getElementById("selected-broadcast")
     if (selectedBroadcast) {
@@ -511,7 +582,13 @@ window.startScreenSharing = function () {
         navigator.mediaDevices.getDisplayMedia({ video: true, audio: false }).then(function (videoStream) {
             var screenVideoTrack = videoStream.getVideoTracks()[0];
             videoStreamTrack = screenVideoTrack
-            const mediaStream = new MediaStream([localAudioTrack, videoStreamTrack]);
+            var videoCameraTrack = null
+            if (localVideoCameraTrack) {
+                videoCameraTrack = localVideoCameraTrack
+            } else {
+                videoCameraTrack = createEmptyVideoTrack({ width: 500, height: 500 })
+            }
+            const mediaStream = new MediaStream([localAudioTrack, videoStreamTrack, videoCameraTrack]);
             localStream = mediaStream
             document.getElementById("share-screen-btn").click()
 

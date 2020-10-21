@@ -22,7 +22,7 @@ defmodule SunstoneWeb.PageLive do
         social = Accounts.get_social!(social.id)
         Social.changeset(social, %{}, user)
       end
-      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false, nudge_list: [], join_notification_list: [], leave_notification_list: [])}
+      {:ok, assign(socket, user: user, tables: tables, chat_list: [], office_id: office_id, office: office, changeset: changeset, broadcast: nil, connected_list: [], show_sub_btn: false, nudge_list: [], join_notification_list: [], leave_notification_list: [], share_camera: false)}
     else
       {:ok, redirect(socket, to: Routes.office_path(socket, :uninvited, hash_id))}
     end
@@ -135,7 +135,7 @@ defmodule SunstoneWeb.PageLive do
        Chats.broadcast_reset_table(table, user, office_id)
     end
     
-    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, connected_list: [])}
+    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, connected_list: [], share_camera: false)}
   end
 
   def handle_event("toggle-mute", value, socket) do
@@ -143,6 +143,10 @@ defmodule SunstoneWeb.PageLive do
     office_id = socket.assigns.office_id
     {:ok, user} = Accounts.update_user(user, %{is_muted: !user.is_muted}, office_id)
     {:noreply, assign(socket, user: user)}
+  end
+  def handle_event("toggle-camera", value, socket) do
+    share_camera = socket.assigns.share_camera
+    {:noreply, assign(socket, share_camera: !share_camera)}
   end
   def handle_event("toggle-locked", value, socket) do
     user = socket.assigns.user
@@ -196,10 +200,12 @@ defmodule SunstoneWeb.PageLive do
 
   def handle_info({:table_updated}, socket) do
      user = socket.assigns.user
+     
      user = Accounts.get_user!(user.id)
      office_id = socket.assigns.office_id
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
+
 
     {:noreply, assign(socket, user: user, broadcast: table.broadcast, tables: tables)}
   end
@@ -248,7 +254,16 @@ defmodule SunstoneWeb.PageLive do
      tables = Chats.list_tables(office_id)
      table = Chats.get_table!(user.table_id)
      office = Chats.get_office!(office_id)
-    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, broadcast: table.broadcast, office: office)}
+     share_camera = socket.assigns.share_camera
+     
+     new_share_camera = 
+     case length(table.users) == 1 do
+      true -> false
+      false -> share_camera
+     end
+
+
+    {:noreply, assign(socket, user: user, tables: tables, chat_list: table.users, broadcast: table.broadcast, office: office, share_camera: new_share_camera)}
   end
 
   def handle_info({:user_inactive}, socket) do
