@@ -520,6 +520,16 @@ window.toggleMute = function () {
 }
 
 window.toggleCamera = function () {
+    try {
+        gtag('event', 'share_camera',
+            {
+                'share_camera': "true",
+
+            });
+    } catch (e) {
+        console.log('e')
+    }
+
     if (localVideoCameraTrack) {
         localVideoCameraTrack.enabled = true;
         document.getElementById('share-camera').click();
@@ -568,7 +578,7 @@ window.playVideo = function () {
 
 window.startScreenSharing = function () {
     try {
-        gtag('event', 'live',
+        gtag('event', 'share_screen',
             {
                 'share_screen': "true",
 
