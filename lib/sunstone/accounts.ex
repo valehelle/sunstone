@@ -47,7 +47,7 @@ defmodule Sunstone.Accounts do
             preload: [
               :socials,
               :active_office,
-              table: [:broadcast, :users],
+              table: [:broadcast, users: ^from( u in User, order_by: [asc: u.id],preload:  [:socials])],
               notifications: ^from( n in Notification, order_by: [desc: n.id]),
               offices: ^from( o in Office,order_by: [desc: o.inserted_at])
               

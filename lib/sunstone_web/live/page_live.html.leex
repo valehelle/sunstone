@@ -225,9 +225,7 @@ video {
 
 <h5 id="error-peerjs" style= "visibility:  hidden; color: #f44336; margin: 0;">Connection limit reach. Please wait a few minutes and try again by refreshing the page.</h5>
 <%= if @user.is_active do %>
-<div id = "video-online-container" style="display:flex; ">
-    <div id = "video-online-child" style="flex:.6; min-height:80vh; ">
-            <div style="display: flex ; color: #606c76; flex-direction: column;">
+<div style="display: flex ; color: #606c76; flex-direction: column;">
                 <div style="display: flex; flex-direction: column; justify-content: center; padding-bottom: 10px; border-bottom: 1px solid lightgray;">
                     <div style="display: flex; flex-direction: column; ">
                         <div>
@@ -277,6 +275,11 @@ video {
                 </div>
             </div>
 
+<div id = "video-online-container" style="display:flex; ">
+
+    <div id = "video-online-child" style="flex:.4; min-height:80vh; ">
+            
+
         <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Desks</h3>
 
                 <div >
@@ -293,8 +296,7 @@ video {
                                     </div>
                                     <ul style=" padding-top: 10px; padding-bottom:10px; list-style: none; margin:0; list-style-type:none; white-space:nowrap; overflow-x:auto; padding-left: 5px;">
                                     <%= for user <- table.users do %>
-                                        <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil  do %>
-                                        <li style="width: 90%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; margin-top: 5px; ">
+                                        <li style="width: 90%; display: flex; border-radius:5px;  float:left; margin:0; padding-right:10px; margin-right:5px; margin-top: 10px; ">
                                             <div style="justify-self: center; align-self: center; height:40px; width: 40px; background-color: lightgrey; border-radius: 50%; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; padding-top: 3px;">
                                                 <%= String.at(user.name, 0) |> String.capitalize %>
                                             </div>
@@ -305,25 +307,11 @@ video {
                                                         <%= if user.socials != nil && user.socials.message != "" do "(#{user.socials.message})" end %>
                                                         -
                                                         <%= if user.socials != nil && user.socials.status != "" do "#{user.socials.status} " end %>
-                                                        &nbsp;
-                                                    <%= if user.is_muted  do %>
-                                                        <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
-                                                    <% else %>
-                                                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
-                                                    <% end %>
-                                                        &nbsp; 
-                                                        <%= if length(table.users) > 1 && Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil && user.id != @user.id do %>
-                                                           <%= if Enum.find_index(@connected_list, fn peer_id -> user.peer_id == peer_id end) == nil do %> 
-                                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-yellow.svg") %>" > 
-                                                            <%= else %>
-                                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-green.svg") %>" > 
-                                                            <%= end %>
-                                                        <%= end %>
                                                         
                                                     </span> 
 
                                                 </h4>
-                                                <%= if user.id != @user.id do %> 
+                                                <%= if Enum.find_index(table.users, fn user -> user.id == @user.id end) == nil  do %>
                                                 <button class="button button-outline"  style="
                                                     margin-left: 10px;
                                                     width: 100px;
@@ -344,80 +332,6 @@ video {
                                             </div>
                                         
                                         </li>
-                                        <% else %>
-                                            <li class="user-list-item" style=" width: 33.33%; display: flex; flex-direction: column; border-radius:5px;  float:left; margin:0;padding: 5px;">
-                                                <div style="box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
-                                                    <div style="justify-self: center; align-self: center; background-color: lightgrey; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold;">
-                                                        <video
-                                                        playsinline
-                                                        muted
-                                                        control
-                                                        autoplay
-                                                        style="background-color: black; min-height: 176.33px"
-                                                        id="<%= user.peer_id %>-camera"
-
-                                                        >
-                                                        </video>
-                                                    </div>
-                                                    <div style = "justify-content: center; display: flex; flex-direction: column; margin-top: 5px;">
-                                                        <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
-                                                            <%= user.name %> 
-                                                        </h4>
-                                                        <h5 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px;">
-                                                        <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center;"> 
-                                                                <%= if user.socials != nil && user.socials.message != "" do "#{user.socials.message}" end %>
-                                                                -
-                                                                <%= if user.socials != nil && user.socials.status != "" do "#{user.socials.status} " end %>
-                                                                &nbsp;
-                                                            <%= if user.is_muted  do %>
-                                                                <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
-                                                            <% else %>
-                                                                <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
-                                                            <% end %>
-                                                                &nbsp; 
-                                                                <%= if length(table.users) > 1 && Enum.find_index(table.users, fn user -> user.id == @user.id end) != nil && user.id != @user.id do %>
-                                                                <%= if Enum.find_index(@connected_list, fn peer_id -> user.peer_id == peer_id end) == nil do %> 
-                                                                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-yellow.svg") %>" > 
-                                                                    <%= else %>
-                                                                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-green.svg") %>" > 
-                                                                    <%= end %>
-                                                                <%= end %>
-                                                                
-                                                            </span> 
-                                                        </h5>
-                                                        <%= if user.id != @user.id do %> 
-                                                        <button class="button button-outline"  style="
-                                                            margin-left: 10px;
-                                                            width: 100px;
-                                                            height: 30px;
-                                                            padding: 0;
-                                                            line-height: 0;
-                                                        "  onClick="nudgeClick(this)"  peer-id=<%= user.id %> >Nudge</button>
-                                                        <button class="button button-outline"  style="
-                                                            margin-left: 10px;
-                                                            width: 100px;
-                                                            height: 30px;
-                                                            padding: 0;
-                                                            display: none;
-                                                            line-height: 0;
-                                                        " id="<%= user.id %>-id" phx-click="nudge" phx-value-peer-id=<%= user.id %> >Nudge</button>
-                                                        <%= else %>
-                                                            <button class="button button-outline"  style="
-                                                            margin-left: 10px;
-                                                            width: 100px;
-                                                            height: 30px;
-                                                            padding: 0;
-                                                            line-height: 0;
-                                                            visibility: hidden;
-                                                        "   >Nudge</button>
-                                                        <% end %> 
-                                                    
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        <% end %>
-                                    
-                                    
                                     <% end %>
                                     </ul>
 
@@ -451,7 +365,7 @@ video {
                             </div>
                         </div>
                     <% end %>
-<h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Offline</h3>
+                        <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">Offline</h3>
 
                         <div class="container" style="margin-bottom: 20px; padding:5px;">
                                     <div class="row" style="width: 100%; margin: 0; border-radius: 5px;    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1); min-height: 40px;">
@@ -499,53 +413,131 @@ video {
                                 </div>
                 </div>
     </div>
-    <div id="video-container-parent" style="flex:.4; padding-left:10px; height: 500px;">
-            <div id="video-container" style="position: relative;  width: 100%; height: 100%;">
-                <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%; ">
-
+    <div style="flex: .6; padding-left: 10px;">
+    <h3 style=" color: #606c76;margin:0; margin-top: 15px; padding-bottom: 5px;">My Desk</h3>
+    <div style="">
+    <%= for user <- @user.table.users  do %>
+        <li class="user-list-item" style="width: 33.33%; float:left; display: flex; flex-direction: column; border-radius:5px; margin:0;padding: 5px;">
+            <div style="box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);">
+                <div style="justify-self: center; align-self: center; background-color: lightgrey; display:flex; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold;">
+                    <%= if user.peer_id != nil do %>
+                    <video
+                        playsinline
+                        muted
+                        control
+                        autoplay
+                        style="background-color: black; height: 176.33px !important"
+                        id="<%= user.peer_id %>-camera"
+                        >
+                    </video>
+                    <% end %>
                 </div>
-                <div id="play-in-line" style="position: absolute; top: 45% ; width: 100%; display: none; justify-content: center;">
-                    <button  onClick="window.playVideo()" class ="button" style=" width:118px;">
-                        Play
-                    </button>
-                </div>
-                <div style="position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,0.3);">
-
-                    <h4 style="margin:0; margin-top: 10px; color: white; text-align:center">
-                        <%= if @user.table && @user.table.broadcast_id != nil do %>
-                            <%= if @user.table.broadcast_id == @user.id do %>
-                                You are sharing your screen.
-                            <% else %>
-                                <%= @user.table.broadcast.name %> is sharing.   
-                            <% end %>
-                        <% else %>
-                            No one is sharing the screen.
-                        <% end %>
+                <div style = "justify-content: center; display: flex; flex-direction: column; margin-top: 5px;">
+                    <h4 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px; ">
+                        <%= user.name %> 
                     </h4>
-                    <div style="display:flex; justify-content:center">
-                        <button class ="button button-video" style="margin-top: 10px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
-                            <%= if @user.is_muted  do %>
-                                Unmute
-                            <% else %>
-                                Mute
-                            <% end %>
-                        </button>
-                        <button id="full-screen-btn" class ="button button-video" style="margin-top: 10px;margin-right: 10px" onClick="requestFullScreen()" phx-update="ignore">
-                            Fullscreen
-                        </button>
-
-                        <%= if  @user.table && @user.table.broadcast_id == nil do %>
-                            <button id="screen-share" class ="button button-video" onClick="window.startScreenSharing()" style="margin-top: 10px; margin-right: 10px">Share Screen</button>
-
-                            <button style="margin-bottom:0 margin-top: 10px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
+                    <h5 style="color: black; margin-left:10px; word-break: break-all; text-align: center; display: inherit; overflow: hidden; margin-bottom: 0px;">
+                        <span style="color: #606c76; display: flex; font-size: 14px; justify-content: center;align-self: center;"> 
+                        <%= if user.socials != nil && user.socials.message != "" do "#{user.socials.message}" end %>
+                        -
+                        <%= if user.socials != nil && user.socials.status != "" do "#{user.socials.status} " end %>
+                        &nbsp;
+                        <%= if user.is_muted  do %>
+                        <img style="fill=#606c76;" height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic_off-24px.svg") %>">
+                        <% else %>
+                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/mic-24px.svg") %>" > 
                         <% end %>
-                        <%= if @user.table && @user.table.broadcast_id != nil && @user.table.broadcast_id == @user.id do %>
-                            <button class ="button button-video"style=" margin-top: 10px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
-                        <% end %>
-                    </div>
+                        &nbsp; 
+                        <%= if length(@user.table.users) > 1 && Enum.find_index(@user.table.users, fn user -> user.id == @user.id end) != nil && user.id != @user.id do %>
+                        <%= if Enum.find_index(@connected_list, fn peer_id -> user.peer_id == peer_id end) == nil do %> 
+                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-yellow.svg") %>" > 
+                        <%= else %>
+                        <img height="18" width="18" src="<%= Routes.static_path(@socket, "/images/circle-green.svg") %>" > 
+                        <%= end %>
+                        <%= end %>
+                        </span> 
+                    </h5>
+                    <%= if user.id != @user.id do %> 
+                    <button class="button button-outline"  style="
+                        margin-left: 10px;
+                        width: 100px;
+                        height: 30px;
+                        padding: 0;
+                        line-height: 0;
+                        "  onClick="nudgeClick(this)"  peer-id=<%= user.id %> >Nudge</button>
+                    <button class="button button-outline"  style="
+                        margin-left: 10px;
+                        width: 100px;
+                        height: 30px;
+                        padding: 0;
+                        display: none;
+                        line-height: 0;
+                        " id="<%= user.id %>-id" phx-click="nudge" phx-value-peer-id=<%= user.id %> >Nudge</button>
+                    <%= else %>
+                    <button class="button button-outline"  style="
+                        margin-left: 10px;
+                        width: 100px;
+                        height: 30px;
+                        padding: 0;
+                        line-height: 0;
+                        visibility: hidden;
+                        "   >Nudge</button>
+                    <% end %> 
                 </div>
-                
             </div>
+        </li>
+
+
+        <% end %>
+        </div>
+        <div id="video-container-parent" style="padding-left: 5px; padding-right: 5px; height: 500px; clear: both;">
+                <div id="video-container" style="position: relative;  width: 100%; height: 100%;">
+                    <div id ="song" phx-hook="AudioList" phx-update="ignore" style="width:100%; background-color: lightgrey; height: 100%; ">
+
+                    </div>
+                    <div id="play-in-line" style="position: absolute; top: 45% ; width: 100%; display: none; justify-content: center;">
+                        <button  onClick="window.playVideo()" class ="button" style=" width:118px;">
+                            Play
+                        </button>
+                    </div>
+                    <div style="position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,0.3);">
+
+                        <h4 style="margin:0; margin-top: 10px; color: white; text-align:center">
+                            <%= if @user.table && @user.table.broadcast_id != nil do %>
+                                <%= if @user.table.broadcast_id == @user.id do %>
+                                    You are sharing your screen.
+                                <% else %>
+                                    <%= @user.table.broadcast.name %> is sharing.   
+                                <% end %>
+                            <% else %>
+                                No one is sharing the screen.
+                            <% end %>
+                        </h4>
+                        <div style="display:flex; justify-content:center">
+                            <button class ="button button-video" style="margin-top: 10px; margin-right: 10px; width:118px;" phx-click="toggle-mute">
+                                <%= if @user.is_muted  do %>
+                                    Unmute
+                                <% else %>
+                                    Mute
+                                <% end %>
+                            </button>
+                            <button id="full-screen-btn" class ="button button-video" style="margin-top: 10px;margin-right: 10px" onClick="requestFullScreen()" phx-update="ignore">
+                                Fullscreen
+                            </button>
+
+                            <%= if  @user.table && @user.table.broadcast_id == nil do %>
+                                <button id="screen-share" class ="button button-video" onClick="window.startScreenSharing()" style="margin-top: 10px; margin-right: 10px">Share Screen</button>
+
+                                <button style="margin-bottom:0 margin-top: 10px; display: none" phx-click="start-sharing-screen" id ="share-screen-btn">Share Screen</button>
+                            <% end %>
+                            <%= if @user.table && @user.table.broadcast_id != nil && @user.table.broadcast_id == @user.id do %>
+                                <button class ="button button-video"style=" margin-top: 10px;" phx-click="stop-sharing-screen">Stop Sharing Screen</button>
+                            <% end %>
+                        </div>
+                    </div>
+                    
+                </div>
+        </div>
     </div>
 </div>
 <% else %>
