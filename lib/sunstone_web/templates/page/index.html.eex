@@ -1,7 +1,7 @@
 
 <style>
   #main-content{
-     margin-left:-40px; margin-right:-40px;
+     margin-left:-20px; margin-right:-20px;
      padding-left:20px; padding-right: 20px;
   }
     
@@ -44,7 +44,7 @@
 <div id="parent-main" >
 <div style="background-color:#F03A47; color:white;" id="main-content">
     <div style="color:#white; padding: 20px; margin: 0 auto; max-width: 90rem; min-height: 50vh; padding-top: 10vh;" >
-        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">A place for your team to have small chats</h1>
+        <h1 style="font-weight:bold; font-size: 40px; margin-bottom:10px;">A virtual office for your team to have small chats</h1>
         <h3 style=" ">Whether you are working from home or office, Inoffice makes it easy for you to talk to your team members and have small chats.</h3>
         <%= link("Try Beta Now", to: Routes.user_path(@conn, :register), class: "button", style: "background-color: #4CAF50;")%> 
         <br>
