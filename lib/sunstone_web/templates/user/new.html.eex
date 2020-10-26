@@ -2,7 +2,7 @@
 <%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>
 <div style="color:#606c76;">
   <label>
-    Name for your colleague to know you: <%= text_input f, :name, placeholder: "Micheal"  %>
+    Your name: <%= text_input f, :name, placeholder: "Micheal"  %>
     <%= error_tag f, :name %>
   </label>
   <label>
