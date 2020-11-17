@@ -18,6 +18,7 @@ defmodule SunstoneWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} -> 
       conn = Guardian.Plug.sign_in(conn, user)
+      Accounts.create__social(%{"message" => "Office", "status" => "Available"}, user)
       redirect_to_office(conn, user, "true") 
       {:error, changeset} -> 
       render conn, "new.html", changeset: changeset
@@ -122,7 +123,6 @@ defmodule SunstoneWeb.UserController do
     case Accounts.get_user_by_email(email) do
       nil -> 
         changeset = Ecto.Changeset.add_error(changeset, :email, "Email not found")
-        IO.inspect changeset
         render conn, "reset.html", changeset: %{changeset | action: :insert}
       user -> 
       uuid = UUID.uuid1()

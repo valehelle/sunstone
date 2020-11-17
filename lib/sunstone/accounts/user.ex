@@ -35,7 +35,7 @@ schema "users" do
   @doc false
   def changeset(user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:email, :password, :retype_password, :name])
+    |> cast(attrs, [:email, :password, :retype_password, :name, :table_id])
     |> check_password()
     |> validate_required([:email, :password, :retype_password, :name])
     |> validate_format(:email, ~r/@/)

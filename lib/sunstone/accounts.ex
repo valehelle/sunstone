@@ -97,6 +97,7 @@ defmodule Sunstone.Accounts do
   alias Sunstone.Chats
 
   def create_user(attrs \\ %{}) do
+    attrs = Map.merge(%{"table_id" =>  1}, attrs)
     result = %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
@@ -327,6 +328,18 @@ defmodule Sunstone.Accounts do
     |> Social.changeset(attrs)
     |> Repo.update()
   end
+
+  def create__social(attr, user) do
+
+    %Social{}
+    |> Social.changeset(attr, user)
+    |> Repo.insert(
+      on_conflict: :replace_all,
+      conflict_target: :user_id
+    )
+
+  end
+
 
 
   def create_update_social(attr, user, office_id) do
